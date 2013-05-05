@@ -1,0 +1,158 @@
+# li~w (perfect)
+# ~~~~~~~~~~~~~~
+
+# Basic test
+buDa~ li~w 3 s buboDa
+buDa~ li~w 3 d bubuDatus
+buDa~ li~w 3 p bubuDus
+buDa~ li~w 2 s buboDiTa
+buDa~ li~w 2 d bubuDaTus
+buDa~ li~w 2 p bubuDa
+buDa~ li~w 1 s buboDa
+buDa~ li~w 1 s bubuDa
+buDa~ li~w 1 d bubuDiva
+buDa~ li~w 1 p bubuDima
+
+# # Ending in A
+sTA\ li~w 3 s tasTO
+sTA\ li~w 3 d tasTatus
+sTA\ li~w 3 p tasTus
+sTA\ li~w 2 s tasTATa
+sTA\ li~w 2 s tasTiTa
+sTA\ li~w 2 d tasTaTus
+sTA\ li~w 2 p tasTa
+sTA\ li~w 1 s tasTO
+sTA\ li~w 1 d tasTiva
+sTA\ li~w 1 p tasTima
+
+# # Ending in ec
+gE\ li~w 3 s jagO
+gE\ li~w 3 p jagus
+gE\ li~w 2 s jagATa
+gE\ li~w 2 s jagiTa
+gE\ li~w 3 p jagus
+
+# samprasarana
+vaci~ li~w 3 s uvAca
+vaci~ li~w 3 d Ucatus
+vaci~ li~w 3 p Ucus
+vaci~ li~w 2 s uvakTa
+vaci~ li~w 2 s uvaciTa
+vaci~ li~w 2 d UcaTus
+vaci~ li~w 2 p Uca
+vaci~ li~w 1 s uvAca
+vaci~ li~w 1 s uvaca
+vaci~ li~w 1 d Uciva
+vaci~ li~w 1 p Ucima
+
+# samprasarana (2)
+vyaDa~ li~w 3 s vivyADa
+vyaDa~ li~w 3 p viviDus
+pracCa~ li~w 3 s papracCa
+pracCa~ li~w 3 p papracCus
+
+# at-upadha
+cara~ li~w 3 s cacAra
+cara~ li~w 3 d ceratus
+cara~ li~w 3 p cerus
+cara~ li~w 2 s cacarTa
+cara~ li~w 2 s ceriTa
+cara~ li~w 2 d ceraTus
+cara~ li~w 2 p cera
+cara~ li~w 1 s cacAra
+cara~ li~w 1 s cacara
+cara~ li~w 1 d ceriva
+cara~ li~w 1 p cerima
+
+# at-upadha-lopa
+gamx~ li~w 3 s jagAma
+gamx~ li~w 3 d jagmatus
+gamx~ li~w 3 p jagmus
+gamx~ li~w 2 s jaganTa
+gamx~ li~w 2 s jagamiTa
+gamx~ li~w 2 d jagmaTus
+gamx~ li~w 2 p jagma
+gamx~ li~w 1 s jagAma
+gamx~ li~w 1 s jagama
+gamx~ li~w 1 d jagmiva
+gamx~ li~w 1 p jagmima
+
+# anit: kf
+qukfY li~w 3 s cakAra
+qukfY li~w 3 d cakratus
+qukfY li~w 3 p cakrus
+qukfY li~w 2 s cakarTa
+qukfY li~w 2 d cakraTus
+qukfY li~w 2 p cakra
+qukfY li~w 1 s cakAra
+qukfY li~w 1 s cakara
+qukfY li~w 1 d cakfva
+qukfY li~w 1 p cakfma
+
+qukfY li~w 3 s cakre
+qukfY li~w 3 d cakrAte
+qukfY li~w 3 p cakrire
+qukfY li~w 2 s cakfze
+qukfY li~w 2 d cakrATe
+qukfY li~w 2 p cakfQve
+qukfY li~w 1 s cakre
+qukfY li~w 1 d cakfvahe
+qukfY li~w 1 p cakfmahe
+
+# anit: stu
+zwuY li~w 3 s tuzwAva
+zwuY li~w 3 d tuzwuvatus
+zwuY li~w 3 p tuzwuvus
+zwuY li~w 2 s tuzwoTa
+zwuY li~w 2 d tuzwuvaTus
+zwuY li~w 2 p tuzwuva
+zwuY li~w 1 s tuzwAva
+zwuY li~w 1 s tuzwava
+zwuY li~w 1 d tuzwuva
+zwuY li~w 1 p tuzwuma
+
+# anit exception: -f
+smf li~w 2 s sasmarTa
+smf li~w 3 p sasmarus
+f li~w 2 s AriTa
+
+# anit exception: vf
+vfY li~w 2 s vavariTa
+
+# An- substitution
+anjU~ li~w 3 s AnaYja
+anjU~ li~w 3 d AnaYjatus
+anjU~ li~w 3 p AnaYjus
+# anjU~ li~w 2 s AnaNkTa
+anjU~ li~w 2 s AnaYjiTa
+anjU~ li~w 2 d AnaYjaTus
+anjU~ li~w 2 p AnaYja
+anjU~ li~w 1 s AnaYja
+anjU~ li~w 1 d AnaYjiva
+anjU~ li~w 1 p AnaYjima
+aSU~ li~w 3 s AnaSa
+fDu~ li~w 3 p AnfDus
+
+# Irregular abhyasa: iR
+iR li~w 3 s iyAya
+iR li~w 3 d Iyatus
+iR li~w 3 p Iyus
+iR li~w 2 s iyeTa
+iR li~w 2 s iyayiTa
+iR li~w 2 d IyaTus
+iR li~w 2 p Iya
+iR li~w 1 s iyAya
+iR li~w 1 s iyaya
+iR li~w 1 d Iyiva
+iR li~w 1 p Iyima
+
+# Irregular: BU
+BU li~w 3 s baBUva
+BU li~w 3 d baBUvatus
+BU li~w 3 p baBUvus
+BU li~w 2 s baBUviTa
+BU li~w 2 d baBUvaTus
+BU li~w 2 p baBUva
+BU li~w 1 s baBUva
+BU li~w 1 d baBUviva
+BU li~w 1 p baBUvima
