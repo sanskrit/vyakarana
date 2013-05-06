@@ -10,10 +10,10 @@
 
 import gana
 
-from classes import Term, Pratyahara as P, Upadesha as U, Sound
+from classes import Term, Pratyahara as P, Upadesha as U, Sound, Group
 from decorators import *
 
-
+@once('dvirvacana')
 def dvirvacana(state):
     """Apply the operation of 'dvirvacana'.
 
@@ -21,21 +21,50 @@ def dvirvacana(state):
 
     :param state:
     """
+
     i, dhatu = state.find('dhatu')
-    tin = state[-1]
+    p = state[i+1]
 
-    if 'dvirvacana' in state.ops:
+    # 6.1.8 liTi dhAtor anabhyAsasya
+    if state.find('abhyasa')[1]:
+        return
+    _8 = 'li~w' in p.lakshana
+
+    # 6.1.9 sanyaGoH
+    _9 = 'san' in p.lakshana or 'yaN' in p.lakshana
+
+    # 6.1.10 zlau
+    _10 = 'Slu~' in p.lakshana
+
+    # 6.1.11 caGi
+    _11 = 'caN' in p.lakshana
+
+    if not (_8 or _9 or _10 or _11):
         return
 
-    # Imposed order: no abhyasta unless the endings have been created.
-    if 'vibhakti' not in tin.samjna:
-        return
+    # 6.1.1 ekAco dve prathamasya
+    abhyasa = Term(dhatu.value)
 
-    state = state.add_op('dvirvacana')
+    # 6.1.2 ajAder dvitIyasya
+    if dhatu.adi().ac:
+        pass
 
-    if 'li~w' in tin.lakshana:
-        for x in lit_abhyasta(state):
-            yield x
+    # 6.1.3 na ndrAH saMyogAdayaH
+
+    # 6.1.4 pUrvo 'bhyAsaH
+    # 6.1.5 ubhe abhyastam
+    abhyasa = abhyasa.add_samjna('abhyasa', 'abhyasta')
+    dhatu = dhatu.add_samjna('abhyasta')
+
+    if _8:
+        # 6.1.17 liTyabhyAsyobhayeSAm
+        if dhatu.value in gana.VAC or dhatu.value in gana.GRAH:
+            abhyasa = abhyasa.samprasarana()
+
+    new_state = state.swap(i, dhatu).insert(i, abhyasa)
+
+    for x in clean_abhyasa(new_state):
+        yield x
 
 
 def abhyasa_adesha(state):
@@ -61,14 +90,41 @@ def clean_abhyasa(state):
     j, dhatu = state.find('dhatu')
     tin = state[-1]
 
-    # General exceptions for lit
-    if 'li~w' in tin.lakshana:
-        # 6.1.17 liTyabhyAsyobhayeSAm
-        if dhatu.value in gana.VAC or dhatu.value in gana.GRAH:
-            abhyasa = abhyasa.samprasarana()
+    if not abhyasa.value:
+        return
 
     # 7.4.66 ur at
     abhyasa = abhyasa.replace('f', 'ar')
+    abhyasa = abhyasa.replace('F', 'ar')
+
+    # 7.4.59 hrasvaH
+    abhyasa = abhyasa.to_hrasva()
+
+    # 7.4.60 halAdiH zeSaH
+    # 7.4.61 zarpUrvAH khayaH
+    try:
+        v = abhyasa.value
+        if v[0] in P('Sar') and v[1] in P('Kay'):
+            abhyasa = abhyasa.set_value(v[1:])
+        else:
+            temp = []
+            first = True
+            for x in abhyasa.value:
+                if x in P('ac'):
+                    temp.append(x)
+                    break
+                elif x in P('hal') and first:
+                    temp.append(x)
+                    first = False
+            abhyasa = abhyasa.set_value(''.join(temp))
+    except IndexError:
+        pass
+
+    # 7.4.62 kuhoz cuH
+    # 7.4.63 na kavater yaGi
+    adi = abhyasa.adi().value
+    if adi in Group('ku h'):
+        abhyasa = abhyasa.adi(Sound(adi).closest(Group('cu')))
 
     # Exceptions for lit:
     if 'li~w' in tin.lakshana:
@@ -108,58 +164,8 @@ def clean_abhyasa(state):
             yield state.swap(i, abhyasa)
             return
 
-    # 7.4.60 halAdiH zeSaH
-    # 7.4.61 zarpUrvoH khayaH
-    try:
-        v = abhyasa.value
-        if v[0] in P('Sar') and v[1] in P('Kay'):
-            abhyasa = abhyasa.set_value(v[1:])
-        else:
-            temp = []
-            first = True
-            for x in abhyasa.value:
-                if x in P('ac'):
-                    temp.append(x)
-                    break
-                elif x in P('hal') and first:
-                    temp.append(x)
-                    first = False
-            abhyasa = abhyasa.set_value(''.join(temp))
-    except IndexError:
-        pass
-
-    # 7.4.59 hrasvaH
-    abhyasa = abhyasa.to_hrasva()
-
-    # 7.4.62 kuhoz cuH
-    converter = dict(zip('kKgGNh', 'cCjJYj'))
-    adi = abhyasa.adi().value
-    abhyasa = abhyasa.adi(converter.get(adi, adi))
-
     # 8.4.54 the consonant becomes deaspirated
     abhyasa = abhyasa.adi(abhyasa.adi().deaspirate().value)
 
     new_state = state.swap(i, abhyasa)
     yield new_state
-
-
-def lit_abhyasta(state):
-    """
-
-    :param state: some State
-    """
-
-    i, dhatu = state.find('dhatu')
-
-    # 6.1.1 ekAco dve prathamasya
-    # TODO: other rules
-    abhyasa = Term(dhatu.value)
-
-    # 6.1.4 pUrvo 'bhyAsaH
-    # 6.1.5 ubhe abhyastam
-    abhyasa = abhyasa.add_samjna('abhyasa').add_samjna('abhyasta')
-    dhatu = dhatu.add_samjna('abhyasta')
-
-    new_state = state.swap(i, dhatu).insert(i, abhyasa)
-
-    return clean_abhyasa(new_state)

@@ -137,7 +137,7 @@ def it_status(anga, p):
         _44 = anga.raw in ('svf', 'zUG', 'zUN', 'DUY') or 'U' in anga.it
 
         # 7.2.45 radhAdhibhyaz ca
-        _45 = anga.clean in gana.RUDH
+        _45 = anga.clean in gana.RADH
 
         if _44 or _45:
             status = 'vet'

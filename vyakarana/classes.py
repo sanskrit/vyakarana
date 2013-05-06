@@ -19,38 +19,60 @@ class Sound(object):
 
     These sounds can be transformed in ways defined by the grammar."""
 
-    #: This organizes sounds by their "point of articulation."
+    #: This organizes sounds by their point of articulation.
     ASYA = [
-        # kantha
+        # kaṇṭha
         set('aAkKgGNh'),
-        # talu
+        # tālu
         set('iIcCjJYy'),
-        # murdhan
+        # mūrdhan
         set('fFwWqQRr'),
         # danta
         set('xXtTdDnl'),
-        # ostha
+        # oṣṭha
         set('uUpPbBmv'),
-        # kantha-talu
+        # kaṇṭha-tālu
         set('eE'),
-        # kantha-ostha
+        # kaṇṭha-oṣṭha
         set('oO'),
         # pure nasal
         set('M')
     ]
 
-    #: This organizes sounds by their "articulatory effort."
+    #: This organizes sounds by their articulatory effort.
     PRAYATNA = [
-        # Sar
-        set('Szs'),
-        #nasals
-        set('NYRnmM'),
-        # stops etc.
+        # spṛṣṭa
         set('kKgGNcCjJYwWqQRtTdDnpPbBmh'),
-        # semivowels
+        # īṣatspṛṣṭa
         set('yrlv'),
+        # śar
+        set('Szs'),
         # vowels
         set('aAiIuUfFxeEoO'),
+    ]
+
+    #: This organizes sounds by their nasality.
+    NASIKA = [
+        # nasal
+        set('NYRnmM'),
+        # non-nasal
+        set('aAiIuUfFxeEoOkKgGcCjJwWQQtTdDpPbByrlvSzsh'),
+    ]
+
+    #: This organizes sounds by their "voice."
+    GHOSA = [
+        # ghoṣavat (voiced)
+        set('aAiIuUfFxXeEoOgGNjJYqQRdDnbBmyrlvh'),
+        # aghoṣa (unvoiced)
+        set('kKcCwWtTpPSzs'),
+    ]
+
+    #: This organizes sounds by their aspiration.
+    PRANA = [
+        # mahāprāṇa (aspirated)
+        set('KGCJWQTDPBh'),
+        # alpaprāṇa (unaspirated)
+        set('aAiIuUfFxXeEoOkgNcjYwqRtdnpbmyrlvSzs'),
     ]
 
     def __init__(self, value):
@@ -64,20 +86,21 @@ class Sound(object):
         for x in items:
             score = len(Sound(x).names().intersection(self_names))
             if score > best_score:
-                best = x
-
+                best, best_score = x, score
         return best
 
     def names(self):
+        """Get the various designations that apply to this sound. This
+        is used to determine how similar two sounds are to each other.
+        """
         items = set()
 
-        for i, a in enumerate(self.ASYA):
-            if self.value in a:
-                items.update(['a_' + str(i)])
-
-        for i, p in enumerate(self.PRAYATNA):
-            if self.value in p:
-                items.update(['p_' + str(i)])
+        categories = [self.ASYA, self.PRAYATNA, self.NASIKA, self.GHOSA,
+                      self.PRANA]
+        for i, category in enumerate(categories):
+            for j, group in enumerate(category):
+                if self.value in group:
+                    items.add('%s_%s' % (i, j))
         return items
 
     def savarna_set(self):
@@ -119,18 +142,7 @@ class Sound(object):
 
         :param other:
         """
-        v_names = self.names()
-        others = Sound(other).savarna_set()
-
-        best_name = self.value
-        best_score = 0
-
-        for o in others:
-            names = Sound(o).names()
-            score = len(v_names.intersection(names))
-            if score > best_score:
-                best_name = o
-        return best_name
+        return self.closest(Sound(other).savarna_set())
 
     def savarna(self, other):
         """
@@ -369,9 +381,14 @@ class Term(object):
         else:
             return Term(self.value[0])
 
-    def add_samjna(self, term):
+    def add_samjna(self, *names):
+        """
+
+        :param name:
+        """
         c = self.copy()
-        c.samjna.add(term)
+        for name in names:
+            c.samjna.add(name)
         return c
 
     def add_lakshana(self, term):
