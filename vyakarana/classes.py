@@ -426,6 +426,9 @@ class Term(object):
         else:
             return Term(self.value[-1])
 
+    def any_it(self, *args):
+        return any(a in self.it for a in args)
+
     def any_samjna(self, *args):
         return any(a in self.samjna for a in args)
 

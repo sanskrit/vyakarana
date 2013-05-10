@@ -26,7 +26,6 @@ def it(state):
     p = state[i+1]
 
     status = it_status(anga, p)
-    print anga, p, status
     if status in ('set', 'vet'):
         yield state.swap(i+1, p.tasya(U('iw')))
     if status in ('anit', 'vet'):
@@ -215,7 +214,6 @@ def it_status(anga, p):
                 status = 'anit'
             elif _61 or _62:
                 tasvat = it_status(anga, TAS)
-                print '--', anga, tasvat
                 if tasvat == 'anit':
                     status = 'vet'
                 elif tasvat in ('set', 'vet'):

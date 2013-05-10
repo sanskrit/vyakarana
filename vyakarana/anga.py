@@ -34,14 +34,14 @@ def adesha(state):
     # 6.1.16 vacisvapiyajAdInAM kiti
     # 6.1.17 grahi... Giti ca
     vac_condition = 'k' in next.it and value in gana.VAC
-    grah_condition = value in gana.GRAH and ('k' in next.it or 'N' in next.it)
+    grah_condition = value in gana.GRAH and next.any_it('k', 'N')
     if vac_condition or grah_condition:
         dhatu = dhatu.samprasarana()
         yield state.swap(i, dhatu)
 
     # 7.2.115 aco `Jniti (vrddhi)
     # 7.2.116 ata upadhAyAH
-    if 'Y' in next.it or 'R' in next.it:
+    elif next.any_it('Y', 'R'):
         if dhatu.ac or dhatu.upadha().value == 'a':
             dhatu = dhatu.vrddhi()
         else:
@@ -50,9 +50,9 @@ def adesha(state):
         yield state.swap(i, dhatu)
 
     # 7.3.84 sArvadhAtukArdhadhAtukayoH
-    elif 'sarvadhatuka' in next.samjna or 'ardhadhatuka' in next.samjna:
+    elif next.any_samjna('sarvadhatuka', 'ardhadhatuka'):
         # 1.1.5 kGiti ca
-        if 'k' in next.it or 'N' in next.it:
+        if next.any_it('k', 'N'):
             yield state
         else:
             dhatu = dhatu.guna()
