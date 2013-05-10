@@ -429,6 +429,9 @@ class Term(object):
     def any_it(self, *args):
         return any(a in self.it for a in args)
 
+    def any_lakshana(self, *args):
+        return any(a in self.lakshana for a in args)
+
     def any_samjna(self, *args):
         return any(a in self.samjna for a in args)
 

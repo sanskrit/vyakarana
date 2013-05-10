@@ -113,6 +113,8 @@ def aci(state):
             yield state.swap(i, anga)
 
     elif f in Sounds('i u'):
+        new = None
+
         # 6.4.77 aci znudhAtubhruvAM yvor iyaGuvaGau
         # TODO: other categories
         _77 = 'dhatu' in anga.samjna
@@ -121,11 +123,16 @@ def aci(state):
         _78 = 'abhyasa' in anga.samjna and Sound(f).asavarna(s.value)
         if _77 or _78:
             if f in Sounds('i'):
-                anga = anga.tasya(U('iya~N'))
+                new = anga.tasya(U('iya~N'))
             else:
-                anga = anga.tasya(U('uva~N'))
+                new = anga.tasya(U('uva~N'))
 
-            yield state.swap(i, anga)
+        # 6.4.82 er anekAco 'saMyogapUrvasya
+        if f in Sounds('i') and not anga[:-1].samyoga:
+            new = anga.al_tasya('i', 'yaR')
+
+        if new:
+            yield state.swap(i, new)
 
 
 @once('ac_adesha')
@@ -173,34 +180,46 @@ def ac_adesha(state):
             yield s
 
 
-# @match('anga', 'pratyaya')
-# def ku(anga, pratyaya):
-#     """Apply rules that perform 'ku' substitutions.
+@once('anga_ku')
+def ku(state):
+    """Apply rules that perform 'ku' substitutions.
 
-#     Specifically, these rules are 7.3.52 - 7.3.69
+    Specifically, these rules are 7.3.52 - 7.3.69
 
-#     :param abhyasa:
-#     :param anga:
-#     """
+    :param abhyasa:
+    :param anga:
+    """
+    i, abhyasa = state.find('abhyasa')
+    j, anga = state.find('anga')
+    p = state[j+1]
 
-#     # 7.3.52 cajoH ku ghiNyatoH
-#     # 7.3.53 nyaGkvAdInAM ca
-#     # 7.3.54 ho hanter JNinneSu
-#     # 7.3.55 abhyAsAc ca
+    # 7.3.52 cajoH ku ghiNyatoH
+    # 7.3.53 nyaGkvAdInAM ca
+    # 7.3.54 ho hanter JNinneSu
 
-#     # 7.3.56 her acaGi
-#     if anga.clean == 'hi':
+    if abhyasa:
+        # 7.3.55 abhyAsAc ca
+        _55 = anga.clean == 'han'
 
+        # 7.3.56 her acaGi
+        _56 = anga.clean == 'hi' and 'caN' not in p.lakshana
+        if _55 or _56:
+            yield state.swap(j, anga.al_tasya('h', 'ku'))
 
-#     elif pratyaya.any('san', 'li~w'):
+        elif p.any_lakshana('san', 'li~w'):
+            sub = False
 
-#         # 7.3.57 sanliTor jeH
-#         if anga.clean == 'ji':
+            # 7.3.57 sanliTor jeH
+            if anga.clean == 'ji':
+                sub = True
 
-#         # 7.3.58 vibhASA ceH
-#         elif anga.clean == 'ci':
+            # 7.3.58 vibhASA ceH
+            elif anga.clean == 'ci':
+                yield state
+                sub = True
 
-#     return
+            if sub:
+                yield state.swap(j, anga.al_tasya('c j', 'ku'))
 
 
 def lit_a_to_e(state):

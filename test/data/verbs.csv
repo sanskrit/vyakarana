@@ -97,12 +97,12 @@ i\R li~w 1 s iyaya
 i\R li~w 1 d Iyiva
 i\R li~w 1 p Iyima
 
-# nI li~w 2 s nineTa
-# nI li~w 2 s ninayiTa
-# nI li~w 1 s ninAya
-# nI li~w 1 s ninaya
-# nI li~w 1 d ninyiva
-# nI li~w 1 p ninyima
+nI\ li~w 2 s nineTa
+nI\ li~w 2 s ninayiTa
+nI\ li~w 1 s ninAya
+nI\ li~w 1 s ninaya
+nI\ li~w 1 d ninyiva
+nI\ li~w 1 p ninyima
 
 smf li~w 3 s sasmAra
 smf li~w 3 d sasmaratus
@@ -198,22 +198,22 @@ BU li~w 1 s baBUva
 BU li~w 1 d baBUviva
 BU li~w 1 p baBUvima
 
-# ji li~w 2 s jigeTa
-# ji li~w 2 s jigayiTa
-# ji li~w 1 s jigAya
-# ji li~w 1 s jigaya
-# ji li~w 1 d jigyiva
-# ji li~w 1 d jigyima
+ji\ li~w 2 s jigeTa
+ji\ li~w 2 s jigayiTa
+ji\ li~w 1 s jigAya
+ji\ li~w 1 s jigaya
+ji\ li~w 1 d jigyiva
+ji\ li~w 1 d jigyima
 
-# hi li~w 2 s jiGeTa
-# hi li~w 2 s jiGayiTa
-# hi li~w 1 s jiGAya
-# hi li~w 1 s jiGaya
-# hi li~w 1 d jiGyiva
-# hi li~w 1 d jiGyima
+hi\ li~w 2 s jiGeTa
+hi\ li~w 2 s jiGayiTa
+hi\ li~w 1 s jiGAya
+hi\ li~w 1 s jiGaya
+hi\ li~w 1 d jiGyiva
+hi\ li~w 1 d jiGyima
 
-# ci li~w 3 s cicAya
-# ci li~w 3 s cikAya
+ci\ li~w 3 s cicAya
+ci\ li~w 3 s cikAya
 
 # Irregular 'it'
 f li~w 2 s AriTa
