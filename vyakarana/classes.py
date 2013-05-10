@@ -17,18 +17,21 @@ class Sound(object):
 
     """A Sanskrit sound.
 
-    These sounds can be transformed in ways defined by the grammar."""
+    These sounds can be transformed in ways defined by the grammar.
+
+    :param value: the Sound's value
+    """
 
     #: This organizes sounds by their point of articulation.
     ASYA = [
         # kaṇṭha
         set('aAkKgGNh'),
         # tālu
-        set('iIcCjJYy'),
+        set('iIcCjJYyS'),
         # mūrdhan
-        set('fFwWqQRr'),
+        set('fFwWqQRrz'),
         # danta
-        set('xXtTdDnl'),
+        set('xXtTdDnls'),
         # oṣṭha
         set('uUpPbBmv'),
         # kaṇṭha-tālu
@@ -78,7 +81,24 @@ class Sound(object):
     def __init__(self, value):
         self.value = value
 
+    def asavarna(self, other):
+        """Returns the sounds that are not savarna to this one.
+
+        One subtle point here is that the 'savarna' and 'asavarna` are
+        both undefined between consonants and vowels.
+
+        :param other:
+        """
+        ac = Pratyahara('ac')
+        same_ac = self.value in ac and other in ac
+        return same_ac and other not in self.savarna_set()
+
     def closest(self, items):
+        """Return the phonetically closest value. If no close value
+        exists, return `self.value`.
+
+        :param items: a list of letters
+        """
         best = self.value
         best_score = 0
 
@@ -103,14 +123,23 @@ class Sound(object):
                     items.add('%s_%s' % (i, j))
         return items
 
-    def savarna_set(self):
-        """Return the sounds that are savarna to this one.
+    def savarna(self, other):
+        """
 
-        1.1.19 tulyAsyaprayatnaM savarNam
-        1.1.20 najjhalau
+        :param other: some sound
+        """
+        return other in self.savarna_set()
+
+    def savarna_set(self):
+        """Return the sounds that are savarna to this one. The 'savarna'
+        relation is defined by the following rules:
+
+            1.1.9  tulyAsyaprayatnaM savarNam
+            1.1.10 nAjjhalau
         """
         s = self.value
         a = p = None
+
         for a in self.ASYA:
             if s in a:
                 break
@@ -128,31 +157,14 @@ class Sound(object):
         # 1.1.10 na ac-halau
         return set([x for x in results if (x in Pratyahara('ac')) == is_ac])
 
-    def asavarna(self, other):
-        """
 
-        :param other:
-        """
-        ac = Pratyahara('ac')
-        same_ac = self.value in ac and other in ac
-        return same_ac and other not in self.savarna_set()
+class Sounds(object):
 
-    def parasavarna(self, other):
-        """
+    """A shorthand for grouping Sanskrit sounds.
 
-        :param other:
-        """
-        return self.closest(Sound(other).savarna_set())
+    :param phrase: a group of designations
+    """
 
-    def savarna(self, other):
-        """
-
-        :param other:
-        """
-        return other in self.savarna_set()
-
-
-class Group(object):
     def __init__(self, phrase):
         v = self.values = set()
         for item in phrase.split():
@@ -166,16 +178,24 @@ class Group(object):
             # 1.1.70 taparas tatkAlasya
             elif last == 't':
                 v.update([first])
+            # Generic letter
             elif len(item) == 1:
                 v.update(item)
+            # Pratyahara
             else:
-                v.update(Pratyahara(item).letters)
+                v.update(Pratyahara(item).values)
 
     def __contains__(self, item):
+        """
+        :param item: some sound
+        """
         return item in self.values
 
     def __iter__(self):
         return iter(self.values)
+
+    def __repr__(self):
+        return "<Sounds('%s')>" % ''.join(self.values)
 
 
 class Pratyahara(object):
@@ -213,13 +233,13 @@ class Pratyahara(object):
         limit = value[-1]
         found_first = False
 
-        self.letters = set([first])
+        self.values = set([first])
 
         for items, it in self.rules:
             if found_first:
-                self.letters.update(items)
+                self.values.update(items)
             elif first in items:
-                self.letters.update(items.partition(first)[-1])
+                self.values.update(items.partition(first)[-1])
                 found_first = True
             if limit == it:
                 if second_R:
@@ -228,33 +248,42 @@ class Pratyahara(object):
                     break
 
     def __contains__(self, key):
-        return key in self.letters
+        return key in self.values
 
 
 class Term(object):
 
+    """
+    A :class:`Term` models the strings used in the grammar and provides
+    an easy interface for applying the various rules of the grammar. In
+    addition, it contains the various designations that apply to some
+    value.
+
+    Terms are used in a functional way; modifying a term creates a new
+    copy. This approach is used to keep the derivations sane.
+
+    :param value: the human-readable version of this term
+    :param samjna: the technical designations that apply to this term
+
+    :param lakshana: the names that refer to this term. For example, an
+                     operation conditioned by "lit" is also condition by
+                     "Nal", since "Nal" comes from "lit". This term
+                     comes from 1.1.62:
+
+                         1.1.62 pratyayalope pratyayalakSaNam
+
+                     Technically, it applies only to a pratyaya. But
+                     it's been useful in other contexts so far.
+
+    :param parts: The components that constitute this term. For example,
+                  the Term 'BUv' might have two parts: the root 'BU' and
+                  the augment 'v' (from 'vu~k').
+    """
+
     def __init__(self, value):
-        #: the human-readable (no anubandhas) version of this term
         self.value = value
-
-        #: the technical designations that apply to this term
         self.samjna = set()
-
-        #: the names that refer to this term. For example an operation
-        #: conditioned by "lit" is also condition by "Nal", since "Nal"
-        #: comes frot "lit".
-        #:
-        #: This term comes from 1.1.62:
-        #:
-        #:     1.1.62 pratyayalope pratyayalakSaNam
-        #:
-        #: Technically, it applies only to a pratyaya. But it's been
-        #: useful in other contexts so far.
         self.lakshana = set()
-
-        #: The components that constitute this term. For example, the
-        #: Term 'BUv' might have two parts: the root 'BU' and the
-        #: augment 'v' (from 'vu~k').
         self.parts = [self]
 
     def __eq__(self, other):
@@ -273,6 +302,7 @@ class Term(object):
         return "<{0}('{1}')>".format(self.__class__.__name__, self.value)
 
     def copy(self):
+        """Create a full copy of the :class:`Term`."""
         cls = self.__class__
         c = cls(self.value)
         c.samjna = self.samjna.copy()
@@ -280,40 +310,20 @@ class Term(object):
         c.parts = self.parts[:]
         return c
 
-    @property
-    def ac(self):
-        """True iff the term ends in a vowel.
+    def _ends_in(selection):
+        group = Sounds(selection)
 
-        """
-        return self[-1].value in Pratyahara('ac')
+        def fn(self):
+            return self[-1].value in group
+        return fn
 
-    @property
-    def dirgha(self):
-        """True iff the term ends in a long vowel.
-
-        """
-        return self[-1].value in sounds.LONG_VOWELS
-
-    @property
-    def ec(self):
-        """True iff the term ends in an 'ec' vowel.
-
-        """
-        return self[-1].value in Pratyahara('ec')
-
-    @property
-    def hal(self):
-        """True iff the term ends in a consonant.
-
-        """
-        return self[-1].value in Pratyahara('hal')
-
-    @property
-    def ik(self):
-        """True iff the term ends in an 'ik' vowel.
-
-        """
-        return self[-1].value in Pratyahara('ik')
+    ac = property(_ends_in('ac'))
+    dirgha = property(_ends_in('At It Ut Ft'))
+    hrasva = property(_ends_in('at it ut ft xt'))
+    ec = property(_ends_in('ec'))
+    hal = property(_ends_in('hal'))
+    ik = property(_ends_in('ik'))
+    del _ends_in
 
     @property
     def guru(self):
@@ -325,13 +335,6 @@ class Term(object):
         return self.samyoga or self.dirgha
 
     @property
-    def hrasva(self):
-        """True iff the term ends in a short vowel.
-
-        """
-        return self[-1].value in sounds.SHORT_VOWELS
-
-    @property
     def laghu(self):
         """True iff the end of the term is called 'laghu'.
 
@@ -341,7 +344,7 @@ class Term(object):
 
     @property
     def num_syllables(self):
-        return sounds.num_syllables(self.value)
+        return sum(1 for L in self.value if L in Sounds('ac'))
 
     @property
     def one_syllable(self):
@@ -355,8 +358,8 @@ class Term(object):
         1.1.7 halo 'nantarAH saMyogaH
         """
         try:
-            cons = sounds.CONSONANTS
-            return self.value[-1] in cons and self.value[-2] in cons
+            hal = Sounds('hal')
+            return self.value[-1] in hal and self.value[-2] in hal
         except IndexError:
             return False
 
@@ -367,8 +370,8 @@ class Term(object):
         1.1.7 halo 'nantarAH saMyogaH
         """
         try:
-            cons = sounds.CONSONANTS
-            return self.value[0] in cons and self.value[1] in cons
+            hal = Sounds('hal')
+            return self.value[0] in hal and self.value[1] in hal
         except IndexError:
             return False
 
@@ -396,6 +399,24 @@ class Term(object):
         c.lakshana.add(term)
         return c
 
+    def al_tasya(self, src, dest):
+        src, dest = Sounds(src), Sounds(dest)
+
+        c = self.copy()
+        letters = list(self.value)
+        for i, L in enumerate(letters):
+            x = L
+            if L in src:
+                x = Sound(L).closest(dest)
+                # 1.1.51 ur aN raparaH
+                if L in Sounds('f') and x in Sounds('aR'):
+                    x += 'r'
+
+            letters[i] = x
+
+        c.value = ''.join(letters)
+        return c
+
     def antya(self, replacement=None):
         if replacement is not None:
             c = self.copy()
@@ -405,10 +426,17 @@ class Term(object):
         else:
             return Term(self.value[-1])
 
+    def any_samjna(self, *args):
+        return any(a in self.samjna for a in args)
+
     def deaspirate(self):
         c = self.copy()
         c.value = sounds.deaspirate(c.value[0]) + c.value[1:]
         return c
+
+    def ends_in(self, selection):
+        group = Sounds(selection)
+        return self[-1].value in group
 
     def guna(self):
         """Apply guna. But if the term ends in a conjunct consonant,
@@ -422,7 +450,7 @@ class Term(object):
                 break
             if i == 1 and L in sounds.LONG_VOWELS:
                 break
-            if L in sounds.VOWELS:
+            if L in Sounds('ac'):
                 letters[i] = sounds.guna(letters[i])
                 break
         value = ''.join(reversed(letters))
@@ -490,10 +518,11 @@ class Term(object):
 
     def tasmat(self, other):
         """
+        Insert a term before this one:
 
             1.1.67 tasmAd ityuttarasya
 
-        :param other:
+        :param other: the term to insert
         """
         c = self.copy()
         c.value = c.value + other.value
@@ -502,35 +531,58 @@ class Term(object):
 
     def tasmin(self, other):
         """
+        Insert a term after this one:
 
             1.1.67 tasminniti nirdiSTe pUrvasya
 
-        :param other:
+        :param other: the term to insert
         """
         c = self.copy()
         c.value = other.value + c.value
         c.parts = other.parts + c.parts
         return c
 
-    def tasya(self, other):
+    def tasya(self, other, adi=False):
         """
+        Perform a substitution according to the normal rules.
 
-        :param other:
+        :param other: the term to insert
         """
         c = self.copy()
+
+        # 1.1.54 AdeH parasya
+        if adi:
+            c.value = other.value + self.value[1:]
+            return c
+
+        # 1.1.46 Adyantau Takitau
         if 'k' in other.it:
             c.value += other.value
             c.parts.append(other)
+
+        # 1.1.46 Adyantau Takitau
         elif 'w' in other.it:
-            c.value = other.value + c.value
+            c.value = other.value + self.value
             c.parts.insert(0, other)
-        elif 'N' in other.it:
-            c.value = self.value[:-1] + other.value
-            c.parts.append(other)
+
+        # 1.1.47 mid aco 'ntyAt paraH
         elif 'm' in other.it:
             raise NotImplementedError
+
+        # 1.1.52 alo 'ntyasya
+        # 1.1.53 Gic ca
+        elif len(other.value) == 1 or 'N' in other.it:
+            c.value = self.value[:-1] + other.value
+            c.parts.append(other)
+
+        # 1.1.55 anekAlSit sarvasya
+        elif 'S' in other.it or len(other.value) > 1:
+            c.value = other.value
+            c.parts = [other]
+
         else:
             raise NotImplementedError
+
         return c
 
     def ti(self, replacement=None):
@@ -538,7 +590,7 @@ class Term(object):
 
         1.1.64 aco 'ntyAdi ti
         """
-        splits = re.split('([%s])' % ''.join(sounds.VOWELS), self.value)
+        splits = re.split('([%s])' % ''.join(Sounds('ac')), self.value)
         c = self.copy()
 
         if replacement is None:

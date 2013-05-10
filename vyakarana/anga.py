@@ -20,9 +20,8 @@
 """
 
 import gana
-from classes import Group, Sound, Upadesha as U
+from classes import Sounds, Sound, Upadesha as U
 from decorators import *
-from util import iter_pairwise
 
 
 @require('dvirvacana')
@@ -63,11 +62,18 @@ def adesha(state):
         yield state
 
 
+@once('rt')
 def rt(state):
-    i, dhatu = state.find('dhatu')
-    lit = 'li~w' in state[i+1].lakshana
-    if dhatu.samyogadi and dhatu.antya().value == 'f':
-        yield state.swap(i, dhatu.guna())
+    i, anga = state.find('anga')
+    p = state[i+1]
+    if 'li~w' in p.lakshana:
+        # 7.4.10 Rtaz ca saMyogAder guNaH
+        _10 = anga.samyogadi and anga.ends_in('ft')
+        # 7.4.10 RcchatyRRtAm
+        _11 = anga.clean == 'f' or anga.ends_in('Ft')
+
+        if _10 or _11:
+            yield state.swap(i, anga.guna())
 
 
 @once('anga_aci')
@@ -92,11 +98,21 @@ def aci(state):
     if not anga.value:
         return
 
-    f = anga.value[-1]
+    f = anga.antya().value
     s = p.adi()
 
-    if f in Group('i u') and s.ac:
+    if not s.ac:
+        return
 
+    # 6.4.88 bhuvo vuk luGliToH
+    if anga.clean == 'BU':
+        if anga.parts[-1].raw == 'vu~k':
+            return
+        else:
+            anga = anga.tasya(U('vu~k'))
+            yield state.swap(i, anga)
+
+    elif f in Sounds('i u'):
         # 6.4.77 aci znudhAtubhruvAM yvor iyaGuvaGau
         # TODO: other categories
         _77 = 'dhatu' in anga.samjna
@@ -104,7 +120,7 @@ def aci(state):
         # 6.4.78 abhyAsasyAsavarNe
         _78 = 'abhyasa' in anga.samjna and Sound(f).asavarna(s.value)
         if _77 or _78:
-            if f in Group('i'):
+            if f in Sounds('i'):
                 anga = anga.tasya(U('iya~N'))
             else:
                 anga = anga.tasya(U('uva~N'))
@@ -157,6 +173,36 @@ def ac_adesha(state):
             yield s
 
 
+# @match('anga', 'pratyaya')
+# def ku(anga, pratyaya):
+#     """Apply rules that perform 'ku' substitutions.
+
+#     Specifically, these rules are 7.3.52 - 7.3.69
+
+#     :param abhyasa:
+#     :param anga:
+#     """
+
+#     # 7.3.52 cajoH ku ghiNyatoH
+#     # 7.3.53 nyaGkvAdInAM ca
+#     # 7.3.54 ho hanter JNinneSu
+#     # 7.3.55 abhyAsAc ca
+
+#     # 7.3.56 her acaGi
+#     if anga.clean == 'hi':
+
+
+#     elif pratyaya.any('san', 'li~w'):
+
+#         # 7.3.57 sanliTor jeH
+#         if anga.clean == 'ji':
+
+#         # 7.3.58 vibhASA ceH
+#         elif anga.clean == 'ci':
+
+#     return
+
+
 def lit_a_to_e(state):
     """Applies rules that cause ed-ādeśa and abhyāsa-lopa.
 
@@ -178,15 +224,19 @@ def lit_a_to_e(state):
     anadesha_adi = (abhyasa.value[0] == anga.value[0])
 
     if liti:
+        # 'kGiti' is inherited from 6.4.98.
+        kniti = 'k' in p.it or 'N' in p.it
+
+        # 6.4.121 thali ca seTi
+        thali_seti =  p.value == 'iTa'
+
+        # This substitution is valid only in these two conditions.
+        if not (kniti or thali_seti):
+            return
+
         # 6.4.120 ata ekahalmadhye 'nAdezAder liTi
         if at_ekahal_madhya and anadesha_adi:
-            # 'kGiti' is inherited from 6.4.119.
-            if 'k' in p.it:
-                status = True
-
-            # 6.4.121 thali ca seTi
-            elif p.value == 'iTa':
-                status = True
+            status = True
 
         # 6.4.122 tRRphalabhajatrapaz ca
         if anga.clean in ('tF', 'Pal', 'Baj', 'trap'):
@@ -211,7 +261,7 @@ def lit_a_to_e(state):
             status = False
 
     if status in (True, 'optional'):
-        yield state.swap(i, abhyasa.lopa()).swap(j, anga.upadha('e'))
+        yield state.swap(i, abhyasa.lopa()).swap(j, anga.al_tasya('a', 'et'))
 
     if status in (False, 'optional'):
         yield state

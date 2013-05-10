@@ -9,9 +9,11 @@
 """
 
 import gana
-from classes import Term, Upadesha as U, Group
+from classes import Term, Upadesha as U, Pratyaya, Sounds
 from decorators import *
 from util import Rank
+
+TAS = Pratyaya('tAs').add_samjna('ardhadhatuka')
 
 
 @once('it')
@@ -24,6 +26,7 @@ def it(state):
     p = state[i+1]
 
     status = it_status(anga, p)
+    print anga, p, status
     if status in ('set', 'vet'):
         yield state.swap(i+1, p.tasya(U('iw')))
     if status in ('anit', 'vet'):
@@ -55,7 +58,7 @@ def it_status(anga, p):
     # ----------
     if 'krt' in p.samjna:
         # 7.2.8 neD vazi kRti
-        _8 = p.adi().value in Group('vaS')
+        _8 = p.adi().value in Sounds('vaS')
 
         # 7.2.9 titutratathasisusarakaseSu ca
         _9 = p.value in ('ti', 'tu', 'tra', 'ta', 'Ta', 'si', 'su', 'sara',
@@ -66,19 +69,19 @@ def it_status(anga, p):
     # upadesha (various)
     # ------------------
     # 7.2.10 ekAca upadeze 'nudAttAt
-    if Term(anga.raw).one_syllable and 'anudatta' in anga.it:
+    if Term(anga.clean).one_syllable and 'anudatta' in anga.it:
         status = 'anit'
         rank.set(rank.APAVADA)
 
     # 7.2.11 zryukaH kiti
     if 'k' in p.it:
-        if anga.clean == 'Sri' or anga.antya().value in Group('uk'):
+        if anga.clean == 'Sri' or anga.antya().value in Sounds('uk'):
             status = 'anit'
 
     # 7.2.12 sani grahaguhoz ca
     if p.value == 'san':
         # 'Sri' is excluded here.
-        if anga.clean in ('grah', 'guh') or anga.antya().value in Group('uk'):
+        if anga.clean in ('grah', 'guh') or anga.antya().value in Sounds('uk'):
             status = 'anit'
 
     # 7.2.13 kRsRbhRvRstudrusruzruvo liTi
@@ -120,7 +123,7 @@ def it_status(anga, p):
     # ardhadhatuka (set, vet)
     # -----------------------
     # 7.2.35 ArdhadhAtukasyeD valAdeH
-    if 'ardhadhatuka' in p.samjna and p.adi().value in Group('val'):
+    if 'ardhadhatuka' in p.samjna and p.adi().value in Sounds('val'):
         if rank <= rank.UTSARGA:
             status = 'set'
 
@@ -179,6 +182,21 @@ def it_status(anga, p):
     # thal (anit, vet)
     # ----------------
     if p.value == 'Ta':
+        # 7.2.61 - 7.2.63 is a confusing set of rules. As far as I can
+        # tell, this is the correct interpretation:
+
+        # ========  ==============  ======
+        # tAs       ac | ad-upadha  result
+        # ========  ==============  ======
+        # anit      yes             vet
+        # set/vet   yes             set
+        # *         no              anit
+        # ========  ==============  ======
+
+        # However, roots that end in 'f' and roots in `gana.KRADI` are
+        # always, without exception, anit. (Roots that end in 'F' use
+        # the table above.)
+
         # 7.2.61 acas tAsvat thaly aniTo nityam
         _61 = anga.ac
 
@@ -186,17 +204,22 @@ def it_status(anga, p):
         _62 = 'a' in anga.clean
 
         # 7.2.63 Rto bhAradvAjasya
+        # By this opinion, 'anit' is enforced only for roots that end in
+        # 'f'. If we accept the opinion, other roots are 'set'. If we
+        # reject the opinion, other roots are 'anit'. Therefore, other
+        # roots are either 'set' or 'anit'. That is, they are 'vet'.
         _63 = anga.antya().value == 'f'
 
         if rank <= rank.APAVADA:
             if _63:
                 status = 'anit'
             elif _61 or _62:
-                tasvat = it_status(anga, U('tAs'))
+                tasvat = it_status(anga, TAS)
+                print '--', anga, tasvat
                 if tasvat == 'anit':
                     status = 'vet'
                 elif tasvat in ('set', 'vet'):
-                    status = 'anit'
+                    status = 'set'
 
         # 7.2.64 babhUvAtatanthajagRmbhavavartheti nigame
         #        Implicitly, 'iT' is obligatory in normal language.

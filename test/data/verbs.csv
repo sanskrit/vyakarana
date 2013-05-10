@@ -13,71 +13,7 @@ buDa~ li~w 1 s bubuDa
 buDa~ li~w 1 d bubuDiva
 buDa~ li~w 1 p bubuDima
 
-# # Ending in A
-sTA\ li~w 3 s tasTO
-sTA\ li~w 3 d tasTatus
-sTA\ li~w 3 p tasTus
-sTA\ li~w 2 s tasTATa
-sTA\ li~w 2 s tasTiTa
-sTA\ li~w 2 d tasTaTus
-sTA\ li~w 2 p tasTa
-sTA\ li~w 1 s tasTO
-sTA\ li~w 1 d tasTiva
-sTA\ li~w 1 p tasTima
-
-# # Ending in ec
-gE\ li~w 3 s jagO
-gE\ li~w 3 p jagus
-gE\ li~w 2 s jagATa
-gE\ li~w 2 s jagiTa
-gE\ li~w 3 p jagus
-
-# samprasarana
-vaci~ li~w 3 s uvAca
-vaci~ li~w 3 d Ucatus
-vaci~ li~w 3 p Ucus
-vaci~ li~w 2 s uvakTa
-vaci~ li~w 2 s uvaciTa
-vaci~ li~w 2 d UcaTus
-vaci~ li~w 2 p Uca
-vaci~ li~w 1 s uvAca
-vaci~ li~w 1 s uvaca
-vaci~ li~w 1 d Uciva
-vaci~ li~w 1 p Ucima
-
-# samprasarana (2)
-vyaDa~ li~w 3 s vivyADa
-vyaDa~ li~w 3 p viviDus
-pracCa~ li~w 3 s papracCa
-pracCa~ li~w 3 p papracCus
-
-# at-upadha
-cara~ li~w 3 s cacAra
-cara~ li~w 3 d ceratus
-cara~ li~w 3 p cerus
-cara~ li~w 2 s cacarTa
-cara~ li~w 2 s ceriTa
-cara~ li~w 2 d ceraTus
-cara~ li~w 2 p cera
-cara~ li~w 1 s cacAra
-cara~ li~w 1 s cacara
-cara~ li~w 1 d ceriva
-cara~ li~w 1 p cerima
-
-# at-upadha-lopa
-gamx~ li~w 3 s jagAma
-gamx~ li~w 3 d jagmatus
-gamx~ li~w 3 p jagmus
-gamx~ li~w 2 s jaganTa
-gamx~ li~w 2 s jagamiTa
-gamx~ li~w 2 d jagmaTus
-gamx~ li~w 2 p jagma
-gamx~ li~w 1 s jagAma
-gamx~ li~w 1 s jagama
-gamx~ li~w 1 d jagmiva
-gamx~ li~w 1 p jagmima
-
-# anit: kf
+# Special anit
 qukfY li~w 3 s cakAra
 qukfY li~w 3 d cakratus
 qukfY li~w 3 p cakrus
@@ -99,7 +35,17 @@ qukfY li~w 1 s cakre
 qukfY li~w 1 d cakfvahe
 qukfY li~w 1 p cakfmahe
 
-# anit: stu
+quBfY li~w 1 s baBAra
+quBfY li~w 1 s baBara
+quBfY li~w 1 d baBfva
+quBfY li~w 1 p baBfma
+
+vfY li~w 2 s vavariTa
+vfY li~w 3 s vavAra
+vfY li~w 3 s vavara
+vfY li~w 3 d vavfva
+vfY li~w 3 p vavfma
+
 zwuY li~w 3 s tuzwAva
 zwuY li~w 3 d tuzwuvatus
 zwuY li~w 3 p tuzwuvus
@@ -111,13 +57,81 @@ zwuY li~w 1 s tuzwava
 zwuY li~w 1 d tuzwuva
 zwuY li~w 1 p tuzwuma
 
-# anit exception: -f
-smf li~w 2 s sasmarTa
-smf li~w 3 p sasmarus
-f li~w 2 s AriTa
+zwuY li~w 3 s tuzwuve
+zwuY li~w 3 d tuzwuvAte
+zwuY li~w 3 p tuzwuvire
+zwuY li~w 2 s tuzwuze
+zwuY li~w 2 d tuzwuvATe
+zwuY li~w 2 p tuzwuQve
+zwuY li~w 1 s tuzwuve
+zwuY li~w 1 d tuzwuvahe
+zwuY li~w 1 p tuzwumahe
 
-# anit exception: vf
-vfY li~w 2 s vavariTa
+# Roots ending in A, e, ai, o, au
+gE\ li~w 3 s jagO
+gE\ li~w 3 p jagus
+gE\ li~w 2 s jagATa
+gE\ li~w 2 s jagiTa
+gE\ li~w 3 p jagus
+
+sTA\ li~w 3 s tasTO
+sTA\ li~w 3 d tasTatus
+sTA\ li~w 3 p tasTus
+sTA\ li~w 2 s tasTATa
+sTA\ li~w 2 s tasTiTa
+sTA\ li~w 2 d tasTaTus
+sTA\ li~w 2 p tasTa
+sTA\ li~w 1 s tasTO
+sTA\ li~w 1 d tasTiva
+sTA\ li~w 1 p tasTima
+
+i\R li~w 3 s iyAya
+i\R li~w 3 d Iyatus
+i\R li~w 3 p Iyus
+i\R li~w 2 s iyeTa
+i\R li~w 2 s iyayiTa
+i\R li~w 2 d IyaTus
+i\R li~w 2 p Iya
+i\R li~w 1 s iyAya
+i\R li~w 1 s iyaya
+i\R li~w 1 d Iyiva
+i\R li~w 1 p Iyima
+
+# nI li~w 2 s nineTa
+# nI li~w 2 s ninayiTa
+# nI li~w 1 s ninAya
+# nI li~w 1 s ninaya
+# nI li~w 1 d ninyiva
+# nI li~w 1 p ninyima
+
+smf li~w 3 s sasmAra
+smf li~w 3 d sasmaratus
+smf li~w 3 p sasmarus
+smf li~w 2 s sasmarTa
+smf li~w 2 d sasmaraTus
+smf li~w 2 p sasmara
+smf li~w 1 s sasmAra
+smf li~w 1 s sasmara
+smf li~w 1 d sasmariva
+smf li~w 1 p sasmarima
+
+# samprasarana
+va\ci~ li~w 3 s uvAca
+va\ci~ li~w 3 d Ucatus
+va\ci~ li~w 3 p Ucus
+va\ci~ li~w 2 s uvakTa
+va\ci~ li~w 2 s uvaciTa
+va\ci~ li~w 2 d UcaTus
+va\ci~ li~w 2 p Uca
+va\ci~ li~w 1 s uvAca
+va\ci~ li~w 1 s uvaca
+va\ci~ li~w 1 d Uciva
+va\ci~ li~w 1 p Ucima
+
+vyaDa~ li~w 3 s vivyADa
+vyaDa~ li~w 3 p viviDus
+pracCa~ li~w 3 s papracCa
+pracCa~ li~w 3 p papracCus
 
 # An- substitution
 anjU~ li~w 3 s AnaYja
@@ -133,20 +147,47 @@ anjU~ li~w 1 p AnaYjima
 aSU~ li~w 3 s AnaSa
 fDu~ li~w 3 p AnfDus
 
-# Irregular abhyasa: iR
-iR li~w 3 s iyAya
-iR li~w 3 d Iyatus
-iR li~w 3 p Iyus
-iR li~w 2 s iyeTa
-iR li~w 2 s iyayiTa
-iR li~w 2 d IyaTus
-iR li~w 2 p Iya
-iR li~w 1 s iyAya
-iR li~w 1 s iyaya
-iR li~w 1 d Iyiva
-iR li~w 1 p Iyima
+# at-upadha-lopa
+ga\mx~ li~w 3 s jagAma
+ga\mx~ li~w 3 d jagmatus
+ga\mx~ li~w 3 p jagmus
+ga\mx~ li~w 2 s jaganTa
+ga\mx~ li~w 2 s jagamiTa
+ga\mx~ li~w 2 d jagmaTus
+ga\mx~ li~w 2 p jagma
+ga\mx~ li~w 1 s jagAma
+ga\mx~ li~w 1 s jagama
+ga\mx~ li~w 1 d jagmiva
+ga\mx~ li~w 1 p jagmima
 
-# Irregular: BU
+# e substitution
+cara~ li~w 3 s cacAra
+cara~ li~w 3 d ceratus
+cara~ li~w 3 p cerus
+cara~ li~w 2 s ceriTa
+cara~ li~w 2 d ceraTus
+cara~ li~w 2 p cera
+cara~ li~w 1 s cacAra
+cara~ li~w 1 s cacara
+cara~ li~w 1 d ceriva
+cara~ li~w 1 p cerima
+
+tF li~w 3 s tatAra
+tF li~w 3 d teratus
+tF li~w 3 p terus
+tF li~w 2 s teriTa
+tF li~w 2 d teraTus
+tF li~w 2 p tera
+tF li~w 1 s tatAra
+tF li~w 1 s tatara
+tF li~w 1 d teriva
+tF li~w 1 p terima
+
+Pala~ li~w 3 p Pelus
+Baja~ li~w 3 p Bejus
+trapa~ li~w 3 p trepus
+
+# Irregular bases
 BU li~w 3 s baBUva
 BU li~w 3 d baBUvatus
 BU li~w 3 p baBUvus
@@ -156,3 +197,23 @@ BU li~w 2 p baBUva
 BU li~w 1 s baBUva
 BU li~w 1 d baBUviva
 BU li~w 1 p baBUvima
+
+# ji li~w 2 s jigeTa
+# ji li~w 2 s jigayiTa
+# ji li~w 1 s jigAya
+# ji li~w 1 s jigaya
+# ji li~w 1 d jigyiva
+# ji li~w 1 d jigyima
+
+# hi li~w 2 s jiGeTa
+# hi li~w 2 s jiGayiTa
+# hi li~w 1 s jiGAya
+# hi li~w 1 s jiGaya
+# hi li~w 1 d jiGyiva
+# hi li~w 1 d jiGyima
+
+# ci li~w 3 s cicAya
+# ci li~w 3 s cikAya
+
+# Irregular 'it'
+f li~w 2 s AriTa

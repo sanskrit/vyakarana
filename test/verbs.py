@@ -44,8 +44,9 @@ def test_verbs():
             prev_history = history
             print [x[0].value for x in history]
 
-        values = set([r[0].value for r in history])
+        values = set(r[0].value for r in history)
         assert result in values
+
 
 def main():
     import cProfile

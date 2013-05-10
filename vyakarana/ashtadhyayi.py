@@ -132,12 +132,11 @@ rules = {
     'lu~N': [vibhakti.la_to_tin],
     'lf~N': [vibhakti.la_to_tin],
     'tin': [vibhakti.tin_adesha],
-    'anga': [anga.adesha, anga.ac_adesha, anga.aci, anga.rt],
+    'anga': [anga.adesha, anga.rt, anga.ac_adesha, anga.aci],
     'ardhadhatuka': [pratyaya.it],
     'abhyasa': [abhyasa.abhyasa_adesha],
     'vibhakti': [vibhakti.tin_adesha],
-    'dhatu': [dhatu.augment,
-              dhatu.adesha,
+    'dhatu': [dhatu.adesha,
               abhyasa.dvirvacana],
 }
 

@@ -10,8 +10,9 @@
 
 import gana
 
-from classes import Term, Pratyahara as P, Upadesha as U, Sound, Group
+from classes import Term, Pratyahara as P, Upadesha as U, Sound, Sounds
 from decorators import *
+
 
 @once('dvirvacana')
 def dvirvacana(state):
@@ -74,12 +75,12 @@ def abhyasa_adesha(state):
     if not abhyasa:
         return
 
-    # 6.4.78 abhyAsasyAsavarNe
     # TODO
 
     a = abhyasa.antya()
     d = dhatu.adi()
 
+    # 6.4.78 abhyAsasyAsavarNe
     if a.value in 'iIuU' and Sound(a.value).asavarna(d.value):
         abhyasa = abhyasa.set_value(abhyasa.value + a.to_yan().value)
         yield state.swap(i, abhyasa)
@@ -93,12 +94,11 @@ def clean_abhyasa(state):
     if not abhyasa.value:
         return
 
-    # 7.4.66 ur at
-    abhyasa = abhyasa.replace('f', 'ar')
-    abhyasa = abhyasa.replace('F', 'ar')
-
     # 7.4.59 hrasvaH
     abhyasa = abhyasa.to_hrasva()
+
+    # 7.4.66 ur at
+    abhyasa = abhyasa.al_tasya('f', 'at')
 
     # 7.4.60 halAdiH zeSaH
     # 7.4.61 zarpUrvAH khayaH
@@ -123,15 +123,16 @@ def clean_abhyasa(state):
     # 7.4.62 kuhoz cuH
     # 7.4.63 na kavater yaGi
     adi = abhyasa.adi().value
-    if adi in Group('ku h'):
-        abhyasa = abhyasa.adi(Sound(adi).closest(Group('cu')))
+    if adi in Sounds('ku h'):
+        abhyasa = abhyasa.adi(Sound(adi).closest(Sounds('cu')))
 
-    # Exceptions for lit:
     if 'li~w' in tin.lakshana:
-        special_case = True
+        # 7.4.68 vyatho liTi
+        if dhatu.value == 'vyaT':
+            abhyasa = abhyasa.samprasarana()
 
         # 7.4.69 dIrgha iRaH kiti
-        if dhatu.raw == 'iR' and 'k' in tin.it:
+        elif dhatu.raw == 'iR' and 'k' in tin.it:
             abhyasa = abhyasa.set_value('I')
 
         elif abhyasa.adi().value == 'a':
@@ -155,17 +156,6 @@ def clean_abhyasa(state):
         elif dhatu.raw == 'BU':
             abhyasa = abhyasa.set_value('ba')
             new_state = state.swap(i, abhyasa)
-
-        # All others are general
-        else:
-            special_case = False
-
-        if special_case:
-            yield state.swap(i, abhyasa)
-            return
-
-    # 8.4.54 the consonant becomes deaspirated
-    abhyasa = abhyasa.adi(abhyasa.adi().deaspirate().value)
 
     new_state = state.swap(i, abhyasa)
     yield new_state

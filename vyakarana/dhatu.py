@@ -8,27 +8,8 @@
     :license: MIT and BSD
 """
 
-import gana
-from classes import Dhatu, Upadesha as U
+from classes import Dhatu
 from decorators import *
-
-
-def augment(state):
-    """
-
-    :param state:
-    """
-
-    i, dhatu = state.find('dhatu')
-    tin = state[i+1]
-
-    # 6.4.88 bhuvo vuk luGliToH
-    if dhatu.raw == 'BU':
-        if dhatu.parts[-1].raw == 'vu~k':
-            return
-        elif tin.adi().ac:
-            dhatu = dhatu.tasya(U('vu~k'))
-            yield state.swap(i, dhatu)
 
 
 @once('dhatu_adesha')

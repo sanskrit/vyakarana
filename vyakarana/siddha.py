@@ -7,7 +7,7 @@
 
     :license: MIT and BSD
 """
-from classes import Group, Pratyahara, Sound, Term
+from classes import Sounds, Pratyahara, Sound, Term
 
 
 class StateIndex(object):
@@ -111,10 +111,9 @@ def asiddha(state):
 
         if y in Pratyahara('Jal'):
             # 8.2.30 coH kuH
-            # TODO: expand
-            # TODO: remove patch?
-            if x in Group('cu') and y in Group('Jal') and y not in Group('cu'):
-                x = 'k'
+            cu = Sounds('cu')
+            if x in cu and y in Pratyahara('Jal') and y not in cu:
+                x = Sound(x).closest(Sounds('ku'))
 
             # 8.2.31 ho DhaH
             elif x == 'h':
@@ -133,7 +132,7 @@ def asiddha(state):
             x = 'M'
 
         # 8.3.59 AdezapratyayayoH
-        if w in Group('iN ku'):
+        if w in Sounds('iN ku'):
             if c.first and x == 's' and (c.part.raw[0] == 'z'
                                          or 'pratyaya' in c.part.samjna):
                 x = 'z'
@@ -144,22 +143,33 @@ def asiddha(state):
                 and 'li~w' in c.part.lakshana):
             x = 'Q'
 
-        stu = Group('s tu')
+        stu = Sounds('s tu')
         if x in stu:
 
             # 8.4.40 stoH zcunA zcuH
-            scu = Group('S cu')
+            scu = Sounds('S cu')
             if w in scu or y in scu:
                 x = Sound(x).closest(scu)
 
             # 8.4.41 STunA STuH
-            zwu = Group('z wu')
+            zwu = Sounds('z wu')
             if w in zwu or y in zwu:
                 x = Sound(x).closest(zwu)
 
+        if x in Sounds('Jal'):
+            x_ = x
+
+            # 8.4.53 jhalAM jaz jhazi
+            if y in Sounds('JaS'):
+                x = Sound(x_).closest(Sounds('jaS'))
+
+            # 8.4.54 abhyAse car ca
+            if c.part.any_samjna('abhyasa') and c.first:
+                x = Sound(x_).closest(Sounds('car jaS'))
+
         # 8.4.58 anusvArasya yayi parasavarNaH
-        elif x == 'M' and y in Pratyahara('yay'):
-            x = Sound(x).parasavarna(y)
+        if x == 'M' and y in Pratyahara('yay'):
+            x = Sound(x).closest(Sound(y).savarna_set())
 
         c.s = x
         state = set_sound(state, c)
