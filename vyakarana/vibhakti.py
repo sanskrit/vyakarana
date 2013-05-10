@@ -203,7 +203,7 @@ def la_to_tin(state):
                     endings[i] = e.add_it('k')
 
         # 1.2.6 indhibhavatibhyAM ca
-        if dhatu.value in ('BU', 'inD'):
+        if dhatu.clean in ('BU', 'inD'):
             for i, e in enumerate(endings):
                 endings[i] = e.add_it('k')
 

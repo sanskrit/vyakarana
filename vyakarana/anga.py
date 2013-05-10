@@ -39,6 +39,10 @@ def adesha(state):
         dhatu = dhatu.samprasarana()
         yield state.swap(i, dhatu)
 
+    # 1.1.5 kGiti ca
+    elif next.any_it('k', 'N'):
+        yield state
+
     # 7.2.115 aco `Jniti (vrddhi)
     # 7.2.116 ata upadhAyAH
     elif next.any_it('Y', 'R'):
@@ -51,12 +55,8 @@ def adesha(state):
 
     # 7.3.84 sArvadhAtukArdhadhAtukayoH
     elif next.any_samjna('sarvadhatuka', 'ardhadhatuka'):
-        # 1.1.5 kGiti ca
-        if next.any_it('k', 'N'):
-            yield state
-        else:
-            dhatu = dhatu.guna()
-            yield state.swap(i, dhatu)
+        dhatu = dhatu.guna()
+        yield state.swap(i, dhatu)
 
     else:
         yield state
