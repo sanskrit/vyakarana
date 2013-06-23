@@ -281,7 +281,7 @@ class Term(object):
     """
 
     def __init__(self, value):
-        self.value = value
+        self.value = self.raw = value
         self.samjna = set()
         self.lakshana = set()
         self.parts = [self]

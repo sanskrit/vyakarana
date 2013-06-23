@@ -34,18 +34,22 @@ class StateIndex(object):
     def first(self):
         return self.j == 0
 
+    @property
+    def last(self):
+        return self.j + 1 == len(self.part.value)
+
     def next(self, state):
         """Return the next index."""
         i, j, s, part = self.i, self.j, self.s, self.part
         try:
             part = state[i]
             return StateIndex(i, j+1, part, part.value[j+1])
-        except IndexError:
+        except (IndexError, TypeError):
             try:
                 part = state[i+1]
                 return StateIndex(i+1, 0, part, part.value[0])
-            except IndexError:
-                return StateIndex(state)
+            except (IndexError, TypeError):
+                return StateIndex()
 
     def prev(self, state):
         """Return the previous index."""
@@ -81,24 +85,19 @@ def set_sound(state, si):
     return c
 
 
-def asiddha(state):
+def asiddha_helper(state):
     """Chapter 8.2 of the Ashtadhyayi starts the 'asiddha' section of
     the text:
 
         8.2.1 pUrvatrAsiddham
 
     The asiddha section lasts until the end of the text, and for that
-    reason, it is often called the tripAdI ("having three pAdas"). The
-    rules in the tripAdI are different from other rules in two ways:
+    reason, it is often called the tripAdI ("having three pAdas").
 
-    - They are applied strictly in order. Most of the other rules of the
-      Ashtadhyayi are applied using various conflict-solving procedures,
-      such as utsarga-apavAda.
-
-    - They are treated as not having taken effect ('asiddha') as far
-      as the prior rules are concerned. This is an abstract notion, but
-      practically it means that these are the last rules we apply in a
-      derivation.
+    The rules in the tripAdI are treated as not having taken effect
+    ('asiddha') as far as the prior rules are concerned. This is an
+    abstract notion, but practically it means that these are the last
+    rules we apply in a derivation.
 
     :param state:
     """
@@ -106,10 +105,16 @@ def asiddha(state):
     for c in iter_sounds_and_terms(state):
         p = c.prev(state)
         n = c.next(state)
+        n2 = n.next(state)
 
-        w, x, y = (p.s, c.s, n.s)
+        w, x, y, z = (p.s, c.s, n.s, n2.s)
+
+        # 8.2.29 skoH saMyogAdyor ante ca
+        if x in Sounds('s ku') and y in Sounds('hal') and z in Sounds('Jal'):
+            x = '_'
 
         if y in Pratyahara('Jal'):
+
             # 8.2.30 coH kuH
             cu = Sounds('cu')
             if x in cu and y in Pratyahara('Jal') and y not in cu:
@@ -118,6 +123,11 @@ def asiddha(state):
             # 8.2.31 ho DhaH
             elif x == 'h':
                 x = 'Q'
+
+            # 8.2.36 vrazca-brasja-sRja-mRja-yaja-rAja-bhrAjacCazAM SaH
+            roots = {'vraSc', 'Brasj', 'sfj', 'mfj', 'yaj', 'rAj', 'BrAj'}
+            if c.last and (c.part.value in roots or c.part.antya().value in 'SC'):
+                x = 'z'
 
         # 8.2.41 SaDhoH kaH si
         if x in 'zQ' and y == 's':
@@ -133,7 +143,7 @@ def asiddha(state):
 
         # 8.3.59 AdezapratyayayoH
         if w in Sounds('iN ku'):
-            if c.first and x == 's' and (c.part.raw[0] == 'z'
+            if not c.last and x == 's' and (c.part.raw[0] == 'z'
                                          or 'pratyaya' in c.part.samjna):
                 x = 'z'
 
@@ -174,7 +184,7 @@ def asiddha(state):
         c.s = x
         state = set_sound(state, c)
 
-    pada = Term(''.join(x.value for x in state))
+    pada = Term(''.join(x.value.replace('_', '') for x in state))
 
     yield state.replace_all([pada])
 
@@ -188,3 +198,12 @@ def asiddhavat(state):
 
     :param state:
     """
+
+
+def asiddha(state):
+    for result in asiddha_helper(state):
+        if result[0].value == state[0].value:
+            yield result
+        else:
+            for x in asiddha(result):
+                yield x
