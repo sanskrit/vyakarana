@@ -4,17 +4,6 @@
 # Regular bases
 # -------------
 # Basic test
-buDa~ li~w 3 s buboDa
-buDa~ li~w 3 d bubuDatus
-buDa~ li~w 3 p bubuDus
-buDa~ li~w 2 s buboDiTa
-buDa~ li~w 2 d bubuDaTus
-buDa~ li~w 2 p bubuDa
-buDa~ li~w 1 s buboDa
-buDa~ li~w 1 s bubuDa
-buDa~ li~w 1 d bubuDiva
-buDa~ li~w 1 p bubuDima
-
 qukfY li~w 3 s cakAra
 qukfY li~w 3 d cakratus
 qukfY li~w 3 p cakrus
@@ -61,26 +50,38 @@ vfY li~w 3 s vavara
 vfY li~w 3 d vavfva
 vfY li~w 3 p vavfma
 
+# Kale 505 (1)
+SIN li~w 3 s SiSye
+SIN li~w 3 d SiSyAte
+SIN li~w 3 p SiSyire
+SIN li~w 2 s SiSyize
+SIN li~w 2 d SiSyATe
+SIN li~w 2 p SiSyiDve
+# SIN li~w 2 p SiSyiQve  # in Kale -- is this a mistake?
+SIN li~w 1 s SiSye
+SIN li~w 1 d SiSyivahe
+SIN li~w 1 p SiSyimahe
+
 # Kale 505 (2)
-d\AY li~w 3 s dadO
-d\AY li~w 3 d dadatus
-d\AY li~w 3 p dadus
-d\AY li~w 2 s dadATa
-d\AY li~w 2 s dadiTa
-d\AY li~w 2 d dadaTus
-d\AY li~w 2 p dada
-d\AY li~w 1 s dadO
-d\AY li~w 1 d dadiva
-d\AY li~w 1 p dadima
-d\AY li~w 3 s dade
-d\AY li~w 3 d dadAte
-d\AY li~w 3 p dadire
-d\AY li~w 2 s dadize
-d\AY li~w 2 d dadATe
-d\AY li~w 2 p dadiDve
-d\AY li~w 1 s dade
-d\AY li~w 1 d dadivahe
-d\AY li~w 1 p dadimahe
+dA\Y li~w 3 s dadO
+dA\Y li~w 3 d dadatus
+dA\Y li~w 3 p dadus
+dA\Y li~w 2 s dadATa
+dA\Y li~w 2 s dadiTa
+dA\Y li~w 2 d dadaTus
+dA\Y li~w 2 p dada
+dA\Y li~w 1 s dadO
+dA\Y li~w 1 d dadiva
+dA\Y li~w 1 p dadima
+dA\Y li~w 3 s dade
+dA\Y li~w 3 d dadAte
+dA\Y li~w 3 p dadire
+dA\Y li~w 2 s dadize
+dA\Y li~w 2 d dadATe
+dA\Y li~w 2 p dadiDve
+dA\Y li~w 1 s dade
+dA\Y li~w 1 d dadivahe
+dA\Y li~w 1 p dadimahe
 
 gE\ li~w 3 s jagO
 gE\ li~w 3 d jagatus
@@ -124,19 +125,39 @@ smf li~w 1 d sasmariva
 smf li~w 1 p sasmarima
 
 # Kale 505 (3)
-pr\acCa~ li~w 3 s papracCa
-pr\acCa~ li~w 3 p papracCatus
-pr\acCa~ li~w 3 p papracCus
-pr\acCa~ li~w 2 s papracCiTa
-pr\acCa~ li~w 2 s paprazWa
-pr\acCa~ li~w 2 d papracCaTus
-pr\acCa~ li~w 2 p papracCa
-pr\acCa~ li~w 1 s papracCa
-pr\acCa~ li~w 1 d papracCiva
-pr\acCa~ li~w 1 p papracCima
+pra\cCa~ li~w 3 s papracCa
+pra\cCa~ li~w 3 d papracCatus
+pra\cCa~ li~w 3 p papracCus
+pra\cCa~ li~w 2 s papracCiTa
+pra\cCa~ li~w 2 s paprazWa
+pra\cCa~ li~w 2 d papracCaTus
+pra\cCa~ li~w 2 p papracCa
+pra\cCa~ li~w 1 s papracCa
+pra\cCa~ li~w 1 d papracCiva
+pra\cCa~ li~w 1 p papracCima
 
+tya\ja~ li~w 3 s tatyAja
+tya\ja~ li~w 3 d tatyajatus
+tya\ja~ li~w 3 p tatyajus
+tya\ja~ li~w 2 s tatyajiTa
+tya\ja~ li~w 2 s tatyakTa
+tya\ja~ li~w 2 d tatyajaTus
+tya\ja~ li~w 2 p tatyaja
+tya\ja~ li~w 1 s tatyaja
+tya\ja~ li~w 1 s tatyAja
+tya\ja~ li~w 1 d tatyajiva
+tya\ja~ li~w 1 p tatyajima
 
-
+Ba\Yja~ li~w 3 s baBaYja
+Ba\Yja~ li~w 3 d baBaYjatus
+Ba\Yja~ li~w 3 p baBaYjus
+Ba\Yja~ li~w 2 s baBaYjiTa
+Ba\Yja~ li~w 2 s baBaNkTa
+Ba\Yja~ li~w 2 d baBaYjaTus
+Ba\Yja~ li~w 2 p baBaYja
+Ba\Yja~ li~w 1 s baBaYja
+Ba\Yja~ li~w 1 d baBaYjiva
+Ba\Yja~ li~w 1 p baBaYjima
 
 quBfY li~w 1 s baBAra
 quBfY li~w 1 s baBara

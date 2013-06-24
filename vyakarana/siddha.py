@@ -110,7 +110,7 @@ def asiddha_helper(state):
         w, x, y, z = (p.s, c.s, n.s, n2.s)
 
         # 8.2.29 skoH saMyogAdyor ante ca
-        if x in Sounds('s ku') and y in Sounds('hal') and z in Sounds('Jal'):
+        if x in 'sk' and y in Sounds('hal') and z in Sounds('Jal'):
             x = '_'
 
         if y in Pratyahara('Jal'):
@@ -124,7 +124,7 @@ def asiddha_helper(state):
             elif x == 'h':
                 x = 'Q'
 
-            # 8.2.36 vrazca-brasja-sRja-mRja-yaja-rAja-bhrAjacCazAM SaH
+            # 8.2.36 vrazca-bhrasja-sRja-mRja-yaja-rAja-bhrAjacCazAM SaH
             roots = {'vraSc', 'Brasj', 'sfj', 'mfj', 'yaj', 'rAj', 'BrAj'}
             if c.last and (c.part.value in roots or c.part.antya().value in 'SC'):
                 x = 'z'
@@ -134,11 +134,11 @@ def asiddha_helper(state):
             x = 'k'
 
         # 8.3.23 mo 'nusvAraH
-        elif x == 'm' and y in Pratyahara('hal'):
-            x = 'M'
+        # elif x == 'm' and y in Pratyahara('hal'):
+        #     x = 'M'
 
         # 8.3.24 naz cApadAntasya jhali
-        elif x == 'n' and y in Pratyahara('Jal'):
+        elif x in 'mn' and y in Pratyahara('Jal'):
             x = 'M'
 
         # 8.3.59 AdezapratyayayoH
@@ -148,8 +148,9 @@ def asiddha_helper(state):
                 x = 'z'
 
         # 8.3.78 iNaH SIdhvaMluGliTAM dho 'GgAt
-        if (x == 'D' and w in Pratyahara('iR', second_R=True)
-                and c.first
+        if (x == 'D'
+                and w in Pratyahara('iR', second_R=True)
+                and c.first  # not triggered by iT
                 and 'li~w' in c.part.lakshana):
             x = 'Q'
 
@@ -176,6 +177,10 @@ def asiddha_helper(state):
             # 8.4.54 abhyAse car ca
             if c.part.any_samjna('abhyasa') and c.first:
                 x = Sound(x_).closest(Sounds('car jaS'))
+
+            # 8.4.55 khari ca
+            if y in Sounds('Kar'):
+                x = Sound(x_).closest(Sounds('car'))
 
         # 8.4.58 anusvArasya yayi parasavarNaH
         if x == 'M' and y in Pratyahara('yay'):
