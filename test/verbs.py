@@ -19,8 +19,8 @@ def data_path(name):
     return os.path.join(TEST_DIR, 'data', name)
 
 
-def read_data(name):
-    filename = data_path('verbs.csv')
+def read_data(filename):
+    filename = data_path(filename)
     with open(filename) as f:
         for line in f:
             if line.startswith('#'):
@@ -30,11 +30,11 @@ def read_data(name):
             yield line
 
 
-def test_verbs():
+def _test_verbs(la, filename):
     prev_start = (None, None)
     prev_history = []
-    for line in read_data('verbs.csv'):
-        root, la, person, number, result = line.split()
+    for line in read_data(filename):
+        root, person, number, result = line.split()
         if (root, la) == prev_start:
             history = prev_history
         else:
@@ -48,9 +48,17 @@ def test_verbs():
         assert result in values
 
 
+def test_lat():
+    _test_verbs('la~w', 'lat.csv')
+
+
+def test_lit():
+    _test_verbs('li~w', 'lit.csv')
+
+
 def main():
     import cProfile
-    cProfile.run('test_verbs()')
+    cProfile.run('test_lat()')
 
 
 if __name__ == '__main__':

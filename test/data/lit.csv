@@ -1,0 +1,301 @@
+# Basic test
+qukfY 3 s cakAra
+qukfY 3 d cakratus
+qukfY 3 p cakrus
+qukfY 2 s cakarTa
+qukfY 2 d cakraTus
+qukfY 2 p cakra
+qukfY 1 s cakAra
+qukfY 1 s cakara
+qukfY 1 d cakfva
+qukfY 1 p cakfma
+qukfY 3 s cakre
+qukfY 3 d cakrAte
+qukfY 3 p cakrire
+qukfY 2 s cakfze
+qukfY 2 d cakrATe
+qukfY 2 p cakfQve
+qukfY 1 s cakre
+qukfY 1 d cakfvahe
+qukfY 1 p cakfmahe
+
+zwuY 3 s tuzwAva
+zwuY 3 d tuzwuvatus
+zwuY 3 p tuzwuvus
+zwuY 2 s tuzwoTa
+zwuY 2 d tuzwuvaTus
+zwuY 2 p tuzwuva
+zwuY 1 s tuzwAva
+zwuY 1 s tuzwava
+zwuY 1 d tuzwuva
+zwuY 1 p tuzwuma
+zwuY 3 s tuzwuve
+zwuY 3 d tuzwuvAte
+zwuY 3 p tuzwuvire
+zwuY 2 s tuzwuze
+zwuY 2 d tuzwuvATe
+zwuY 2 p tuzwuQve
+zwuY 1 s tuzwuve
+zwuY 1 d tuzwuvahe
+zwuY 1 p tuzwumahe
+
+vfY 2 s vavariTa
+vfY 3 s vavAra
+vfY 3 s vavara
+vfY 3 d vavfva
+vfY 3 p vavfma
+
+# Kale 505 (1)
+SIN 3 s SiSye
+SIN 3 d SiSyAte
+SIN 3 p SiSyire
+SIN 2 s SiSyize
+SIN 2 d SiSyATe
+SIN 2 p SiSyiDve
+# SIN 2 p SiSyiQve  # in Kale -- is this a mistake?
+SIN 1 s SiSye
+SIN 1 d SiSyivahe
+SIN 1 p SiSyimahe
+
+# Kale 505 (2)
+dA\Y 3 s dadO
+dA\Y 3 d dadatus
+dA\Y 3 p dadus
+dA\Y 2 s dadATa
+dA\Y 2 s dadiTa
+dA\Y 2 d dadaTus
+dA\Y 2 p dada
+dA\Y 1 s dadO
+dA\Y 1 d dadiva
+dA\Y 1 p dadima
+dA\Y 3 s dade
+dA\Y 3 d dadAte
+dA\Y 3 p dadire
+dA\Y 2 s dadize
+dA\Y 2 d dadATe
+dA\Y 2 p dadiDve
+dA\Y 1 s dade
+dA\Y 1 d dadivahe
+dA\Y 1 p dadimahe
+
+gE\ 3 s jagO
+gE\ 3 d jagatus
+gE\ 3 p jagus
+gE\ 2 s jagATa
+gE\ 2 s jagiTa
+gE\ 2 d jagaTus
+gE\ 2 p jaga
+gE\ 1 s jagO
+gE\ 1 d jagiva
+gE\ 1 p jagima
+
+i\R 3 s iyAya
+i\R 3 d Iyatus
+i\R 3 p Iyus
+i\R 2 s iyeTa
+i\R 2 s iyayiTa
+i\R 2 d IyaTus
+i\R 2 p Iya
+i\R 1 s iyAya
+i\R 1 s iyaya
+i\R 1 d Iyiva
+i\R 1 p Iyima
+
+nI\ 2 s nineTa
+nI\ 2 s ninayiTa
+nI\ 1 s ninAya
+nI\ 1 s ninaya
+nI\ 1 d ninyiva
+nI\ 1 p ninyima
+
+smf 3 s sasmAra
+smf 3 d sasmaratus
+smf 3 p sasmarus
+smf 2 s sasmarTa
+smf 2 d sasmaraTus
+smf 2 p sasmara
+smf 1 s sasmAra
+smf 1 s sasmara
+smf 1 d sasmariva
+smf 1 p sasmarima
+
+# Kale 505 (3)
+pra\cCa~ 3 s papracCa
+pra\cCa~ 3 d papracCatus
+pra\cCa~ 3 p papracCus
+pra\cCa~ 2 s papracCiTa
+pra\cCa~ 2 s paprazWa
+pra\cCa~ 2 d papracCaTus
+pra\cCa~ 2 p papracCa
+pra\cCa~ 1 s papracCa
+pra\cCa~ 1 d papracCiva
+pra\cCa~ 1 p papracCima
+
+tya\ja~ 3 s tatyAja
+tya\ja~ 3 d tatyajatus
+tya\ja~ 3 p tatyajus
+tya\ja~ 2 s tatyajiTa
+tya\ja~ 2 s tatyakTa
+tya\ja~ 2 d tatyajaTus
+tya\ja~ 2 p tatyaja
+tya\ja~ 1 s tatyaja
+tya\ja~ 1 s tatyAja
+tya\ja~ 1 d tatyajiva
+tya\ja~ 1 p tatyajima
+
+Ba\Yja~ 3 s baBaYja
+Ba\Yja~ 3 d baBaYjatus
+Ba\Yja~ 3 p baBaYjus
+Ba\Yja~ 2 s baBaYjiTa
+Ba\Yja~ 2 s baBaNkTa
+Ba\Yja~ 2 d baBaYjaTus
+Ba\Yja~ 2 p baBaYja
+Ba\Yja~ 1 s baBaYja
+Ba\Yja~ 1 d baBaYjiva
+Ba\Yja~ 1 p baBaYjima
+
+quBfY 1 s baBAra
+quBfY 1 s baBara
+quBfY 1 d baBfva
+quBfY 1 p baBfma
+
+# Roots ending in A, e, ai, o, au
+
+sTA\ 3 s tasTO
+sTA\ 3 d tasTatus
+sTA\ 3 p tasTus
+sTA\ 2 s tasTATa
+sTA\ 2 s tasTiTa
+sTA\ 2 d tasTaTus
+sTA\ 2 p tasTa
+sTA\ 1 s tasTO
+sTA\ 1 d tasTiva
+sTA\ 1 p tasTima
+
+# Kale 506
+va\ci~ 3 s uvAca
+va\ci~ 3 d Ucatus
+va\ci~ 3 p Ucus
+va\ci~ 2 s uvakTa
+va\ci~ 2 s uvaciTa
+va\ci~ 2 d UcaTus
+va\ci~ 2 p Uca
+va\ci~ 1 s uvAca
+va\ci~ 1 s uvaca
+va\ci~ 1 d Uciva
+va\ci~ 1 p Ucima
+
+vyaDa~ 3 s vivyADa
+vyaDa~ 3 p viviDus
+
+# Kale 508
+anjU~ 3 s AnaYja
+anjU~ 3 d AnaYjatus
+anjU~ 3 p AnaYjus
+# anjU~ 2 s AnaNkTa
+anjU~ 2 s AnaYjiTa
+anjU~ 2 d AnaYjaTus
+anjU~ 2 p AnaYja
+anjU~ 1 s AnaYja
+anjU~ 1 d AnaYjiva
+anjU~ 1 p AnaYjima
+aSU~ 3 s AnaSa
+fDu~ 3 p AnfDus
+
+# e substitution
+cara~ 3 s cacAra
+cara~ 3 d ceratus
+cara~ 3 p cerus
+cara~ 2 s ceriTa
+cara~ 2 d ceraTus
+cara~ 2 p cera
+cara~ 1 s cacAra
+cara~ 1 s cacara
+cara~ 1 d ceriva
+cara~ 1 p cerima
+
+# Irregular bases
+# ---------------
+# Kale 510
+ga\mx~ 3 s jagAma
+ga\mx~ 3 d jagmatus
+ga\mx~ 3 p jagmus
+ga\mx~ 2 s jaganTa
+ga\mx~ 2 s jagamiTa
+ga\mx~ 2 d jagmaTus
+ga\mx~ 2 p jagma
+ga\mx~ 1 s jagAma
+ga\mx~ 1 s jagama
+ga\mx~ 1 d jagmiva
+ga\mx~ 1 p jagmima
+
+ha\na~ 3 s jaGAna
+ha\na~ 3 d jaGnatus
+ha\na~ 3 p jaGnus
+ha\na~ 2 s jaGanTa
+ha\na~ 2 s jaGaniTa
+ha\na~ 2 d jaGnaTus
+ha\na~ 2 p jaGna
+ha\na~ 1 s jaGAna
+ha\na~ 1 s jaGana
+ha\na~ 1 d jaGniva
+ha\na~ 1 p jaGnima
+
+Kana~ 3 s caKAna
+Kana~ 3 d caKnatus
+Kana~ 3 p caKnus
+Kana~ 2 s caKaniTa
+
+# Kale 512
+tF 3 s tatAra
+tF 3 d teratus
+tF 3 p terus
+tF 2 s teriTa
+tF 2 d teraTus
+tF 2 p tera
+tF 1 s tatAra
+tF 1 s tatara
+tF 1 d teriva
+tF 1 p terima
+Pala~ 3 p Pelus
+Baja~ 3 p Bejus
+trapa~ 3 p trepus
+
+jF 3 p jerus
+jF 3 p jajaratus
+Bramu~ 3 p Bremus
+Bramu~ 3 p baBramus
+trasa~ 3 p tresus
+trasa~ 3 p tatrasus
+
+# Kale 513
+BU 3 s baBUva
+BU 3 d baBUvatus
+BU 3 p baBUvus
+BU 2 s baBUviTa
+BU 2 d baBUvaTus
+BU 2 p baBUva
+BU 1 s baBUva
+BU 1 d baBUviva
+BU 1 p baBUvima
+
+# Kale 514
+ji\ 2 s jigeTa
+ji\ 2 s jigayiTa
+ji\ 1 s jigAya
+ji\ 1 s jigaya
+ji\ 1 d jigyiva
+ji\ 1 d jigyima
+
+hi\ 2 s jiGeTa
+hi\ 2 s jiGayiTa
+hi\ 1 s jiGAya
+hi\ 1 s jiGaya
+hi\ 1 d jiGyiva
+hi\ 1 d jiGyima
+
+ci\ 3 s cicAya
+ci\ 3 s cikAya
+
+# Kale 515
+f 2 s AriTa
