@@ -22,13 +22,14 @@ def dvirvacana(state):
 
     :param state:
     """
-
     i, dhatu = state.find('dhatu')
     p = state[i+1]
 
     # 6.1.8 liTi dhAtor anabhyAsasya
     if state.find('abhyasa')[1]:
+        yield state.add_op('dvirvacana')
         return
+
     _8 = 'li~w' in p.lakshana
 
     # 6.1.9 sanyaGoH
@@ -41,6 +42,7 @@ def dvirvacana(state):
     _11 = 'caN' in p.lakshana
 
     if not (_8 or _9 or _10 or _11):
+        yield state.add_op('dvirvacana')
         return
 
     # 6.1.1 ekAco dve prathamasya
@@ -132,7 +134,7 @@ def clean_abhyasa(state):
             abhyasa = abhyasa.samprasarana()
 
         # 7.4.69 dIrgha iRaH kiti
-        elif dhatu.raw == 'iR' and 'k' in tin.it:
+        elif dhatu.raw == 'i\R' and 'k' in tin.it:
             abhyasa = abhyasa.set_value('I')
 
         elif abhyasa.adi().value == 'a':

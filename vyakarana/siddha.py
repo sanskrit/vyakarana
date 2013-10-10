@@ -184,7 +184,7 @@ def asiddha_helper(state):
 
         # 8.4.58 anusvArasya yayi parasavarNaH
         if x == 'M' and y in Pratyahara('yay'):
-            x = Sound(x).closest(Sound(y).savarna_set())
+            x = Sound(x).closest(Sound(y).savarna_set)
 
         c.s = x
         state = set_sound(state, c)

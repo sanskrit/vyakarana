@@ -29,7 +29,8 @@ class Dhatupatha(object):
                 self.all_gana[dhatu].add(gana)
 
     def gana(self, dhatu):
-        return self.all_gana[dhatu.svara]
+        return self.all_gana[dhatu.raw]
 
 
 DHATUPATHA = Dhatupatha()
+DHATUPATHA.init('data/dhatupatha.csv')

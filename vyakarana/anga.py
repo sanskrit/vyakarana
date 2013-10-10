@@ -20,46 +20,44 @@
 """
 
 import gana
-from classes import Sounds, Sound, Upadesha as U
+from classes import Sounds, Sound, Term, Upadesha as U
 from decorators import *
 
 
 @require('dvirvacana')
 @once('anga_adesha')
 def adesha(state):
-    i, dhatu = state.find('dhatu')
-    value = dhatu.value
-    next = state[i+1]
+    for i, anga in state.find_all('anga'):
+        value = anga.value
+        next = state.next(i)
 
-    # 6.1.16 vacisvapiyajAdInAM kiti
-    # 6.1.17 grahi... Giti ca
-    vac_condition = 'k' in next.it and value in gana.VAC
-    grah_condition = value in gana.GRAH and next.any_it('k', 'N')
-    if vac_condition or grah_condition:
-        dhatu = dhatu.samprasarana()
-        yield state.swap(i, dhatu)
+        # 6.1.16 vacisvapiyajAdInAM kiti
+        # 6.1.17 grahi... Giti ca
+        vac_condition = 'k' in next.it and value in gana.VAC
+        grah_condition = value in gana.GRAH and next.any_it('k', 'N')
+        if vac_condition or grah_condition:
+            state = state.swap(i, anga.samprasarana())
 
-    # 1.1.5 kGiti ca
-    elif next.any_it('k', 'N'):
-        yield state
+        # 1.1.5 kGiti ca
+        elif next.any_it('k', 'N'):
+            continue
 
-    # 7.2.115 aco `Jniti (vrddhi)
-    # 7.2.116 ata upadhAyAH
-    elif next.any_it('Y', 'R'):
-        if dhatu.ac or dhatu.upadha().value == 'a':
-            dhatu = dhatu.vrddhi()
-        else:
-            dhatu = dhatu.guna()
+        # 7.2.115 aco `Jniti (vrddhi)
+        # 7.2.116 ata upadhAyAH
+        elif next.any_it('Y', 'R'):
+            if anga.ac or anga.upadha().value == 'a':
+                anga = anga.vrddhi()
+            else:
+                anga = anga.guna()
 
-        yield state.swap(i, dhatu)
+            state = state.swap(i, anga)
 
-    # 7.3.84 sArvadhAtukArdhadhAtukayoH
-    elif next.any_samjna('sarvadhatuka', 'ardhadhatuka'):
-        dhatu = dhatu.guna()
-        yield state.swap(i, dhatu)
+        # 7.3.84 sArvadhAtukArdhadhAtukayoH
+        elif next.any_samjna('sarvadhatuka', 'ardhadhatuka'):
+            anga = anga.guna()
+            state = state.swap(i, anga)
 
-    else:
-        yield state
+    yield state
 
 
 @once('rt')
@@ -70,12 +68,12 @@ def rt(state):
         # 7.4.10 Rtaz ca saMyogAder guNaH
         _10 = anga.samyogadi and anga.ends_in('ft')
         # 7.4.10 RcchatyRRtAm
-        _11 = anga.clean == 'f' or anga.ends_in('Ft')
+        _11 = anga.raw == 'f\\' or anga.ends_in('Ft')
 
         if _10 or _11:
             yield state.swap(i, anga.guna())
 
-
+@require('anga_adesha')
 @once('anga_aci')
 def aci(state):
     """
@@ -105,7 +103,7 @@ def aci(state):
         return
 
     # 6.4.88 bhuvo vuk luGliToH
-    if anga.clean == 'BU':
+    if anga.value == 'BU' and p.any_lakshana('lu~N', 'li~w'):
         if anga.parts[-1].raw == 'vu~k':
             return
         else:
@@ -118,16 +116,21 @@ def aci(state):
         # 6.4.77 aci znudhAtubhruvAM yvor iyaGuvaGau
         # TODO: other categories
         _77 = 'dhatu' in anga.samjna
-
         # 6.4.78 abhyAsasyAsavarNe
         _78 = 'abhyasa' in anga.samjna and Sound(f).asavarna(s.value)
+
         if _77 or _78:
             if f in Sounds('i'):
                 new = anga.tasya(U('iya~N'))
             else:
                 new = anga.tasya(U('uva~N'))
 
+        # 6.4.81 iNo yaN
+        if anga.raw == 'i\R':
+            new = anga.antya('y')  # TODO: generalize
+
         # 6.4.82 er anekAco 'saMyogapUrvasya
+        # TODO: anga.num_syllables > 1
         if f in Sounds('i') and not anga[:-1].samyoga:
             new = anga.al_tasya('i', 'yaR')
 
@@ -139,7 +142,7 @@ def aci(state):
 def ac_adesha(state):
     """
     Perform substitutions on the anga. These substitutions can occur
-    after dvirvacana has been attempted.
+    only after dvirvacana has been attempted.
 
     :param state:
     """
@@ -235,6 +238,9 @@ def lit_a_to_e(state):
     p = state[j+1]
     # True, False, or 'optional'. Crude, but it works.
     status = False
+
+    if abhyasa is None:
+        return
 
     liti = 'li~w' in p.lakshana
     # e.g. 'pac', 'man', 'ram', but not 'syand', 'grah'

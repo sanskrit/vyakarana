@@ -84,14 +84,14 @@ class Sound(object):
     def asavarna(self, other):
         """Returns the sounds that are not savarna to this one.
 
-        One subtle point here is that the 'savarna' and 'asavarna` are
+        One subtle point here is that the 'savarna' and 'asavarna' are
         both undefined between consonants and vowels.
 
         :param other:
         """
         ac = Pratyahara('ac')
         same_ac = self.value in ac and other in ac
-        return same_ac and other not in self.savarna_set()
+        return same_ac and other not in self.savarna_set
 
     def closest(self, items):
         """Return the phonetically closest value. If no close value
@@ -128,8 +128,9 @@ class Sound(object):
 
         :param other: some sound
         """
-        return other in self.savarna_set()
+        return other in self.savarna_set
 
+    @property
     def savarna_set(self):
         """Return the sounds that are savarna to this one. The 'savarna'
         relation is defined by the following rules:
@@ -158,32 +159,10 @@ class Sound(object):
         return set([x for x in results if (x in Pratyahara('ac')) == is_ac])
 
 
-class Sounds(object):
+class SoundCollection(object):
 
-    """A shorthand for grouping Sanskrit sounds.
-
-    :param phrase: a group of designations
-    """
-
-    def __init__(self, phrase):
-        v = self.values = set()
-        for item in phrase.split():
-
-            first, last = (item[0], item[-1])
-            simple_vowel = len(item) == 1 and item in Pratyahara('aR')
-
-            # 1.1.69 aNudit savarNasya cApratyayaH
-            if last == 'u' or simple_vowel:
-                v.update(Sound(first).savarna_set())
-            # 1.1.70 taparas tatkAlasya
-            elif last == 't':
-                v.update([first])
-            # Generic letter
-            elif len(item) == 1:
-                v.update(item)
-            # Pratyahara
-            else:
-                v.update(Pratyahara(item).values)
+    def __init__(self, *a, **kw):
+        raise NotImplementedError
 
     def __contains__(self, item):
         """
@@ -194,11 +173,44 @@ class Sounds(object):
     def __iter__(self):
         return iter(self.values)
 
+    def __len__(self):
+        return len(self.values)
+
     def __repr__(self):
-        return "<Sounds('%s')>" % ''.join(self.values)
+        return "<%s('%s')>" % (self.__class__.__name__, self.name)
 
 
-class Pratyahara(object):
+class Sounds(SoundCollection):
+
+    """A shorthand for grouping Sanskrit sounds.
+
+    :param phrase: a group of designations
+    """
+
+    def __init__(self, phrase):
+        self.name = phrase
+
+        v = self.values = set()
+        for item in phrase.split():
+
+            first, last = (item[0], item[-1])
+            simple_vowel = len(item) == 1 and item in Pratyahara('ak')
+
+            # 1.1.69 aNudit savarNasya cApratyayaH
+            if last == 'u' or simple_vowel:
+                v.update(Sound(first).savarna_set)
+            # 1.1.70 taparas tatkAlasya
+            elif last == 't':
+                v.update([first])
+            # Generic letter
+            elif len(item) == 1:
+                v.update(item)
+            # Pratyahara
+            else:
+                v.update(Pratyahara(item).values)
+
+
+class Pratyahara(SoundCollection):
 
     """A shorthand for grouping Sanskrit sounds.
 
@@ -218,7 +230,7 @@ class Pratyahara(object):
         ('EO', 'c'),
         ('hyvr', 'w'),
         ('l', 'R'),
-        ('YmGRn', 'm'),
+        ('YmNRn', 'm'),
         ('JB', 'Y'),
         ('GQD', 'z'),
         ('jbgqd', 'S'),
@@ -228,11 +240,12 @@ class Pratyahara(object):
         ('h', 'l'),
     ]
 
-    def __init__(self, value, second_R=False):
-        first = value[0]
-        limit = value[-1]
+    def __init__(self, name, second_R=False):
+        first = name[0]
+        limit = name[-1]
         found_first = False
 
+        self.name = name
         self.values = set([first])
 
         for items, it in self.rules:
@@ -241,14 +254,11 @@ class Pratyahara(object):
             elif first in items:
                 self.values.update(items.partition(first)[-1])
                 found_first = True
-            if limit == it:
+            if found_first and it == limit:
                 if second_R:
                     second_R = False
                 else:
                     break
-
-    def __contains__(self, key):
-        return key in self.values
 
 
 class Term(object):
@@ -281,8 +291,15 @@ class Term(object):
     """
 
     def __init__(self, value):
-        self.value = self.raw = value
+        # The raw string, including 'it' letters and accent marks
+        self.raw = value
+        # The raw string with 'it' letters and accent marks removed.
+        self.value = value
+        #
+        self.raw = value
+        self.value = value
         self.samjna = set()
+        #
         self.lakshana = set()
         self.parts = [self]
 
@@ -293,7 +310,10 @@ class Term(object):
         return bool(self.value)
 
     def __getitem__(self, i):
-        return Term(self.value[i])
+        try:
+            return Term(self.value[i])
+        except IndexError:
+            return Term('')
 
     def __getslice__(self, i, j):
         return Term(self.value[i:j])
@@ -382,7 +402,10 @@ class Term(object):
             c.parts = [c]
             return c
         else:
-            return Term(self.value[0])
+            if self.value:
+                return Term(self.value[0])
+            else:
+                return Term('')
 
     def add_samjna(self, *names):
         """
@@ -467,7 +490,7 @@ class Term(object):
         Apply 'lopa' to this term.
 
         1.1.60 adarzanaM lopaH
-        1.1.62 pratyayalope pratyayalakSaNa
+        1.1.62 pratyayalope pratyayalakSaNam
         """
         return self.set_value('')
 
@@ -645,15 +668,16 @@ class Upadesha(Term):
 
     """A Term with indicatory letters."""
 
-    nasal_re = re.compile('([aAiIuUfFxeEoO]~)')
+    nasal_re = re.compile('([aAiIuUfFxXeEoO]~)')
 
     def __init__(self, raw=None, **kw):
         Term.__init__(self, raw or '')
+        self.svara = raw
         self.raw = None
         self.value = None
         self.it = set()
         if raw:
-            self._update(raw, **kw)
+            self.set_raw(raw, **kw)
 
     def copy(self):
         c = self.__class__(raw=None)
@@ -675,7 +699,8 @@ class Upadesha(Term):
         c.it.difference_update(letters)
         return c
 
-    def _update(self, raw, **kw):
+    def set_raw(self, raw, **kw):
+        self.raw = raw
 
         if '^' in raw:
             self.it.add('udatta')
@@ -684,7 +709,6 @@ class Upadesha(Term):
             self.it.add('anudatta')
             raw = raw.replace('\\', '')
 
-        self.raw = raw
         core = raw
 
         vibhakti = kw.pop('vibhakti', False)
@@ -741,7 +765,7 @@ class Upadesha(Term):
 
     def update(self, raw, **kw):
         c = self.copy()
-        c._update(raw, **kw)
+        c.set_raw(raw, **kw)
         return c
 
 
@@ -749,8 +773,8 @@ class Upadesha(Term):
 # -----
 
 class Anga(Upadesha):
-    def _update(self, value, **kw):
-        Upadesha._update(self, value, **kw)
+    def set_raw(self, value, **kw):
+        Upadesha.set_raw(self, value, **kw)
         self.samjna.add('anga')
 
 
@@ -786,8 +810,8 @@ class Dhatu(Anga):
         c.clean = self.clean
         return c
 
-    def _update(self, value, **kw):
-        Anga._update(self, value, **kw)
+    def set_raw(self, value, **kw):
+        Anga.set_raw(self, value, **kw)
         self.samjna.add('dhatu')
 
 
@@ -795,20 +819,32 @@ class Dhatu(Anga):
 # --------
 
 class Pratyaya(Upadesha):
-    def _update(self, value, **kw):
-        Upadesha._update(self, value, pratyaya=True, **kw)
+    def set_raw(self, value, **kw):
+        Upadesha.set_raw(self, value, pratyaya=True, **kw)
         self.samjna.add('pratyaya')
+
+        # 1.1.__ pratyayasya lukzlulupaH
+        if value in ('lu~k', 'Slu~', 'lu~p'):
+            self.value = ''
+
+        # 3.4.113 tiGzit sArvadhAtukam
+        if 'S' in self.it:
+            self.samjna.add('sarvadhatuka')
+
+        # 1.2.4 sArvadhAtukam apit
+        if 'sarvadhatuka' in self.samjna and 'p' not in self.it:
+            self.it.add('k')
 
 
 class Krt(Pratyaya):
-    def _update(self, value, **kw):
-        Pratyaya._update(self, value, pratyaya=True, **kw)
+    def set_raw(self, value, **kw):
+        Pratyaya.set_raw(self, value, pratyaya=True, **kw)
         self.samjna.add('krt')
 
 
 class Vibhakti(Pratyaya):
-    def _update(self, raw, **kw):
+    def set_raw(self, raw, **kw):
         value = raw.replace('J', 'ant')
-        Pratyaya._update(self, value, vibhakti=True, **kw)
+        Pratyaya.set_raw(self, value, vibhakti=True, **kw)
         self.samjna.add('vibhakti')
         self.raw = raw

@@ -16,22 +16,27 @@ import sandhi
 import siddha
 import vibhakti
 
+initialized = False
+
 
 class State(object):
-    """A derivational step.
+    """The result of a series of derivational steps.
 
-    A State contains the terms involved in the step and a set of the
-    operations that were applied to produce the State.
+    A State contains a list of terms and a set of some of the operations
+    that were applied to produce the State.
     """
+
+    # __slots__ = ['items', 'ops', 'prev']
 
     def __init__(self, items):
 
-        #: The items in the state. These are all some sort of Term.
+        #: The items in the state. These are all :class:`Term` objects
+        #: or subclassed objects.
         self.items = items
 
         #: A set of the various operations that have been applied to
-        #: this State. This can be used to avoid redundant work and the
-        #: recursion problems that would follow from that.
+        #: this State. This can be used to avoid redundant work and
+        #: certain kinds of recursion problems.
         self.ops = set()
 
         #: The state that yielded this one. For debugging.
@@ -68,20 +73,32 @@ class State(object):
         return c
 
     def find(self, token):
-        """Find the index and value of the first term with `token`
+        """Find the index and value of the last term with `token`
         among its samjna or lakshana sets.
 
         :param token: name of some samjna or lakshana
         """
+        length = len(self.items)
+        for i, x in enumerate(self.items[::-1]):
+            if token in x.samjna or token in x.lakshana:
+                return (length - i - 1, x)
+        return (None, None)
+
+    def find_all(self, token):
         for i, x in enumerate(self.items):
             if token in x.samjna or token in x.lakshana:
-                return (i, x)
-        return (None, None)
+                yield (i, x)
 
     def insert(self, i, item):
         c = self.copy()
         c.items.insert(i, item)
         return c
+
+    def next(self, i):
+        for x in self.items[i+1:]:
+            if x.value:
+                return x
+        return None
 
     def replace_all(self, items):
         c = self.copy()
@@ -137,6 +154,7 @@ rules = {
     'abhyasa': [abhyasa.abhyasa_adesha],
     'vibhakti': [vibhakti.tin_adesha],
     'dhatu': [dhatu.adesha,
+              dhatu.vikarana,
               abhyasa.dvirvacana],
 }
 
@@ -162,9 +180,10 @@ def apply_normal_rules(state):
 
 def step(state):
     """
-    Yield all states that can grow from `state`.
+    Yield all states that can be produced by applying a single operation
+    to `state`.
 
-    :param state: some State in the derivation.
+    :param state: some :class:`State` in the derivation.
     """
     yielded = False
     for result in apply_normal_rules(state):
@@ -183,6 +202,8 @@ def derive(start):
 
     :param start: a starting State
     """
+    if not initialized:
+        init()
     if isinstance(start, list):
         start = State(start)
 
@@ -195,6 +216,17 @@ def derive(start):
             if not state:
                 continue
             if len(state) == 1:
+                # state.trace()
                 yield state
             else:
                 h.append(state)
+
+
+def init():
+    global initialized
+    import dhatupatha
+    import os
+    dirname = os.path.dirname(os.path.dirname(__file__))
+    dhatu_file = os.path.join(dirname, 'data', 'dhatupatha.csv')
+    dhatupatha.DHATUPATHA.init(dhatu_file)
+    initialized = True

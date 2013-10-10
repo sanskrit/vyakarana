@@ -8,8 +8,9 @@
     :license: MIT and BSD
 """
 
-from classes import Dhatu
+from classes import Dhatu, Pratyaya
 from decorators import *
+from dhatupatha import DHATUPATHA as DP
 
 
 @once('dhatu_adesha')
@@ -37,6 +38,61 @@ def adesha(state):
     if Dhatu(dhatu.raw).ec and tin.raw[0] != 'S':
         dhatu = dhatu.antya('A')
         yield state.swap(i, dhatu)
+
+
+@once('vikarana')
+def vikarana(state):
+    """Vikarana for classes 1 through 9."""
+
+    i, dhatu = state.find('dhatu')
+    gana_set = DP.gana(dhatu)
+
+    def _yield(s):
+        p = Pratyaya(s)
+        p.samjna.add('anga')
+        return state.insert(i+1, p)
+
+    next = state[i+1]
+    if 'sarvadhatuka' not in next.samjna:
+        return
+
+    # 3.1.68 kartari śap
+    if '1' in gana_set or '10' in gana_set:
+        yield _yield('Sap')
+
+    # 2.4.75 juhotyādibhyaḥ śluḥ
+    # TODO: move to proper section
+    if '3' in gana_set:
+        yield _yield('Slu~')
+
+    # 3.1.69 divādibhyaḥ śyan
+    if '4' in gana_set:
+        yield _yield('Syan')
+
+    # 3.1.73 svādibhyaḥ śnuḥ
+    if '5' in gana_set:
+        yield _yield('Snu')
+
+    # 3.1.77 tudādibhyaḥ śaḥ
+    if '6' in gana_set:
+        yield _yield('Sa')
+
+    # 3.1.78 rudhādhibhyaḥ śnam
+    if '7' in gana_set:
+        yield _yield('Snam')
+
+    # 3.1.79 tanādikṛñbhya uḥ
+    if '8' in gana_set:
+        yield _yield('u')
+
+    # 3.1.81 kryādibhyaḥ śnā
+    if '9' in gana_set:
+        yield _yield('SnA')
+
+    # 3.1.25 satyApa...
+    # TODO: move to proper section
+    if '10' in gana_set:
+        yield _yield('Ric')
 
 
 def pada_options(state):
