@@ -1,167 +1,141 @@
-# Basic test
+# From Kale 488 - 528
+# TODO: what are the rules of iDve -> iQve ? Can't find rules corresponding to his explanation.
+
+# ~~~~~~~~
+# Kale 504
+# ~~~~~~~~
+# TODO: saMcaskAra
 qukfY cakAra cakratus cakrus cakarTa cakraTus cakra cakAra/cakara cakfva cakfma
 qukfY cakre cakrAte cakrire cakfze cakrATe cakfQve cakre cakfvahe cakfmahe
 
 zwuY tuzwAva tuzwuvatus tuzwuvus tuzwoTa tuzwuvaTus tuzwuva tuzwAva tuzwava tuzwuva tuzwuma
 zwuY tuzwuve tuzwuvAte tuzwuvire tuzwuze tuzwuvATe tuzwuQve tuzwuve tuzwuvahe tuzwumahe
 
-vfY 2 s vavariTa
-vfY 3 s vavAra
-vfY 3 s vavara
-vfY 3 d vavfva
-vfY 3 p vavfma
-
+# ~~~~~~~~~~~~
 # Kale 505 (1)
-SIN 3 s SiSye
-SIN 3 d SiSyAte
-SIN 3 p SiSyire
-SIN 2 s SiSyize
-SIN 2 d SiSyATe
-SIN 2 p SiSyiDve
-# SIN 2 p SiSyiQve  # in Kale -- is this a mistake?
-SIN 1 s SiSye
-SIN 1 d SiSyivahe
-SIN 1 p SiSyimahe
+# ~~~~~~~~~~~~
+vFY vavAra vavaratus vavarus vavariTa vavaraTus vavara vavAra/vavara vavariva vavarima
+vFY vavare vavarAte vavarire vavarize vavarATe vavariDve/vavariQve vavare vavarivahe vavarimahe
 
+SF SaSAra SaSaratus/SaSratus SaSrus/SaSarus SaSariTa saSaraTus/SaSraTus SaSra/SaSara SaSAra/SaSara SaSariva/SaSriva
+SaSarima/SaSrima
+
+kzRu cukzRAva cukzRuvatus cukzRuvus cukzRaviTa cukzRuvaTus cukzRuva cukzRAva/cukzRava cukzRuviva cukzRuvima
+
+# 'ru' doesn't support ruruve -- what is Kale doing here?
+ru rurAva ruruvatus ruruvus ruraviTa ruruvaTus ruruva rurAva/ruruva ruruviva ruruvima
+
+SIN SiSye SiSyAte SiSyire SiSyize SiSyATe SiSyiDve/SiSyiQve SiSye SiSyivahe SiSyimahe
+
+SriY SiSrAya SiSriyatus SiSriyus SiSrayiTa SiSriyaTus SiSriya SiSrAya/SiSraya SiSriyiva SiSriyima
+SriY SiSriye SiSriyAte SiSriyire SiSriyize SiSriyATe SiSriyiDve/SiSriyiQve SiSriye SiSriyivahe SiSriyimahe
+
+# ~~~~~~~~~~~~
 # Kale 505 (2)
-dA\Y 3 s dadO
-dA\Y 3 d dadatus
-dA\Y 3 p dadus
-dA\Y 2 s dadATa
-dA\Y 2 s dadiTa
-dA\Y 2 d dadaTus
-dA\Y 2 p dada
-dA\Y 1 s dadO
-dA\Y 1 d dadiva
-dA\Y 1 p dadima
-dA\Y 3 s dade
-dA\Y 3 d dadAte
-dA\Y 3 p dadire
-dA\Y 2 s dadize
-dA\Y 2 d dadATe
-dA\Y 2 p dadiDve
-dA\Y 1 s dade
-dA\Y 1 d dadivahe
-dA\Y 1 p dadimahe
+# ~~~~~~~~~~~~
+dA\Y dadO dadatus dadus dadATa/dadiTa dadaTus dada dadO dadiva dadima
+dA\Y dade dadAte dadire dadize dadATe dadiDve/dadiQve dade dadivahe dadimahe
 
 gE\ jagO jagatus jagus jagATa/jagiTa jagaTus jaga jagO jagiva jagima
 
 i\R iyAya Iyatus Iyus iyeTa/iyayiTa IyaTus Iya iyAya iyaya Iyiva Iyima
 
-nI\ ninAya ninyatus ninyus nineTa/ninayiTa ninyaTus ninya ninAya/ninaya ninyiva ninyima
+RI\ ninAya ninyatus ninyus nineTa/ninayiTa ninyaTus ninya ninAya/ninaya ninyiva ninyima
 
-smf 3 s sasmAra
-smf 3 d sasmaratus
-smf 3 p sasmarus
-smf 2 s sasmarTa
-smf 2 d sasmaraTus
-smf 2 p sasmara
-smf 1 s sasmAra
-smf 1 s sasmara
-smf 1 d sasmariva
-smf 1 p sasmarima
+smf\ sasmAra sasmaratus sasmarus sasmarTa sasmaraTus sasmara sasmAra/sasmara sasmariva sasmarima
 
+qu\mi\Y mamO mimyatus mimyus mamATa/mamiTa mimyaTus mimya mamO mimyiva mimyima
+qu\mi\Y mimye mimyAte mimyire mimyize mimyATe mimyiDve/mimyiQve mimye mimyivahe mimyimahe
+
+lI\ lilAya/lalO lilyatus lilyus lileTa/lilayiTa/lalATa/laliTa lilyaTus lilya lilAya/lilaya/lalO lilyiva lilyima
+
+# ~~~~~~~~~~~~
 # Kale 505 (3)
+# ~~~~~~~~~~~~
+Sa\kx~ SaSAka Sekatus Sekus SekiTa/SaSakTa SekaTus Seka SaSAka/SaSaka Sekiva Sekima
+
+qupa\ca~\z papAca pecatus pecus peciTa/papakTa pecaTus peca papAca/papaca peciva pecima
+
+mu\cx~\ mumoca mumucatus mumucus mumociTa mumucaTus mumuca mumoca mumuciva mumucima
+mu\cx~\ mumuce mumucAte mumucire mumucize mumucATe mumuciDve/mumuciQve mumuce mumucivahe mumucihame
+
+# Different ric -- but which one?
+ri\ci~\r rireca riricatus riricus rireciTa riricaTus ririca rireca ririciva riricima
+# ri\ci~\r ririce riricAte riricire riricize riricATe ririciDve/ririciQve ririce riricivahe riricimahe
+
 pra\cCa~ papracCa papracCatus papracCus papracCiTa/paprazWa papracCaTus papracCa papracCa papracCiva papracCima
+
 tya\ja~ tatyAja tatyajatus tatyajus tatyajiTa/tatyakTa tatyajaTus tatyaja tatyaja tatyAja tatyajiva tatyajima
+
 Ba\Yja~ baBaYja baBaYjatus baBaYjus baBaYjiTa/baBaNkTa baBaYjaTus baBaYja baBaYja baBaYjiva baBaYjima
 
-quBfY 1 s baBAra
-quBfY 1 s baBara
-quBfY 1 d baBfva
-quBfY 1 p baBfma
+Bra\sja~\ baBarja/baBrajja baBarjatus/baBrajjatus baBarjus/baBrajjus baBarjiTa/baBrajjiTa/baBrazWa/baBrazWa baBarjaTus/baBrajjaTus baBarja/baBrajja baBarja/baBrajja baBarjiva/baBrajjiva baBarjima/baBrajjima
+
+quBfY _ _ _ _ _ _ baBAra/baBara baBfva baBfma
 
 # Roots ending in A, e, ai, o, au
 sTA\ tasTO tasTatus tasTus tasTATa/tasTiTa tasTaTus tasTa tasTO tasTiva tasTima
 
+# ~~~~~~~~
 # Kale 506
+# ~~~~~~~~
 va\ci~ uvAca Ucatus Ucus uvakTa/uvaciTa UcaTus Uca uvAca/uvaca Uciva Ucima
 
 vyaDa~ vivyADa _ viviDus
 
+# ~~~~~~~~
 # Kale 508
-anjU~ 3 s AnaYja
-anjU~ 3 d AnaYjatus
-anjU~ 3 p AnaYjus
-# anjU~ 2 s AnaNkTa
-anjU~ 2 s AnaYjiTa
-anjU~ 2 d AnaYjaTus
-anjU~ 2 p AnaYja
-anjU~ 1 s AnaYja
-anjU~ 1 d AnaYjiva
-anjU~ 1 p AnaYjima
-aSU~ 3 s AnaSa
-fDu~ 3 p AnfDus
+# ~~~~~~~~
+anjU~ AnaYja AnaYjatus AnaYjus AnaYjiTa AnaYjaTus AnaYja AnaYja AnaYjiva AnaYjima
+# anjU~ AnaNkTa
+
+aSU~ AnaSa
+fDu~ _ _ AnfDus
 
 # e substitution
-cara~ 3 s cacAra
-cara~ 3 d ceratus
-cara~ 3 p cerus
-cara~ 2 s ceriTa
-cara~ 2 d ceraTus
-cara~ 2 p cera
-cara~ 1 s cacAra
-cara~ 1 s cacara
-cara~ 1 d ceriva
-cara~ 1 p cerima
+cara~ cacAra ceratus cerus ceriTa ceraTus cera cacAra/cacara ceriva cerima
 
-# Irregular bases
-# ---------------
+# ~~~~~~~~
 # Kale 510
+# ~~~~~~~~
 ga\mx~ jagAma jagmatus jagmus jaganTa jagamiTa jagmaTus jagma jagAma jagama jagmiva jagmima
+
 ha\na~ jaGAna jaGnatus jaGnus jaGanTa jaGaniTa jaGnaTus jaGna jaGAna jaGana jaGniva jaGnima
-Kana~ caKAna caKnatus caKnus caKaniTa
 
+janI~\ jajYe jajYAte jajYire jajYize jajYATe jajYiDve jajYe jajYivahe jajYimahe
+
+Kana~ caKAna caKnatus caKnus caKaniTa caKnaTus caKna caKAna/caKana caKniva caKnima
+Kana~ caKne caKnAte caKnire caKnize caKnATe caKniDve caKne caKnivahe caKnimahe
+
+# ~~~~~~~~
 # Kale 512
-tF 3 s tatAra
-tF 3 d teratus
-tF 3 p terus
-tF 2 s teriTa
-tF 2 d teraTus
-tF 2 p tera
-tF 1 s tatAra
-tF 1 s tatara
-tF 1 d teriva
-tF 1 p terima
-Pala~ 3 p Pelus
-Baja~ 3 p Bejus
-trapa~ 3 p trepus
+# ~~~~~~~~
+tF tatAra teratus terus teriTa teraTus tera tatAra/tatara teriva terima
 
-jF 3 p jerus
-jF 3 p jajaratus
-Bramu~ 3 p Bremus
-Bramu~ 3 p baBramus
-trasa~ 3 p tresus
-trasa~ 3 p tatrasus
+Pala~ paPala Pelatus Pelus PeliTa PelaTus Pela paPAla/paPala Peliva Pelima
 
+Baja~ baBAja Bejatus Bejus BejiTa baBakTa BejaTus Beja baBAja baBaja Bejiva Bejima
+
+jF jajAra jajaratus/jeratus jajarus/jerus
+
+Bramu~ baBrAma baBramatus/Brematus baBramus/Bremus
+
+# ~~~~~~~~
 # Kale 513
-BU 3 s baBUva
-BU 3 d baBUvatus
-BU 3 p baBUvus
-BU 2 s baBUviTa
-BU 2 d baBUvaTus
-BU 2 p baBUva
-BU 1 s baBUva
-BU 1 d baBUviva
-BU 1 p baBUvima
+# ~~~~~~~~
+# TODO: Atmanepada bhu
+BU baBUva baBUvatus baBUvus baBUviTa baBUvaTus baBUva baBUva baBUviva baBUvima
 
+# ~~~~~~~~
 # Kale 514
-ji\ 2 s jigeTa
-ji\ 2 s jigayiTa
-ji\ 1 s jigAya
-ji\ 1 s jigaya
-ji\ 1 d jigyiva
-ji\ 1 d jigyima
+# ~~~~~~~~
+ji\ jigeTa/jigayiTa _ _ jigAya/jigaya jigyiva jigyima
 
-hi\ 2 s jiGeTa
-hi\ 2 s jiGayiTa
-hi\ 1 s jiGAya
-hi\ 1 s jiGaya
-hi\ 1 d jiGyiva
-hi\ 1 d jiGyima
+hi\ _ _ _ jiGeTa/jiGayiTa _ _ jiGAya/jiGaya jiGyiva jiGyima
 
-ci\ 3 s cicAya
-ci\ 3 s cikAya
+ci\ cikAya/cicAya cikyatus/cicyatus cikyus/cicyus cikayiTa/cikeTa/cicayiTa/ciceTa cikyaTus/cicyaTus cikya/cicya cikAya/cikaya/cicAya/cicaya cikyiva/cicyiva cikyima/cicyima
 
+# ~~~~~~~~
 # Kale 515
-f 2 s AriTa
+# ~~~~~~~~
+f Ara Aratus Arus AriTa AraTus Ara Ara Ariva Arima

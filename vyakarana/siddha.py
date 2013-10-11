@@ -149,6 +149,8 @@ def asiddha_helper(state):
                 x = 'z'
 
         # 8.3.78 iNaH SIdhvaMluGliTAM dho 'GgAt
+        # 8.3.79 vibhASeTaH
+        # TODO: SIdhvam, luG
         if (x == 'D'
                 and w in Pratyahara('iR', second_R=True)
                 and c.first  # not triggered by iT

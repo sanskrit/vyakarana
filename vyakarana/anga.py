@@ -39,15 +39,13 @@ def substitute(state):
     # 7.1.3 jho 'ntaH
     # 7.1.4 ad abhyastAt
     # 7.1.5 AtmanepadeSvanataH
+    # TODO: abhyasta
     i, v = state.find('vibhakti')
     if False or 'atmanepada' in v.samjna:
-        print 'at replace'
-        print v
         v = v.replace('J', 'at')
     else:
         v = v.replace('J', 'ant')
 
-    print state.swap(i, v)
     yield state.swap(i, v)
 
 
@@ -199,7 +197,6 @@ def ac_adesha(state):
     # 6.4.64 Ato lopa iTi ca
     if 'ardhadhatuka' in tin.samjna and anga.antya().value == 'A':
         if 'iw' in tin.parts[0].lakshana or 'k' in tin.it:
-            print 'caught'
             anga = anga.antya('')
             yield state.swap(i, anga)
             return
@@ -267,21 +264,24 @@ def sarvadhatuke(state):
     if 'sarvadhatuka' not in p.samjna:
         return
 
-    # 6.4.100 ata ut sArvadhAtuke
-    # 6.4.101 znasor allopaH
+    if p.any_it('k', 'N'):
+        # 6.4.110 ata ut sArvadhAtuke
+        # 6.4.111 znasor allopaH
+        if anga.value == 'na':
+            yield state.swap(i, anga.replace('a', ''))
 
-    # 6.4.102 znAbhyastayor AtaH
-    # 6.4.103 I halyaghoH
-    if anga.value == 'nA' and p.any_it('k', 'N'):
-        if p.adi().hal:
-            new_anga = anga.antya('I')
-        else:
-            new_anga = anga.antya('')
-        yield state.swap(i, new_anga)
-        return
+        # 6.4.112 znAbhyastayor AtaH
+        # 6.4.113 I halyaghoH
+        if anga.value == 'nA':
+            if p.adi().hal:
+                new_anga = anga.antya('I')
+            else:
+                new_anga = anga.antya('')
+            yield state.swap(i, new_anga)
+            return
 
-    # 6.4.104 id daridrasya
-    # 6.4.105 bhiyo'nyatarasyAm
+        # 6.4.114 id daridrasya
+        # 6.4.115 bhiyo'nyatarasyAm
 
     # 7.3.101 ato dīrgho yañi
     if anga.antya().value == 'a' and p.adi().value in Sounds('yaY'):

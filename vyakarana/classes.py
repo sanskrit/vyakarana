@@ -601,19 +601,19 @@ class Term(object):
             c.value = other.value + self.value[1:]
             return c
 
-        # 1.1.46 Adyantau Takitau
-        if 'k' in other.it:
-            c.value += other.value
-            c.parts.append(other)
+        # 1.1.47 mid aco 'ntyAt paraH
+        if 'm' in other.it:
+            ti = self.ti().value
+            c = self.ti(ti[0] + other.value + ti[1:])
 
         # 1.1.46 Adyantau Takitau
+        elif 'k' in other.it:
+            c.value += other.value
+            c.parts.append(other)
         elif 'w' in other.it:
             c.value = other.value + self.value
             c.parts.insert(0, other)
 
-        # 1.1.47 mid aco 'ntyAt paraH
-        elif 'm' in other.it:
-            raise NotImplementedError
 
         # 1.1.52 alo 'ntyasya
         # 1.1.53 Gic ca
