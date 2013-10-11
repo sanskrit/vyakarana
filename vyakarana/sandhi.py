@@ -35,8 +35,12 @@ def ac_sandhi(first, second):
     f = first.antya()
     s = second.adi()
 
+    # 6.1.97 ato guNe
+    if f.value == 'a' and s.value in Sounds('at eN'):
+        f = f.antya('')
+
     # 6.1.101 akaH savarNe dIrghaH
-    if Sound(f.value).savarna(s.value):
+    elif Sound(f.value).savarna(s.value):
         f = f.antya('')
         s = s.to_dirgha()
 
@@ -52,12 +56,9 @@ def ac_sandhi(first, second):
     elif f.value in 'aA' and s.value in Sounds('ic'):
         f = f.antya('')
 
-        # 6.1.88 vRddhir eci
-        if s.value in Sounds('ec'):
-            s = s.vrddhi()
-
         # 6.1.87 Ad guNaH
-        else:
-            s = s.guna()
+        # 6.1.88 vRddhir eci
+        s = s.vrddhi() if s.ec else s.guna()
+
 
     return (first.antya(f.value), second.adi(s.value))

@@ -34,18 +34,32 @@ def _test_verbs(la, filename):
     prev_start = (None, None)
     prev_history = []
     for line in read_data(filename):
-        root, person, number, result = line.split()
-        if (root, la) == prev_start:
-            history = prev_history
-        else:
+        items = line.split()
+        if len(items) > 4:
+            root, expected = items[0], items[1:]
             history = list(A.derive([Dhatu(root), Pratyaya(la)]))
-            # print history
-            prev_start = (root, la)
-            prev_history = history
-            print [x[0].value for x in history]
 
-        values = set(r[0].value for r in history)
-        assert result in values
+            print [x[0].value for x in history]
+            result_set = set(x[0].value for x in history)
+            for person_number in expected:
+                for form in person_number.split('/'):
+                    if form == '_':
+                        continue
+                    assert form in result_set
+
+        else:
+            root, person, number, result = line.split()
+            if (root, la) == prev_start:
+                history = prev_history
+            else:
+                history = list(A.derive([Dhatu(root), Pratyaya(la)]))
+                # print history
+                prev_start = (root, la)
+                prev_history = history
+                print [x[0].value for x in history]
+
+            values = set(r[0].value for r in history)
+            assert result in values
 
 
 def test_lat():

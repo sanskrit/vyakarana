@@ -1,43 +1,9 @@
 # Basic test
-qukfY 3 s cakAra
-qukfY 3 d cakratus
-qukfY 3 p cakrus
-qukfY 2 s cakarTa
-qukfY 2 d cakraTus
-qukfY 2 p cakra
-qukfY 1 s cakAra
-qukfY 1 s cakara
-qukfY 1 d cakfva
-qukfY 1 p cakfma
-qukfY 3 s cakre
-qukfY 3 d cakrAte
-qukfY 3 p cakrire
-qukfY 2 s cakfze
-qukfY 2 d cakrATe
-qukfY 2 p cakfQve
-qukfY 1 s cakre
-qukfY 1 d cakfvahe
-qukfY 1 p cakfmahe
+qukfY cakAra cakratus cakrus cakarTa cakraTus cakra cakAra/cakara cakfva cakfma
+qukfY cakre cakrAte cakrire cakfze cakrATe cakfQve cakre cakfvahe cakfmahe
 
-zwuY 3 s tuzwAva
-zwuY 3 d tuzwuvatus
-zwuY 3 p tuzwuvus
-zwuY 2 s tuzwoTa
-zwuY 2 d tuzwuvaTus
-zwuY 2 p tuzwuva
-zwuY 1 s tuzwAva
-zwuY 1 s tuzwava
-zwuY 1 d tuzwuva
-zwuY 1 p tuzwuma
-zwuY 3 s tuzwuve
-zwuY 3 d tuzwuvAte
-zwuY 3 p tuzwuvire
-zwuY 2 s tuzwuze
-zwuY 2 d tuzwuvATe
-zwuY 2 p tuzwuQve
-zwuY 1 s tuzwuve
-zwuY 1 d tuzwuvahe
-zwuY 1 p tuzwumahe
+zwuY tuzwAva tuzwuvatus tuzwuvus tuzwoTa tuzwuvaTus tuzwuva tuzwAva tuzwava tuzwuva tuzwuma
+zwuY tuzwuve tuzwuvAte tuzwuvire tuzwuze tuzwuvATe tuzwuQve tuzwuve tuzwuvahe tuzwumahe
 
 vfY 2 s vavariTa
 vfY 3 s vavAra
@@ -78,35 +44,11 @@ dA\Y 1 s dade
 dA\Y 1 d dadivahe
 dA\Y 1 p dadimahe
 
-gE\ 3 s jagO
-gE\ 3 d jagatus
-gE\ 3 p jagus
-gE\ 2 s jagATa
-gE\ 2 s jagiTa
-gE\ 2 d jagaTus
-gE\ 2 p jaga
-gE\ 1 s jagO
-gE\ 1 d jagiva
-gE\ 1 p jagima
+gE\ jagO jagatus jagus jagATa/jagiTa jagaTus jaga jagO jagiva jagima
 
-i\R 3 s iyAya
-i\R 3 d Iyatus
-i\R 3 p Iyus
-i\R 2 s iyeTa
-i\R 2 s iyayiTa
-i\R 2 d IyaTus
-i\R 2 p Iya
-i\R 1 s iyAya
-i\R 1 s iyaya
-i\R 1 d Iyiva
-i\R 1 p Iyima
+i\R iyAya Iyatus Iyus iyeTa/iyayiTa IyaTus Iya iyAya iyaya Iyiva Iyima
 
-nI\ 2 s nineTa
-nI\ 2 s ninayiTa
-nI\ 1 s ninAya
-nI\ 1 s ninaya
-nI\ 1 d ninyiva
-nI\ 1 p ninyima
+nI\ ninAya ninyatus ninyus nineTa/ninayiTa ninyaTus ninya ninAya/ninaya ninyiva ninyima
 
 smf 3 s sasmAra
 smf 3 d sasmaratus
@@ -120,39 +62,9 @@ smf 1 d sasmariva
 smf 1 p sasmarima
 
 # Kale 505 (3)
-pra\cCa~ 3 s papracCa
-pra\cCa~ 3 d papracCatus
-pra\cCa~ 3 p papracCus
-pra\cCa~ 2 s papracCiTa
-pra\cCa~ 2 s paprazWa
-pra\cCa~ 2 d papracCaTus
-pra\cCa~ 2 p papracCa
-pra\cCa~ 1 s papracCa
-pra\cCa~ 1 d papracCiva
-pra\cCa~ 1 p papracCima
-
-tya\ja~ 3 s tatyAja
-tya\ja~ 3 d tatyajatus
-tya\ja~ 3 p tatyajus
-tya\ja~ 2 s tatyajiTa
-tya\ja~ 2 s tatyakTa
-tya\ja~ 2 d tatyajaTus
-tya\ja~ 2 p tatyaja
-tya\ja~ 1 s tatyaja
-tya\ja~ 1 s tatyAja
-tya\ja~ 1 d tatyajiva
-tya\ja~ 1 p tatyajima
-
-Ba\Yja~ 3 s baBaYja
-Ba\Yja~ 3 d baBaYjatus
-Ba\Yja~ 3 p baBaYjus
-Ba\Yja~ 2 s baBaYjiTa
-Ba\Yja~ 2 s baBaNkTa
-Ba\Yja~ 2 d baBaYjaTus
-Ba\Yja~ 2 p baBaYja
-Ba\Yja~ 1 s baBaYja
-Ba\Yja~ 1 d baBaYjiva
-Ba\Yja~ 1 p baBaYjima
+pra\cCa~ papracCa papracCatus papracCus papracCiTa/paprazWa papracCaTus papracCa papracCa papracCiva papracCima
+tya\ja~ tatyAja tatyajatus tatyajus tatyajiTa/tatyakTa tatyajaTus tatyaja tatyaja tatyAja tatyajiva tatyajima
+Ba\Yja~ baBaYja baBaYjatus baBaYjus baBaYjiTa/baBaNkTa baBaYjaTus baBaYja baBaYja baBaYjiva baBaYjima
 
 quBfY 1 s baBAra
 quBfY 1 s baBara
@@ -160,33 +72,12 @@ quBfY 1 d baBfva
 quBfY 1 p baBfma
 
 # Roots ending in A, e, ai, o, au
-
-sTA\ 3 s tasTO
-sTA\ 3 d tasTatus
-sTA\ 3 p tasTus
-sTA\ 2 s tasTATa
-sTA\ 2 s tasTiTa
-sTA\ 2 d tasTaTus
-sTA\ 2 p tasTa
-sTA\ 1 s tasTO
-sTA\ 1 d tasTiva
-sTA\ 1 p tasTima
+sTA\ tasTO tasTatus tasTus tasTATa/tasTiTa tasTaTus tasTa tasTO tasTiva tasTima
 
 # Kale 506
-va\ci~ 3 s uvAca
-va\ci~ 3 d Ucatus
-va\ci~ 3 p Ucus
-va\ci~ 2 s uvakTa
-va\ci~ 2 s uvaciTa
-va\ci~ 2 d UcaTus
-va\ci~ 2 p Uca
-va\ci~ 1 s uvAca
-va\ci~ 1 s uvaca
-va\ci~ 1 d Uciva
-va\ci~ 1 p Ucima
+va\ci~ uvAca Ucatus Ucus uvakTa/uvaciTa UcaTus Uca uvAca/uvaca Uciva Ucima
 
-vyaDa~ 3 s vivyADa
-vyaDa~ 3 p viviDus
+vyaDa~ vivyADa _ viviDus
 
 # Kale 508
 anjU~ 3 s AnaYja
@@ -217,34 +108,9 @@ cara~ 1 p cerima
 # Irregular bases
 # ---------------
 # Kale 510
-ga\mx~ 3 s jagAma
-ga\mx~ 3 d jagmatus
-ga\mx~ 3 p jagmus
-ga\mx~ 2 s jaganTa
-ga\mx~ 2 s jagamiTa
-ga\mx~ 2 d jagmaTus
-ga\mx~ 2 p jagma
-ga\mx~ 1 s jagAma
-ga\mx~ 1 s jagama
-ga\mx~ 1 d jagmiva
-ga\mx~ 1 p jagmima
-
-ha\na~ 3 s jaGAna
-ha\na~ 3 d jaGnatus
-ha\na~ 3 p jaGnus
-ha\na~ 2 s jaGanTa
-ha\na~ 2 s jaGaniTa
-ha\na~ 2 d jaGnaTus
-ha\na~ 2 p jaGna
-ha\na~ 1 s jaGAna
-ha\na~ 1 s jaGana
-ha\na~ 1 d jaGniva
-ha\na~ 1 p jaGnima
-
-Kana~ 3 s caKAna
-Kana~ 3 d caKnatus
-Kana~ 3 p caKnus
-Kana~ 2 s caKaniTa
+ga\mx~ jagAma jagmatus jagmus jaganTa jagamiTa jagmaTus jagma jagAma jagama jagmiva jagmima
+ha\na~ jaGAna jaGnatus jaGnus jaGanTa jaGaniTa jaGnaTus jaGna jaGAna jaGana jaGniva jaGnima
+Kana~ caKAna caKnatus caKnus caKaniTa
 
 # Kale 512
 tF 3 s tatAra

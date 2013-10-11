@@ -166,8 +166,9 @@ def ac_adesha(state):
     tin = state[-1]
 
     # 6.4.64 Ato lopa iTi ca
-    if anga.antya().value == 'A':
+    if 'ardhadhatuka' in tin.samjna and anga.antya().value == 'A':
         if 'iw' in tin.parts[0].lakshana or 'k' in tin.it:
+            print 'caught'
             anga = anga.antya('')
             yield state.swap(i, anga)
             return
@@ -224,6 +225,18 @@ def ku(state):
 
             if sub:
                 yield state.swap(j, anga.al_tasya('c j', 'ku'))
+
+
+def sarvadhatuke(state):
+    i, anga = state.find('anga')
+    p = state[i+1]
+
+    if 'sarvadhatuka' not in p.samjna:
+        return
+
+    # 7.3.101 ato dīrgho yañi
+    if anga.antya().value == 'a' and p.adi().value in Sounds('yaY'):
+        yield state.swap(i, anga.to_dirgha())
 
 
 def lit_a_to_e(state):
