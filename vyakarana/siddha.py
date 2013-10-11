@@ -102,6 +102,7 @@ def asiddha_helper(state):
     :param state:
     """
 
+    had_rs = False
     for c in iter_sounds_and_terms(state):
         p = c.prev(state)
         n = c.next(state)
@@ -154,6 +155,16 @@ def asiddha_helper(state):
                 and 'li~w' in c.part.lakshana):
             x = 'Q'
 
+        # 8.4.1 raSAbhyAM no NaH samAnapade
+        # 8.4.2 aTkupvAGnuMvyavAye 'pi
+        # TODO: AG, num
+        had_rs = had_rs or x in 'rz'
+        if x == 'n' and had_rs:
+            x = 'R'
+            had_rs = False
+        if x not in Sounds('aw ku pu'):
+            had_rs = False
+
         stu = Sounds('s tu')
         if x in stu:
 
@@ -189,7 +200,9 @@ def asiddha_helper(state):
         c.s = x
         state = set_sound(state, c)
 
-    pada = Term(''.join(x.value.replace('_', '') for x in state))
+
+    string = ''.join(x.value.replace('_', '') for x in state)
+    pada = Term(string)
 
     yield state.replace_all([pada])
 

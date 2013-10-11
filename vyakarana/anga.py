@@ -234,6 +234,22 @@ def sarvadhatuke(state):
     if 'sarvadhatuka' not in p.samjna:
         return
 
+    # 6.4.100 ata ut sArvadhAtuke
+    # 6.4.101 znasor allopaH
+
+    # 6.4.102 znAbhyastayor AtaH
+    # 6.4.103 I halyaghoH
+    if anga.value == 'nA' and p.any_it('k', 'N'):
+        if p.adi().hal:
+            new_anga = anga.antya('I')
+        else:
+            new_anga = anga.antya('')
+        yield state.swap(i, new_anga)
+        return
+
+    # 6.4.104 id daridrasya
+    # 6.4.105 bhiyo'nyatarasyAm
+
     # 7.3.101 ato dīrgho yañi
     if anga.antya().value == 'a' and p.adi().value in Sounds('yaY'):
         yield state.swap(i, anga.to_dirgha())
