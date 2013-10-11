@@ -764,8 +764,21 @@ class Upadesha(Term):
 
         # 1.3.6 "ṣaḥ pratyayasya"
         # 1.3.7 "cuṭū"
+        #
+        #     It is interesting to note that no examples involving the
+        #     initial ch, jh, Th, and Dh of an affix were provided. This
+        #     omission is significant since affix initials ch, jh, Th,
+        #     and Dh always are replaced by Iy (7.1.2 AyaneyI...) ant
+        #     (7.1.3 jho 'ntaH), ik (7.3.50 ThasyekaH), and ey (7.1.2)
+        #     respectively. Thus the question of treating each of these
+        #     as an it does not arise.
+        #
+        #                         Rama Nath Sharma
+        #                         The Ashtadhyayi of Panini Vol. II
+        #                         Notes on 1.3.7 (p. 145)
         if pratyaya:
-            if raw[0] in 'zcCjJYwWqQR':
+            # no C, J, W, Q by note above.
+            if raw[0] in 'zcjYwqR':
                 self.it.add(raw[0])
                 core = core[1:]
 
@@ -861,7 +874,5 @@ class Krt(Pratyaya):
 
 class Vibhakti(Pratyaya):
     def set_raw(self, raw, **kw):
-        value = raw.replace('J', 'ant')
-        Pratyaya.set_raw(self, value, vibhakti=True, **kw)
+        Pratyaya.set_raw(self, raw, vibhakti=True, **kw)
         self.samjna.add('vibhakti')
-        self.raw = raw

@@ -23,7 +23,35 @@ import gana
 from classes import Sounds, Sound, Term, Upadesha as U
 from decorators import *
 
+RULES = []
 
+def rule(f):
+    RULES.append(f)
+    return f
+
+@rule
+@once('substitute')
+def substitute(state):
+    """Rules from the beginning of 7.1"""
+    # 7.1.1 yuvoranAkau
+    # 7.1.2 AyaneyInIyiyaH phaDhakhachaghAM pratyayAdInAm
+
+    # 7.1.3 jho 'ntaH
+    # 7.1.4 ad abhyastAt
+    # 7.1.5 AtmanepadeSvanataH
+    i, v = state.find('vibhakti')
+    if False or 'atmanepada' in v.samjna:
+        print 'at replace'
+        print v
+        v = v.replace('J', 'at')
+    else:
+        v = v.replace('J', 'ant')
+
+    print state.swap(i, v)
+    yield state.swap(i, v)
+
+
+@rule
 @require('dvirvacana')
 @once('anga_adesha')
 def adesha(state):
@@ -60,6 +88,7 @@ def adesha(state):
     yield state
 
 
+@rule
 @once('rt')
 def rt(state):
     i, anga = state.find('anga')
@@ -74,6 +103,7 @@ def rt(state):
             yield state.swap(i, anga.guna())
 
 
+@rule
 @require('anga_adesha')
 @once('anga_aci')
 def aci(state):
@@ -139,6 +169,7 @@ def aci(state):
             yield state.swap(i, new)
 
 
+@rule
 @once('ac_adesha')
 def ac_adesha(state):
     """
@@ -185,6 +216,7 @@ def ac_adesha(state):
             yield s
 
 
+@rule
 @once('anga_ku')
 def ku(state):
     """Apply rules that perform 'ku' substitutions.
@@ -227,6 +259,7 @@ def ku(state):
                 yield state.swap(j, anga.al_tasya('c j', 'ku'))
 
 
+@rule
 def sarvadhatuke(state):
     i, anga = state.find('anga')
     p = state[i+1]
