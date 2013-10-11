@@ -58,7 +58,7 @@ def test_lit():
 
 def main():
     import cProfile
-    cProfile.run('test_lat()')
+    cProfile.run('test_lit()')
 
 
 if __name__ == '__main__':

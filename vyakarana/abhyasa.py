@@ -123,7 +123,7 @@ def clean_abhyasa(state):
         pass
 
     # 7.4.62 kuhoz cuH
-    # 7.4.63 na kavater yaGi
+    # 7.4.63 na kavater yaGi (TODO)
     adi = abhyasa.adi().value
     if adi in Sounds('ku h'):
         abhyasa = abhyasa.adi(Sound(adi).closest(Sounds('cu')))

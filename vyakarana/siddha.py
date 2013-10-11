@@ -7,7 +7,7 @@
 
     :license: MIT and BSD
 """
-from classes import Sounds, Pratyahara, Sound, Term
+from classes import Sounds, Sound, Pratyahara, Term
 
 
 class StateIndex(object):
@@ -113,11 +113,11 @@ def asiddha_helper(state):
         if x in 'sk' and y in Sounds('hal') and z in Sounds('Jal'):
             x = '_'
 
-        if y in Pratyahara('Jal'):
+        if y in Sounds('Jal'):
 
             # 8.2.30 coH kuH
             cu = Sounds('cu')
-            if x in cu and y in Pratyahara('Jal') and y not in cu:
+            if x in cu and y in Sounds('Jal') and y not in cu:
                 x = Sound(x).closest(Sounds('ku'))
 
             # 8.2.31 ho DhaH
@@ -134,11 +134,11 @@ def asiddha_helper(state):
             x = 'k'
 
         # 8.3.23 mo 'nusvAraH
-        # elif x == 'm' and y in Pratyahara('hal'):
+        # elif x == 'm' and y in Sounds('hal'):
         #     x = 'M'
 
         # 8.3.24 naz cApadAntasya jhali
-        elif x in 'mn' and y in Pratyahara('Jal'):
+        elif x in 'mn' and y in Sounds('Jal'):
             x = 'M'
 
         # 8.3.59 AdezapratyayayoH
@@ -183,7 +183,7 @@ def asiddha_helper(state):
                 x = Sound(x_).closest(Sounds('car'))
 
         # 8.4.58 anusvArasya yayi parasavarNaH
-        if x == 'M' and y in Pratyahara('yay'):
+        if x == 'M' and y in Sounds('yay'):
             x = Sound(x).closest(Sound(y).savarna_set)
 
         c.s = x

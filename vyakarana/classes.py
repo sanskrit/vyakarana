@@ -13,6 +13,18 @@ import re
 from sanskrit import sounds
 
 
+def memoize(c):
+    cache = {}
+    get_key = lambda a, kw: tuple(a) + (frozenset(kw.items()),)
+    def memoized(*a, **kw):
+        key = get_key(a, kw)
+        if key not in cache:
+            cache[key] = c(*a, **kw)
+        return cache[key]
+    return memoized
+
+
+@memoize
 class Sound(object):
 
     """A Sanskrit sound.
@@ -113,15 +125,20 @@ class Sound(object):
         """Get the various designations that apply to this sound. This
         is used to determine how similar two sounds are to each other.
         """
-        items = set()
+        try:
+            return self._names
+        except AttributeError:
+            pass
 
+        self._names = set()
         categories = [self.ASYA, self.PRAYATNA, self.NASIKA, self.GHOSA,
                       self.PRANA]
         for i, category in enumerate(categories):
             for j, group in enumerate(category):
                 if self.value in group:
-                    items.add('%s_%s' % (i, j))
-        return items
+                    self._names.add('%s_%s' % (i, j))
+
+        return self._names
 
     def savarna(self, other):
         """
@@ -180,6 +197,7 @@ class SoundCollection(object):
         return "<%s('%s')>" % (self.__class__.__name__, self.name)
 
 
+@memoize
 class Sounds(SoundCollection):
 
     """A shorthand for grouping Sanskrit sounds.
@@ -210,6 +228,7 @@ class Sounds(SoundCollection):
                 v.update(Pratyahara(item).values)
 
 
+@memoize
 class Pratyahara(SoundCollection):
 
     """A shorthand for grouping Sanskrit sounds.
@@ -296,8 +315,6 @@ class Term(object):
         # The raw string with 'it' letters and accent marks removed.
         self.value = value
         #
-        self.raw = value
-        self.value = value
         self.samjna = set()
         #
         self.lakshana = set()

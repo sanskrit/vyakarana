@@ -52,7 +52,9 @@ def test_sounds():
 
 def test_pratyahara():
     def yes(p, s, **kw):
-        assert Pratyahara(p, **kw).values == set(s)
+        pra = Pratyahara(p, **kw)
+        assert pra.values == set(s)
+        assert len(pra) == len(s)
 
     yes('aR', 'aAiIuU')
     yes('aR', VOWELS.union(SEMIVOWELS.union(set('h'))), second_R=True)

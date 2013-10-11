@@ -1,4 +1,4 @@
-from classes import Sound, Pratyahara
+from classes import Sound, Sounds
 
 
 def apply(state):
@@ -49,11 +49,11 @@ def ac_sandhi(first, second):
         converter = dict(zip('eEoO', 'ay Ay av Av'.split()))
         f = f.antya(converter[f.value])
 
-    elif f.value in 'aA' and s.value in Pratyahara('ic'):
+    elif f.value in 'aA' and s.value in Sounds('ic'):
         f = f.antya('')
 
         # 6.1.88 vRddhir eci
-        if s.value in Pratyahara('ec'):
+        if s.value in Sounds('ec'):
             s = s.vrddhi()
 
         # 6.1.87 Ad guNaH
