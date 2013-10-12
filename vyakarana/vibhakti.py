@@ -22,7 +22,7 @@ VIBHAKTI = ['prathama', 'dvitiya', 'trtiya', 'caturthi', 'pancami', 'sasthi',
             'saptami']
 
 
-def label_triplets(terms, labels):
+def label_by_triplet(terms, labels):
     """
     Apply a single label to each triplet of terms.
 
@@ -94,7 +94,7 @@ def la_to_sup(state):
     base_sup = [V(x) for x in sup_list]
 
     # Case
-    label_triplets(base_sup, VIBHAKTI)
+    label_by_triplet(base_sup, VIBHAKTI)
 
     # Number
     # 1.4.103 supaH (1.4.102 tAnyekavacananadvivacanabahuvacanAnyekazaH)
@@ -137,7 +137,7 @@ def la_to_tin(state):
 
     # Person
     # 1.4.101 tiGas trINi trINi prathamamadhyamottamAH
-    label_triplets(base_tin, PURUSHA)
+    label_by_triplet(base_tin, PURUSHA)
 
     # Number
     # 1.4.102 tAnyekavacananadvivacanabahuvacanAnyekazaH
