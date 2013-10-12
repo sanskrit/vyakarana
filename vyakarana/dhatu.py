@@ -119,6 +119,11 @@ def pada_options(state):
     elif 'Y' in dhatu.it:
         has_para, has_atma = (True, True)
 
+    # 1.3.76 anupasargAj jJaH
+    # TODO: no upasarga
+    elif dhatu.raw == 'jYA\\':
+        has_para, has_atma = (True, True)
+
     # 1.3.78 zeSAt kartari parasmaipadam
     else:
         has_para, has_atma = (True, False)
