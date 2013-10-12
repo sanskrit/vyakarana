@@ -39,11 +39,10 @@ class Rank(object):
 
     For that reason, this class provides a simple way to regulate
     utsarga-apavāda relationships in the Ashtadhyayi.
-
-    :param value: an integer value corresponding to the current rank.
-                  Higher values dominate lower ones.
     """
 
+    #: Rank of an unknown rule
+    UNKNOWN = 0
     #: Rank of a general rule
     UTSARGA = 1
     #: Rank of a specific rule, as counter to an utsarga
@@ -52,36 +51,3 @@ class Rank(object):
     UPADESHA = 4
     #: Rank of a rule that acts on a specific form
     NIPATANA = 5
-
-    def __init__(self, value=0):
-        self.value = value
-
-    def __int__(self):
-        return self.value
-
-    def __cmp__(self, other):
-        """
-        :param other: a `Rank` or `int`
-        """
-        return int(self) - int(other)
-
-    def __repr__(self):
-        return '<Rank(%s)>' % self.value
-
-    def allows(self, other):
-        """
-        Return whether an operation of rank `other` is allowed.
-
-        Rules of lower rank cannot override rules of higher rank.
-
-        :param other: a `Rank` or `int`
-        """
-        return self.value <= int(other)
-
-    def set(self, other):
-        """
-        Set the value of the current rank.
-
-        :param other: a `Rank` or `int`
-        """
-        self.value = int(other)

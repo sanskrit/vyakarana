@@ -53,7 +53,7 @@ def it_status(anga, p):
     """
 
     status = None
-    rank = Rank()
+    rank = Rank.UNKNOWN
 
     # krt (anit)
     # ----------
@@ -72,7 +72,7 @@ def it_status(anga, p):
     # 7.2.10 ekAca upadeze 'nudAttAt
     if Term(anga.clean).one_syllable and 'anudatta' in anga.it:
         status = 'anit'
-        rank.set(rank.APAVADA)
+        rank = Rank.APAVADA
 
     # 7.2.11 zryukaH kiti
     if 'k' in p.it:
@@ -91,10 +91,10 @@ def it_status(anga, p):
     if 'li~w' in p.lakshana:
         if anga.clean in gana.KRADI:
             status = 'anit'
-            rank.set(rank.UPADESHA)
+            rank = Rank.UPADESHA
         elif status == 'anit':
             status = None
-            rank.set(rank.UTSARGA)
+            rank = Rank.UTSARGA
 
     # 7.2.14 zvIdito niSThAyAm
     # 7.2.15 yasya vibhASA
@@ -125,7 +125,7 @@ def it_status(anga, p):
     # -----------------------
     # 7.2.35 ArdhadhAtukasyeD valAdeH
     if 'ardhadhatuka' in p.samjna and p.adi().value in Sounds('val'):
-        if rank <= rank.UTSARGA:
+        if rank <= Rank.UTSARGA:
             status = 'set'
 
         # 7.2.36 snukramor anAtmanepadanimitte
@@ -211,7 +211,7 @@ def it_status(anga, p):
         # roots are either 'set' or 'anit'. That is, they are 'vet'.
         _63 = anga.antya().value == 'f'
 
-        if rank <= rank.APAVADA:
+        if rank <= Rank.APAVADA:
             if _63:
                 status = 'anit'
             elif _61 or _62:
