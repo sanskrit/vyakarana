@@ -117,12 +117,15 @@ def rt(state):
     if 'li~w' in p.lakshana:
         # 7.4.10 Rtaz ca saMyogAder guNaH
         _10 = anga.samyogadi and anga.ends_in('ft')
-        # 7.4.10 RcchatyRRtAm
+        # 7.4.11 RcchatyRRtAm
         _11 = anga.raw == 'f\\' or anga.ends_in('Ft')
 
         if _10 or _11:
             yield state.swap(i, anga.guna())
 
+        # 7.4.12 zRdRprAM hrasvo vA
+        if anga.raw in ('SF', 'dF', 'pF'):
+            yield state.swap(i, anga.to_hrasva())
 
 @rule
 @require('anga_adesha')
@@ -369,6 +372,11 @@ def lit_a_to_e(state):
         if at_ekahal_madhya and anadesha_adi:
             status = True
 
+        # 6.4.126 na zasadadavAdiguNAnAm
+        vadi = anga.adi().value == 'v'
+        if anga.clean in ('Sas', 'dad') or vadi or 'guna' in anga.samjna:
+            status = False
+
         # 6.4.122 tRRphalabhajatrapaz ca
         if anga.clean in ('tF', 'Pal', 'Baj', 'trap'):
             status = True
@@ -384,12 +392,6 @@ def lit_a_to_e(state):
         # 6.4.125 phaNAM ca saptAnAm
         elif anga.clean in gana.PHAN:
             status = 'optional'
-
-        # 6.4.126 na zasadadavAdiguNAnAm
-        # TODO: guna
-        vadi = anga.adi().value == 'v'
-        if anga.clean in ('Sas', 'dad') or vadi:
-            status = False
 
     if status in (True, 'optional'):
         yield state.swap(i, abhyasa.lopa()).swap(j, anga.al_tasya('a', 'et'))

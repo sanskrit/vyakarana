@@ -499,8 +499,12 @@ class Term(object):
             if L in Sounds('ac'):
                 letters[i] = sounds.guna(letters[i])
                 break
-        value = ''.join(reversed(letters))
-        return self.set_value(value)
+        new_value = ''.join(reversed(letters))
+        result = self.set_value(new_value)
+        if new_value != self.value:
+            return result.add_samjna('guna')
+        else:
+            return result
 
     def lopa(self):
         """
