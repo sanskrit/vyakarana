@@ -4,6 +4,7 @@ from util import SoundEditor
 
 def apply(state):
     editor = SoundEditor(state)
+    print [x.value for x in state]
     for cur in editor:
         next = cur.next
         if next.value is None:
@@ -12,6 +13,8 @@ def apply(state):
         x, y = cur.value, next.value
         if x in Sounds('ac'):
             cur.value, next.value = ac_sandhi(x, y)
+        elif x in Sounds('hal'):
+            cur.value, next.value = hal_sandhi(x, y)
 
     yield editor.join()
 
@@ -50,5 +53,22 @@ def ac_sandhi(x, y):
         # 6.1.87 Ad guNaH
         # 6.1.88 vRddhir eci
         y = Term(y).vrddhi().value if y in Sounds('ec') else Term(y).guna().value
+
+    return x, y
+
+
+def hal_sandhi(x, y):
+    """Apply the rules of hal sandhi to `x` as followed by `y`.
+
+    These rules are from 6.1. A rule is part of hal sandhi iff the first
+    letter is a consonant.
+
+    :param x: the first letter.
+    :param y: the second letter.
+    """
+
+    # 6.1.66 lopo vyor vali
+    if x in Sounds('v y') and y in Sounds('val'):
+        x = ''
 
     return x, y

@@ -46,7 +46,7 @@ def na_lopa(state, i, anga):
 
 @rule
 @once('substitute')
-def substitute(state):
+def substitute(state, i, anga):
     """Rules from the beginning of 7.1"""
     # 7.1.1 yuvoranAkau
     # 7.1.2 AyaneyInIyiyaH phaDhakhachaghAM pratyayAdInAm
@@ -58,13 +58,16 @@ def substitute(state):
     # 7.1.7 vetter vibhASA
     # 7.1.8 bahulaM chandasi
     # TODO: abhyasta
-    i, v = state.find('vibhakti')
-    if False or 'atmanepada' in v.samjna:
+    v = state[i + 1]
+    if 'vibhakti' not in v.samjna:
+        return
+
+    if ('atmanepada' in v.samjna) and anga.antya().value != 'a':
         v = v.replace('J', 'at')
     else:
         v = v.replace('J', 'ant')
 
-    yield state.swap(i, v)
+    yield state.swap(i + 1, v)
 
 
 @rule
@@ -275,6 +278,7 @@ def ku(state):
 
 @rule
 def sarvadhatuke(state):
+    """Apply the rules conditioned by 'aṅgasya' and 'sārvadhātuke'."""
     i, anga = state.find('anga')
     p = state[i+1]
 
@@ -299,6 +303,11 @@ def sarvadhatuke(state):
 
         # 6.4.114 id daridrasya
         # 6.4.115 bhiyo'nyatarasyAm
+
+    if 'N' in p.it:
+        # 7.2.81 Ato GitaH
+        if anga.antya().value == 'a' and p.adi().value == 'A':
+            yield state.swap(i + i, p.adi('iy'))
 
     # 7.3.101 ato dīrgho yañi
     if anga.antya().value == 'a' and p.adi().value in Sounds('yaY'):
