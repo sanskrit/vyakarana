@@ -9,7 +9,7 @@
 """
 
 import pytest
-from util import verb_data
+from helpers import verb_data
 
 
 @pytest.mark.parametrize(('form', 'result_set'), verb_data('lit.csv', 'li~w'))
