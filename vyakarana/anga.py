@@ -23,16 +23,16 @@ import gana
 from classes import Sounds, Sound, Term, Upadesha as U
 from decorators import *
 
-RULES = []
-
-def rule(f):
-    RULES.append(f)
-    return f
+rule, rules = make_rule_decorator('anga')
 
 
 @rule
 @once('na_lopa')
 def na_lopa(state, i, anga):
+    """Causes deletion of 'n'.
+
+    - stamB: staBnAti, staBnoti
+    """
     print 'called', [x.value for x in state], anga
     p = state[i + 1]
 
@@ -55,6 +55,9 @@ def substitute(state):
     # 7.1.3 jho 'ntaH
     # 7.1.4 ad abhyastAt
     # 7.1.5 AtmanepadeSvanataH
+    # 7.1.6 ziGo ruT
+    # 7.1.7 vetter vibhASA
+    # 7.1.8 bahulaM chandasi
     # TODO: abhyasta
     i, v = state.find('vibhakti')
     if False or 'atmanepada' in v.samjna:

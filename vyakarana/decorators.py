@@ -42,3 +42,17 @@ def once(name):
                     yield x
         return wrapped
     return decorator
+
+
+def make_rule_decorator(module_name):
+    """Create a special decorator for marking functions as rules.
+
+    :param module_name: the name associated with the calling module.
+    """
+
+    rule_list = []
+    def rule_decorator(fn):
+        rule_list.append(fn)
+        return fn
+
+    return rule_decorator, rule_list

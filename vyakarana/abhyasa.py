@@ -13,6 +13,8 @@ import gana
 from classes import Term, Pratyahara as P, Upadesha as U, Sound, Sounds
 from decorators import *
 
+rule, rules = make_rule_decorator('abhyasa')
+
 
 @once('dvirvacana')
 def dvirvacana(state):
@@ -70,6 +72,7 @@ def dvirvacana(state):
         yield x
 
 
+@rule
 def abhyasa_adesha(state):
     i, abhyasa = state.find('abhyasa')
     j, dhatu = state.find('dhatu')

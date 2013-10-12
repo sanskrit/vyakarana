@@ -13,6 +13,7 @@ import itertools
 import dhatu as D
 import util
 from classes import Vibhakti as V
+from decorators import *
 
 
 PADA = ['parasmaipada', 'atmanepada']
@@ -20,6 +21,9 @@ PURUSHA = ['prathama', 'madhyama', 'uttama']
 VACANA = ['ekavacana', 'dvivacana', 'bahuvacana']
 VIBHAKTI = ['prathama', 'dvitiya', 'trtiya', 'caturthi', 'pancami', 'sasthi',
             'saptami']
+
+tin_rule, tin_rules = make_rule_decorator('vibhakti')
+la_rule, la_rules = make_rule_decorator('vibhakti')
 
 
 def label_by_triplet(terms, labels):
@@ -106,6 +110,7 @@ def la_to_sup(state):
         yield state.swap(-1, e)
 
 
+@la_rule
 def la_to_tin(state):
     """Apply 3.4.77 - 3.4.117 to convert `la` to `tiN`.
 
@@ -218,6 +223,7 @@ def la_to_tin(state):
             yield state.swap(-1, e2)
 
 
+@tin_rule
 def tin_adesha(state):
     """
     Apply tin substitutions that depend on the dhatu.

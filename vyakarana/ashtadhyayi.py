@@ -140,23 +140,23 @@ class History(list):
 # operations have already been applied. The ordered list ensures that
 # operations apply in a predictable order.
 rules = {
-    'la~w': [vibhakti.la_to_tin],
-    'li~w': [vibhakti.la_to_tin],
-    'lu~w': [vibhakti.la_to_tin],
-    'lf~w': [vibhakti.la_to_tin],
-    'lo~w': [vibhakti.la_to_tin],
-    'la~N': [vibhakti.la_to_tin],
-    'li~N': [vibhakti.la_to_tin],
-    'lu~N': [vibhakti.la_to_tin],
-    'lf~N': [vibhakti.la_to_tin],
-    'tin': [vibhakti.tin_adesha],
-    'anga': anga.RULES,
-    'ardhadhatuka': [pratyaya.it],
-    'abhyasa': [abhyasa.abhyasa_adesha],
-    'vibhakti': [vibhakti.tin_adesha],
+    'la~w': vibhakti.la_rules,
+    'li~w': vibhakti.la_rules,
+    'lu~w': vibhakti.la_rules,
+    'lf~w': vibhakti.la_rules,
+    'lo~w': vibhakti.la_rules,
+    'la~N': vibhakti.la_rules,
+    'li~N': vibhakti.la_rules,
+    'lu~N': vibhakti.la_rules,
+    'lf~N': vibhakti.la_rules,
+    'tin': vibhakti.tin_rules,
+    'anga': anga.rules,
+    'ardhadhatuka': pratyaya.rules,
+    'abhyasa': abhyasa.rules,
+    'vibhakti': vibhakti.tin_rules,
     'dhatu': [dhatu.adesha,
               dhatu.vikarana,
-              abhyasa.dvirvacana],
+              abhyasa.dvirvacana]
 }
 
 

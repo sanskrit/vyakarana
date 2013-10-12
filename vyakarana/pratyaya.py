@@ -14,8 +14,10 @@ from decorators import *
 from util import Rank
 
 TAS = Pratyaya('tAs').add_samjna('ardhadhatuka')
+rule, rules = make_rule_decorator('pratyaya')
 
 
+@rule
 @once('it')
 def it(state):
     """
