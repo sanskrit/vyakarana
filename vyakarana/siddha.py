@@ -8,81 +8,7 @@
     :license: MIT and BSD
 """
 from classes import Sounds, Sound, Pratyahara, Term
-
-
-class StateIndex(object):
-
-    """
-
-    :param i: index to a Term in some state
-    :param j: index to a letter in `state[i]`
-    :param part: the value of `state[i]`
-    :param s: the value of `state[i][j]`
-    """
-
-    def __init__(self, i=None, j=None, part=None, s=None):
-        self.i = i
-        self.j = j
-        self.s = s
-        self.part = part
-
-    def __repr__(self):
-        data = ','.join(repr(x) for x in [self.i, self.j, self.part, self.s])
-        return '<StateIndex(%s)>' % data
-
-    @property
-    def first(self):
-        return self.j == 0
-
-    @property
-    def last(self):
-        return self.j + 1 == len(self.part.value)
-
-    def next(self, state):
-        """Return the next index."""
-        i, j, s, part = self.i, self.j, self.s, self.part
-        try:
-            part = state[i]
-            return StateIndex(i, j+1, part, part.value[j+1])
-        except (IndexError, TypeError):
-            try:
-                part = state[i+1]
-                return StateIndex(i+1, 0, part, part.value[0])
-            except (IndexError, TypeError):
-                return StateIndex()
-
-    def prev(self, state):
-        """Return the previous index."""
-        i, j, s, part = self.i, self.j, self.s, self.part
-        if j > 0:
-            part = state[i]
-            return StateIndex(i, j-1, part, part.value[j-1])
-        while i > 0:
-            part = state[i-1]
-            new_j = len(part.value) - 1
-            if new_j < 0:
-                i -= 1
-                continue
-            else:
-                return StateIndex(i-1, new_j, part, part.value[new_j])
-        else:
-            return StateIndex(state)
-
-
-def iter_sounds_and_terms(state):
-    for i, part in enumerate(state.items):
-        for j, letter in enumerate(part.value):
-            yield StateIndex(i, j, part, letter)
-
-
-def set_sound(state, si):
-    """
-
-    :param si: a StateIndex
-    """
-    c = state.copy()
-    c.items[si.i] = c.items[si.i].set(si.j, si.s)
-    return c
+from util import SoundEditor, SoundIndex
 
 
 def asiddha_helper(state):
@@ -103,16 +29,17 @@ def asiddha_helper(state):
     """
 
     had_rs = False
-    for c in iter_sounds_and_terms(state):
-        p = c.prev(state)
-        n = c.next(state)
-        n2 = n.next(state)
+    editor = SoundEditor(state)
+    for c in editor:
+        p = c.prev
+        n = c.next
+        n2 = n.next
 
-        w, x, y, z = (p.s, c.s, n.s, n2.s)
+        w, x, y, z = (p.value, c.value, n.value, n2.value)
 
         # 8.2.29 skoH saMyogAdyor ante ca
         if x in 'sk' and y in Sounds('hal') and z in Sounds('Jal'):
-            x = '_'
+            x = ''
 
         if y in Sounds('Jal'):
 
@@ -127,7 +54,7 @@ def asiddha_helper(state):
 
             # 8.2.36 vrazca-bhrasja-sRja-mRja-yaja-rAja-bhrAjacCazAM SaH
             roots = {'vraSc', 'Brasj', 'sfj', 'mfj', 'yaj', 'rAj', 'BrAj'}
-            if c.last and (c.part.value in roots or c.part.antya().value in 'SC'):
+            if c.last and (c.term.value in roots or c.term.antya().value in 'SC'):
                 x = 'z'
 
         # 8.2.41 SaDhoH kaH si
@@ -144,8 +71,8 @@ def asiddha_helper(state):
 
         # 8.3.59 AdezapratyayayoH
         if w in Sounds('iN ku'):
-            if not c.last and x == 's' and (c.part.raw[0] == 'z'
-                                         or 'pratyaya' in c.part.samjna):
+            if not c.last and x == 's' and (c.term.raw[0] == 'z'
+                                         or 'pratyaya' in c.term.samjna):
                 x = 'z'
 
         # 8.3.78 iNaH SIdhvaMluGliTAM dho 'GgAt
@@ -154,7 +81,7 @@ def asiddha_helper(state):
         if (x == 'D'
                 and w in Pratyahara('iR', second_R=True)
                 and c.first  # not triggered by iT
-                and 'li~w' in c.part.lakshana):
+                and 'li~w' in c.term.lakshana):
             x = 'Q'
 
         # 8.4.1 raSAbhyAM no NaH samAnapade
@@ -188,7 +115,7 @@ def asiddha_helper(state):
                 x = Sound(x_).closest(Sounds('jaS'))
 
             # 8.4.54 abhyAse car ca
-            if c.part.any_samjna('abhyasa') and c.first:
+            if c.term.any_samjna('abhyasa') and c.first:
                 x = Sound(x_).closest(Sounds('car jaS'))
 
             # 8.4.55 khari ca
@@ -199,12 +126,11 @@ def asiddha_helper(state):
         if x == 'M' and y in Sounds('yay'):
             x = Sound(x).closest(Sound(y).savarna_set)
 
-        c.s = x
-        state = set_sound(state, c)
+        c.value = x
 
-
-    string = ''.join(x.value.replace('_', '') for x in state)
-    pada = Term(string)
+    new_state = editor.join()
+    final_result = ''.join(x.value for x in new_state)
+    pada = Term(final_result)
 
     yield state.replace_all([pada])
 

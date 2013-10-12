@@ -8,7 +8,11 @@
     :license: MIT and BSD
 """
 
+import pytest
+
 from vyakarana.util import *
+from vyakarana.ashtadhyayi import State
+from vyakarana.classes import *
 
 
 def test_iter_group():
@@ -33,3 +37,29 @@ def test_rank():
     r5 = Rank.NIPATANA
 
     assert r1 < r2 < r3 < r4 < r5
+
+
+@pytest.fixture
+def editor_data():
+    data = 'abcdefghijklmnopqrstuvxwyz1234567890'
+    terms = [Term(group) for group in iter_group(data, 6)]
+    state = State(terms)
+    editor = SoundEditor(state)
+    return (data, terms, state, editor)
+
+
+def test_sound_editor_iter(editor_data):
+    data, terms, state, editor = editor_data
+    for i, index in enumerate(editor):
+        assert index.value == data[i]
+
+
+def test_sound_editor_prev_next(editor_data):
+    data, terms, state, editor = editor_data
+    for i, index in enumerate(editor):
+        prev = index.prev
+        next = index.next
+        if i > 0:
+            assert prev.value == data[i - 1]
+        if i < len(data) - 1:
+            assert next.value == data[i + 1]

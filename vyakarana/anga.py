@@ -33,7 +33,6 @@ def na_lopa(state, i, anga):
 
     - stamB: staBnAti, staBnoti
     """
-    print 'called', [x.value for x in state], anga
     p = state[i + 1]
 
     # 6.2.23 znAn nalopaH (TODO)
