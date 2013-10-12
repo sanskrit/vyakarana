@@ -858,7 +858,8 @@ class Pratyaya(Upadesha):
             self.value = ''
 
         # 3.4.113 tiGzit sArvadhAtukam
-        if 'S' in self.it:
+        # 3.4.115 liT ca (ArdhadhAtukam)
+        if 'S' in self.it and 'li~w' not in self.lakshana:
             self.samjna.add('sarvadhatuka')
 
         # 1.2.4 sArvadhAtukam apit

@@ -303,6 +303,21 @@ def sarvadhatuke(state):
         yield state.swap(i, anga.to_dirgha())
 
 
+@rule
+@once('siti')
+def siti(state, i, anga):
+    """Rules conditioned by a suffix starting with indicatory 'S'."""
+    p = state[i + 1]
+    if p.raw[0] != 'S':
+        return
+
+    # 7.3.79 jJAjanor jA
+    if anga.raw in ('jYA\\', 'janI~\\'):
+        yield state.swap(i, anga.set_value('jA'))
+    else:
+        yield state
+
+
 def lit_a_to_e(state):
     """Applies rules that cause ed-ādeśa and abhyāsa-lopa.
 
