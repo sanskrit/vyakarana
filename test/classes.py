@@ -189,7 +189,6 @@ def test_pratyaya():
     ]
     for raw, value, its in pairs:
         p = Pratyaya(raw)
-        print raw, p.it == set(its), Pratyaya('Syan').it
         assert 'pratyaya' in p.samjna
         assert p.raw == raw
         assert p.value == value
