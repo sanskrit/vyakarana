@@ -166,13 +166,17 @@ def apply_normal_rules(state):
     :param state:
     """
     yielded = False
-    for item in reversed(state):
+    for i, item in reversed(list(enumerate(state))):
         keys = item.samjna.union(item.lakshana)
 
         for key in keys:
             # Apply rules and yield new states
             for rule in rules.get(key, []):
-                for new_state in rule(state):
+                try:
+                    results = rule(state, i, item)
+                except TypeError:
+                    results = rule(state)
+                for new_state in results:
                     yield new_state
                     yielded = True
                 if yielded:

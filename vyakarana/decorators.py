@@ -30,11 +30,15 @@ def require(name):
 def once(name):
     def decorator(fn):
         @wraps(fn)
-        def wrapped(state):
+        def wrapped(state, *a):
             if name in state.ops:
                 return
             state = state.add_op(name)
-            for x in fn(state):
-                yield x
+            try:
+                for x in fn(state, *a):
+                    yield x
+            except TypeError:
+                for x in fn(state):
+                    yield x
         return wrapped
     return decorator

@@ -29,6 +29,22 @@ def rule(f):
     RULES.append(f)
     return f
 
+
+@rule
+@once('na_lopa')
+def na_lopa(state, i, anga):
+    print 'called', [x.value for x in state], anga
+    p = state[i + 1]
+
+    # 6.2.23 znAn nalopaH (TODO)
+    # 6.2.24 aniditAM hala upadhAyAH kGiti
+    na_upadha = anga.upadha().value in Sounds('Yam')
+    kniti = p.any_it('k', 'N')
+    if 'i' not in anga.it and anga.hal and na_upadha and kniti:
+        anga = anga.upadha('')
+        yield state.swap(i, anga)
+
+
 @rule
 @once('substitute')
 def substitute(state):
