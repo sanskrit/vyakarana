@@ -72,7 +72,7 @@ class State(object):
         c.prev = self
         return c
 
-    def find(self, token):
+    def find(self, token, empty=True):
         """Find the index and value of the last term with `token`
         among its samjna or lakshana sets.
 
@@ -81,7 +81,8 @@ class State(object):
         length = len(self.items)
         for i, x in enumerate(self.items[::-1]):
             if token in x.samjna or token in x.lakshana:
-                return (length - i - 1, x)
+                if empty or x.value:
+                    return (length - i - 1, x)
         return (None, None)
 
     def find_all(self, token):

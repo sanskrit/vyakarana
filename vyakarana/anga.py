@@ -224,7 +224,7 @@ def ku(state):
     :param anga:
     """
     i, abhyasa = state.find('abhyasa')
-    j, anga = state.find('anga')
+    j, anga = state.find('anga', empty=False)
     p = state[j+1]
 
     # 7.3.52 cajoH ku ghiNyatoH
@@ -234,7 +234,6 @@ def ku(state):
     if abhyasa:
         # 7.3.55 abhyAsAc ca
         _55 = anga.clean == 'han'
-
         # 7.3.56 her acaGi
         _56 = anga.clean == 'hi' and 'caN' not in p.lakshana
         if _55 or _56:
@@ -296,9 +295,9 @@ def lit_a_to_e(state):
     :param state: some State
     """
     i, abhyasa = state.find('abhyasa')
-    j, anga = state.find('anga')
+    j, anga = state.find('dhatu')
     # The right context of `anga`. This is usually a pratyaya.
-    p = state[j+1]
+    k, p = state.find('pratyaya')
     # True, False, or 'optional'. Crude, but it works.
     status = False
 
@@ -316,7 +315,7 @@ def lit_a_to_e(state):
         kniti = 'k' in p.it or 'N' in p.it
 
         # 6.4.121 thali ca seTi
-        thali_seti =  p.value == 'iTa'
+        thali_seti = p.value == 'iTa'
 
         # This substitution is valid only in these two conditions.
         if not (kniti or thali_seti):

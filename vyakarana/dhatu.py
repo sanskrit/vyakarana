@@ -35,7 +35,8 @@ def adesha(state):
     # when the suffix 'eS' follows. 'eS' has indicatory 'S', so normally
     # the rule would not apply; but with this change in interpretation,
     # the rule can apply.
-    if Dhatu(dhatu.raw).ec and tin.raw[0] != 'S':
+    _45 = Dhatu(dhatu.raw).ec and tin.raw[0] != 'S'
+    if _45:
         dhatu = dhatu.antya('A')
         yield state.swap(i, dhatu)
 
