@@ -86,8 +86,9 @@ def asiddha_helper(state):
 
         # 8.4.1 raSAbhyAM no NaH samAnapade
         # 8.4.2 aTkupvAGnuMvyavAye 'pi
+        # According to commentary, 8.4.1 also applies to 'f' and 'F'.
         # TODO: AG, num
-        had_rs = had_rs or x in 'rz'
+        had_rs = had_rs or x in 'rzfF'
         if x == 'n' and had_rs:
             x = 'R'
             had_rs = False

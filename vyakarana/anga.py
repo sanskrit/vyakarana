@@ -51,9 +51,6 @@ def substitute(state, i, anga):
     # 7.1.1 yuvoranAkau
     # 7.1.2 AyaneyInIyiyaH phaDhakhachaghAM pratyayAdInAm
 
-    # 7.1.3 jho 'ntaH
-    # 7.1.4 ad abhyastAt
-    # 7.1.5 AtmanepadeSvanataH
     # 7.1.6 ziGo ruT
     # 7.1.7 vetter vibhASA
     # 7.1.8 bahulaM chandasi
@@ -62,7 +59,12 @@ def substitute(state, i, anga):
     if 'vibhakti' not in v.samjna:
         return
 
-    if ('atmanepada' in v.samjna) and anga.antya().value != 'a':
+    # 7.1.3 jho 'ntaH
+    # 7.1.4 ad abhyastAt
+    # 7.1.5 AtmanepadeSvanataH
+    _4 = 'abhyasta' in anga.samjna
+    _5 = 'atmanepada' in v.samjna and anga.antya().value != 'a'
+    if _4 or _5:
         v = v.replace('J', 'at')
     else:
         v = v.replace('J', 'ant')
