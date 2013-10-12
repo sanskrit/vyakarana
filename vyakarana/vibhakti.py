@@ -159,9 +159,9 @@ def la_to_tin(state):
             v.samjna.add('ardhadhatuka')
         else:
             v.samjna.add('sarvadhatuka')
-            # 1.2.4 sArvadhAtukam apit (-> kit)
+            # 1.2.4 sArvadhAtukam apit (-> Nit)
             if 'p' not in v.it:
-                v.it.add('k')
+                v.it.add('N')
 
     # Split in parasmaipada and atmanepada, use as appropriate
     p_base, a_base = list(util.iter_group(base_tin, 9))

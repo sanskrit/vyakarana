@@ -864,7 +864,7 @@ class Pratyaya(Upadesha):
 
         # 1.2.4 sArvadhAtukam apit
         if 'sarvadhatuka' in self.samjna and 'p' not in self.it:
-            self.it.add('k')
+            self.it.add('N')
 
 
 class Krt(Pratyaya):

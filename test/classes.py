@@ -18,7 +18,8 @@ STOPS = set('kKgGcCjJwWqQtTdDpPbB')
 NASALS = set('NYRnm')
 SEMIVOWELS = set('yrlv')
 SAVARGA = set('Szsh')
-CONSONANTS = STOPS.union(NASALS).union(SEMIVOWELS).union(SAVARGA)
+CONSONANTS = STOPS | NASALS | SEMIVOWELS | SAVARGA
+
 
 def test_sound():
     # Simple vowels
@@ -181,9 +182,9 @@ def test_pratyaya():
         ('kyac', 'ya', ['k', 'c']),
 
         ('Sap', 'a', ['S', 'p']),
-        ('Syan', 'ya', ['S', 'n', 'k']),
-        ('Sa', 'a', ['S', 'k']),
-        ('Snam', 'na', ['S', 'm', 'k']),
+        ('Syan', 'ya', ['S', 'n', 'N']),
+        ('Sa', 'a', ['S', 'N']),
+        ('Snam', 'na', ['S', 'm', 'N']),
         ('Ric', 'i', ['R', 'c']),
         ('kvasu~', 'vas', ['k', 'u~'])
     ]
