@@ -322,8 +322,16 @@ def sarvadhatuke(state):
         yield state.swap(i, anga.to_dirgha())
 
 
+@tasya(None, c.samjna('anga'), c.raw('Syan'))
+def syani(left, anga, right):
+    """Rules conditioned by the suffix 'Syan'."""
+    # 7.3.74 śamām aṣṭānāṃ dīrghaḥ śyani
+    if anga.raw in DP.dhatu_set('Samu~', 'madI~'):
+        return o.dirgha
+
+
 @tasya(None, c.samjna('anga'), c.Sit_adi)
-def angasya_siti(left, anga, right):
+def siti(left, anga, right):
     """Rules conditioned by a suffix starting with indicatory 'S'.
 
     7.3.83 is also included here. It seems silly to create a separate
