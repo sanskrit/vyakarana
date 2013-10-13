@@ -21,7 +21,9 @@
 
 import gana
 import context as c
+import operators as o
 from classes import Sounds, Sound, Term, Upadesha as U
+from dhatupatha import DHATUPATHA as DP
 from decorators import *
 
 rule, rules = make_rule_decorator('anga')
@@ -320,10 +322,52 @@ def sarvadhatuke(state):
         yield state.swap(i, anga.to_dirgha())
 
 
-@tasya(None, c.raw('jYA\\', 'janI~\\'), c.Sit_adi)
-def siti(left, anga, right):
-    """Rules conditioned by a suffix starting with indicatory 'S'."""
-    return 'jA'
+@tasya(None, c.samjna('anga'), c.Sit_adi)
+def angasya_siti(left, anga, right):
+    """Rules conditioned by a suffix starting with indicatory 'S'.
+
+    7.3.83 is also included here. It seems silly to create a separate
+    function just for that rule, and there's no other place where it
+    fits better.
+    """
+    # 7.3.75 ṣṭhivuklamyācamāṃ śiti (TODO: Acam)
+    if anga.raw in ('zWivu~', 'klamu~'):
+        return o.dirgha
+
+    # 7.3.76 kramaḥ parasmaipadeṣu
+    if anga.raw == 'kramu~' and 'parasmaipada' in right.samjna:
+        return o.dirgha
+
+    # 7.3.77 iṣugamiyamāṃ chaḥ
+    if anga.raw in ('izu~', 'ga\mx~', 'ya\ma~'):
+        return 'C'
+
+    # 7.3.78 pāghrādhmāsthāmnādāṇdṛśyartiśartiśadasadāṃ
+    #        pibajighradhamatiṣṭhamanayacchapaśyarcchadhauśīyasīdaḥ
+    roots = ['pA\\', 'GrA\\', 'DmA\\', 'zWA\\', 'mnA\\', 'dA\R',
+             'df\Si~r', 'f\\', 'sf\\', 'Sa\dx~', 'za\dx~']
+    stems = ['piba', 'jiGra', 'Dama', 'tizWa', 'mana', 'yacCa', 'paSya',
+             'fcCa', 'DO', 'SIya', 'sIda']
+    for i, root in enumerate(roots):
+        if anga.raw == root:
+            return stems[i]
+
+    # 7.3.79 jñājanor jā
+    if anga.raw in ('jYA\\', 'janI~\\'):
+        return 'jA'
+
+    # 7.3.80 pvādīnāṃ hrasvaḥ
+    if anga.raw in DP.dhatu_set('pUY', 'plI\\'):
+        return o.hrasva
+
+    # 7.3.81 mīnāter nigame (TODO)
+    # 7.3.82 mider guṇaḥ
+    if anga.raw == 'YimidA~':
+        return o.guna
+
+    # 7.3.83 jusi ca
+    if right.raw == 'jus':
+        return o.guna
 
 
 def lit_a_to_e(state):

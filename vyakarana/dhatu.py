@@ -46,7 +46,7 @@ def vikarana(state):
     """Vikarana for classes 1 through 9."""
 
     i, dhatu = state.find('dhatu')
-    gana_set = DP.gana(dhatu)
+    gana_set = DP.gana_set(dhatu)
 
     def _yield(s):
         p = Pratyaya(s)

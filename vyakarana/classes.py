@@ -24,7 +24,6 @@ def memoize(c):
     return memoized
 
 
-@memoize
 class Sound(object):
 
     """A Sanskrit sound.

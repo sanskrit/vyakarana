@@ -88,7 +88,11 @@ def tasya(left_ctx, cur_ctx, right_ctx):
         @wraps(fn)
         def wrapped(left, cur, right):
             result = fn(left, cur, right)
+            if result is None:
+                yield left, cur, right
+                return
 
+            # String substitution
             if isinstance(result, basestring):
                 # 1.1.52 alo 'ntyasya
                 # 1.1.53 Gic ca (TODO)
@@ -97,12 +101,18 @@ def tasya(left_ctx, cur_ctx, right_ctx):
                 # 1.1.55 anekAlSit sarvasya
                 else:
                     cur = cur.set_value(result)
+
+            # Operator substitution
+            elif hasattr(result, '__call__'):
+                cur = result(cur, right=right)
+
+            # "Nearest" substitution
             else:
                 # 1.1.50 sthAne 'ntaratamaH
                 last = Sound(cur.antya().value).closest(result)
                 cur = cur.antya(last)
 
-            yield (left, cur, right)
+            yield left, cur, right
 
         wrapped.matches = matches
         NEW_RULES.append(wrapped)
