@@ -54,6 +54,7 @@ class Rank(object):
 
 
 class SoundEditor(object):
+
     def __init__(self, state):
         self.state = state
         self.data = [list(term.value) for term in state]
@@ -98,6 +99,10 @@ class SoundEditor(object):
 
 
 class SoundIndex(object):
+
+    __slots__ = ['_value', 'term', 'state_index', 'term_index',
+                 'absolute_index', 'editor', 'first', 'last']
+
     def __init__(self, value=None, term=None, state_index=None,
                  term_index=None, absolute_index=None, editor=None):
         #: The value associated with this index.

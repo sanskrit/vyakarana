@@ -262,9 +262,9 @@ def ku(state):
 
     if abhyasa:
         # 7.3.55 abhyAsAc ca
-        _55 = anga.clean == 'han'
+        _55 = anga.raw == 'ha\\na~'
         # 7.3.56 her acaGi
-        _56 = anga.clean == 'hi' and 'caN' not in p.lakshana
+        _56 = anga.raw == 'hi\\' and 'caN' not in p.lakshana
         if _55 or _56:
             yield state.swap(j, anga.al_tasya('h', 'ku'))
 
@@ -272,11 +272,11 @@ def ku(state):
             sub = False
 
             # 7.3.57 sanliTor jeH
-            if anga.clean == 'ji':
+            if anga.raw == 'ji\\':
                 sub = True
 
             # 7.3.58 vibhASA ceH
-            elif anga.clean == 'ci':
+            elif anga.raw == 'ci\Y':
                 yield state
                 sub = True
 
@@ -418,11 +418,11 @@ def lit_a_to_e(state):
 
         # 6.4.126 na zasadadavAdiguNAnAm
         vadi = anga.adi().value == 'v'
-        if anga.clean in ('Sas', 'dad') or vadi or 'guna' in anga.samjna:
+        if anga.raw in ('Sasu~', 'dada~\\') or vadi or 'guna' in anga.samjna:
             status = False
 
         # 6.4.122 tRRphalabhajatrapaz ca
-        if anga.clean in ('tF', 'Pal', 'Baj', 'trap'):
+        if anga.raw in ('tF', 'YiPalA~', 'Ba\ja~\\', 'trapU~\z'):
             status = True
 
         # 6.4.123 rAdho hiMsAyAm
@@ -430,7 +430,7 @@ def lit_a_to_e(state):
             status = 'optional'
 
         # 6.4.124 vA jRRbhramutrasAm
-        elif anga.clean in ('jF', 'Bram', 'tras'):
+        elif anga.raw in ('jF', 'Bramu~', 'trasI~'):
             status = 'optional'
 
         # 6.4.125 phaNAM ca saptAnAm

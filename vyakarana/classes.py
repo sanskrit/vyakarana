@@ -312,6 +312,8 @@ class Term(object):
                   the augment 'v' (from 'vu~k').
     """
 
+    __slots__ = ['raw', 'value', 'samjna', 'lakshana', 'parts']
+
     def __init__(self, value):
         # The raw string, including 'it' letters and accent marks
         self.raw = value
@@ -694,11 +696,11 @@ class Upadesha(Term):
 
     """A Term with indicatory letters."""
 
+    __slots__ = ['it']
     nasal_re = re.compile('([aAiIuUfFxXeEoO]~)')
 
     def __init__(self, raw=None, **kw):
         Term.__init__(self, raw or '')
-        self.svara = raw
         self.raw = None
         self.value = None
         self.it = set()
@@ -812,6 +814,9 @@ class Upadesha(Term):
 # -----
 
 class Anga(Upadesha):
+
+    __slots__ = []
+
     def set_raw(self, value, **kw):
         Upadesha.set_raw(self, value, **kw)
         self.samjna.add('anga')
@@ -821,6 +826,7 @@ class Dhatu(Anga):
     """
     An Upadesha that describes a verb root
     """
+
     def __init__(self, *a, **kw):
         Upadesha.__init__(self, *a, **kw)
         value = self.value

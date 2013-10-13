@@ -27,7 +27,7 @@ class State(object):
     that were applied to produce the State.
     """
 
-    # __slots__ = ['items', 'ops', 'prev']
+    __slots__ = ['items', 'ops', 'prev']
 
     def __init__(self, items):
 

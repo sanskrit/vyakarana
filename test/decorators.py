@@ -14,7 +14,7 @@ def verify(cases, rule, to_window=str2window):
         window = to_window(original)
         assert rule.matches(*window)
 
-        result = window2str(rule(*window))
+        result = window2str(list(rule(*window))[0])
         assert result == expected
 
 
