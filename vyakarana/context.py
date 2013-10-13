@@ -70,3 +70,7 @@ def or_(*functions):
     def func(term, **kw):
         return any(f(term, **kw) for f in functions)
     return func
+
+
+def Sit_adi(term):
+    return term.raw and term.raw[0] == 'S'

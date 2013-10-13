@@ -15,6 +15,7 @@ import pratyaya
 import sandhi
 import siddha
 import vibhakti
+from decorators import NEW_RULES
 
 initialized = False
 
@@ -122,6 +123,23 @@ class State(object):
         for s in reversed(stages):
             print '    ', s
 
+    def window(self, i):
+        x, y, z = None, self.items[i], None
+        if i > 0:
+            x = self.items[i - 1]
+        if i + 1 < len(self.items):
+            z = self.items[i + 1]
+        return x, y, z
+
+    def swap_window(self, i, window):
+        c = self.copy()
+        c.items[i] = window[1]
+        if i > 0:
+            c.items[i - 1] = window[0]
+        if i + 1 < len(self.items):
+            c.items[i + 1] = window[-1]
+        return c
+
 
 class History(list):
     pass
@@ -166,6 +184,21 @@ def apply_normal_rules(state):
     :param state:
     """
     yielded = False
+
+    # new-style
+    for i, item in enumerate(state):
+        window = state.window(i)
+        for rule in NEW_RULES:
+            if not rule.matches(*window):
+                continue
+            for new_window in rule(*window):
+                if new_window != window:
+                    yield state.swap_window(i, new_window)
+                    yielded = True
+            if yielded:
+                return
+
+
     for i, item in reversed(list(enumerate(state))):
         keys = item.samjna.union(item.lakshana)
 

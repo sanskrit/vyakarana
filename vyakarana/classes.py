@@ -117,10 +117,6 @@ class Sound(object):
         self_names = self.names()
         for x in items:
             score = len(Sound(x).names().intersection(self_names))
-            print self.value, x, score
-            print self.names()
-            print Sound(x).names()
-            print
             if score > best_score:
                 best, best_score = x, score
         return best
@@ -329,7 +325,9 @@ class Term(object):
         self.parts = [self]
 
     def __eq__(self, other):
-        raise NotImplementedError
+        return (self.raw == other.raw and self.value == other.value
+                and self.samjna == other.samjna
+                and self.lakshana == other.lakshana)
 
     def __nonzero__(self):
         return bool(self.value)

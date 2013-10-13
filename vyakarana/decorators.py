@@ -11,6 +11,9 @@
 from functools import wraps
 from classes import *
 
+# New-style rules. Temporary.
+NEW_RULES = []
+
 
 def require(name):
     """
@@ -99,8 +102,9 @@ def tasya(left_ctx, cur_ctx, right_ctx):
                 last = Sound(cur.antya().value).closest(result)
                 cur = cur.antya(last)
 
-            return (left, cur, right)
+            yield (left, cur, right)
 
         wrapped.matches = matches
+        NEW_RULES.append(wrapped)
         return wrapped
     return decorator

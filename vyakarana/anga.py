@@ -20,6 +20,7 @@
 """
 
 import gana
+import context as c
 from classes import Sounds, Sound, Term, Upadesha as U
 from decorators import *
 
@@ -35,8 +36,8 @@ def na_lopa(state, i, anga):
     """
     p = state[i + 1]
 
-    # 6.2.23 znAn nalopaH (TODO)
-    # 6.2.24 aniditAM hala upadhAyAH kGiti
+    # 6.4.23 znAn nalopaH (TODO)
+    # 6.4.24 aniditAM hala upadhAyAH kGiti
     na_upadha = anga.upadha().value in Sounds('Yam')
     kniti = p.any_it('k', 'N')
     if 'i' not in anga.it and anga.hal and na_upadha and kniti:
@@ -319,19 +320,10 @@ def sarvadhatuke(state):
         yield state.swap(i, anga.to_dirgha())
 
 
-@rule
-@once('siti')
-def siti(state, i, anga):
+@tasya(None, c.raw('jYA\\', 'janI~\\'), c.Sit_adi)
+def siti(left, anga, right):
     """Rules conditioned by a suffix starting with indicatory 'S'."""
-    p = state[i + 1]
-    if p.raw[0] != 'S':
-        return
-
-    # 7.3.79 jJAjanor jA
-    if anga.raw in ('jYA\\', 'janI~\\'):
-        yield state.swap(i, anga.set_value('jA'))
-    else:
-        yield state
+    return 'jA'
 
 
 def lit_a_to_e(state):
