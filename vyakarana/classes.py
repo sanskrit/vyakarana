@@ -117,6 +117,10 @@ class Sound(object):
         self_names = self.names()
         for x in items:
             score = len(Sound(x).names().intersection(self_names))
+            print self.value, x, score
+            print self.names()
+            print Sound(x).names()
+            print
             if score > best_score:
                 best, best_score = x, score
         return best
@@ -207,9 +211,13 @@ class Sounds(SoundCollection):
 
     def __init__(self, phrase):
         self.name = phrase
+        if isinstance(phrase, basestring):
+            items = phrase.split()
+        else:
+            items = phrase
 
         v = self.values = set()
-        for item in phrase.split():
+        for item in items:
 
             first, last = (item[0], item[-1])
             simple_vowel = len(item) == 1 and item in Pratyahara('ak')

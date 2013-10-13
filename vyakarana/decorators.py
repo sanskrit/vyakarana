@@ -9,6 +9,7 @@
 """
 
 from functools import wraps
+from classes import *
 
 
 def require(name):
@@ -56,3 +57,50 @@ def make_rule_decorator(module_name):
         return fn
 
     return rule_decorator, rule_list
+
+
+def always_true(*a, **kw):
+    return True
+
+
+def tasya(left_ctx, cur_ctx, right_ctx):
+    """Decorator for rules that perform substitution ('tasya').
+
+    :param left_ctx: a context function that matches what comes before
+                     the sthAna. If ``None``, accept all contexts.
+    :param cur_ctx: a context function that matches the sthAna.
+                    If ``None``, accept all contexts.
+    :param right_ctx: a context function that matches what comes after
+                     the sthAna. If ``None``, accept all contexts.
+    """
+    # If ctx is ``None`` or undefined, it's trivially true.
+    left_ctx = left_ctx or always_true
+    cur_ctx = cur_ctx or always_true
+    right_ctx = right_ctx or always_true
+
+    def matches(left, cur, right):
+        return left_ctx(left) and cur_ctx(cur) and right_ctx(right)
+
+    def decorator(fn):
+        @wraps(fn)
+        def wrapped(left, cur, right):
+            result = fn(left, cur, right)
+
+            if isinstance(result, basestring):
+                # 1.1.52 alo 'ntyasya
+                # 1.1.53 Gic ca (TODO)
+                if len(result) == 1:
+                    cur = cur.antya(result)
+                # 1.1.55 anekAlSit sarvasya
+                else:
+                    cur = cur.set_value(result)
+            else:
+                # 1.1.50 sthAne 'ntaratamaH
+                last = Sound(cur.antya().value).closest(result)
+                cur = cur.antya(last)
+
+            return (left, cur, right)
+
+        wrapped.matches = matches
+        return wrapped
+    return decorator
