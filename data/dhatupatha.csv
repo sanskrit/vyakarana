@@ -76,6 +76,7 @@
 1,76,klidi~
 1,77,SunDa~
 1,78,SIkf~\
+# 1,79,{sIkf~\
 1,80,lokf~\
 1,81,Slokf~\
 1,82,srokf~\
@@ -162,6 +163,8 @@
 1,163,igi~
 1,164,rigi~
 1,165,ligi~
+# 1,166,(muKi~
+# 1,167,(Taki~
 1,168,riKa~
 1,169,riKi~
 1,170,liKa~
@@ -172,11 +175,14 @@
 1,175,yugi~
 1,176,jugi~
 1,177,bugi~
+# 1,178,{vugi~
 1,179,GaGa~
+# 1,180,{GagGa~
 1,181,daGi~
 1,182,laGi~
 1,183,maGi~
 1,184,SiGi~
+# 1,185,(arGa~
 1,186,varca~\
 1,187,zaca~\
 1,188,locf~\
@@ -197,7 +203,10 @@
 1,203,ejf~\
 1,204,Brejf~\
 1,205,BrAjf~\
+# 1,206,(rejf~\
 1,207,Ija\
+# 1,208,{Iji~\
+# 1,209,(vIja~\
 1,210,Suca~
 1,211,kuca~
 1,212,kuYca~
@@ -235,10 +244,13 @@
 1,244,ucI~
 1,245,Draja~
 1,246,Draji~
+# 1,247,(vraja~
+# 1,248,(vraji~
 1,249,Dfja~
 1,250,Dfji~
 1,251,Dvaja~
 1,252,Dvaji~
+# 1,253,(Drija~
 1,254,kUja~
 1,255,kuji~
 1,256,arja~
@@ -296,6 +308,7 @@
 1,308,muqi~\
 1,309,tuqi~\
 1,310,huqi~\
+# 1,311,(sPuqi~\
 1,312,caqi~\
 1,313,Saqi~\
 1,314,taqi~\
@@ -305,6 +318,7 @@
 1,318,heqf~\
 1,319,hoqf~\
 1,320,bAqf\
+# 1,321,{vAqf\
 1,322,drAqf~\
 1,323,DrAqf~\
 1,324,SAqf~\
@@ -312,6 +326,7 @@
 1,326,yOwf~
 1,327,mrewf~
 1,328,mreqf~
+# 1,329,{mlewf~
 1,330,kawe~
 1,331,cawe~
 1,332,awa~
@@ -342,6 +357,7 @@
 1,357,iwa~
 1,358,kiwa~
 1,359,kawI~
+# 1,360,(heWa~
 1,361,maqi~
 1,362,kuqi~
 1,363,kuwi~
@@ -359,10 +375,12 @@
 1,375,ruqi~
 1,376,luqi~
 1,377,vawi~
+# 1,378,{bawi~
 1,379,sPuwi~r
 1,380,sPuwi~
 1,381,paWa~
 1,382,vaWa~
+# 1,383,{baWa~
 1,384,maWa~
 1,385,kaWa~
 1,386,raWa~
@@ -422,6 +440,7 @@
 1,440,kabf~\
 1,441,klIbf~\
 1,442,kzIbf~\
+# 1,443,{kzIvf~\
 1,444,SIBf~\
 1,445,bIBf~\
 1,446,cIBf~\
@@ -598,6 +617,7 @@
 1,617,Kelf~
 1,618,kzvelf~
 1,619,vella~
+# 1,620,{vehla~
 1,621,pelf~
 1,622,Pelf~
 1,623,Self~
@@ -639,6 +659,8 @@
 1,659,marva~
 1,660,carva~
 1,661,Barva~
+# 1,662,{Barba~
+# 1,663,{BarBa~
 1,664,karva~
 1,665,Karva~
 1,666,garva~
@@ -660,7 +682,7 @@
 1,682,kfvi~
 1,683,mava~
 1,684,ava~
-1,685,DAvu~\
+1,685,DAvu~^
 1,686,Dukza~\
 1,687,Dikza~\
 1,688,vfkza~\
@@ -691,7 +713,7 @@
 1,713,rAsf~\
 1,714,Rasa~\
 1,715,Byasa~\
-1,716,ANah\
+1,716,ANaH\
 1,717,grasu~\
 1,718,glasu~\
 1,719,Iha~\
@@ -741,6 +763,7 @@
 1,763,drAkzi~
 1,764,DrAkzi~
 1,765,DvAkzi~
+# 1,766,{DmAkzi~
 1,767,cUza~
 1,768,tUza~
 1,769,pUza~
@@ -748,6 +771,7 @@
 1,771,lUza~
 1,772,rUza~
 1,773,SUza~
+# 1,774,{sUza~
 1,775,yUza~
 1,776,jUza~
 1,777,BUza~
@@ -825,6 +849,7 @@
 1,849,ruwa~\
 1,850,luwa~\
 1,851,luWa~\
+1,852,uWa~\
 1,853,SuBa~\
 1,854,kzuBa~\
 1,855,RaBa~\
@@ -839,7 +864,96 @@
 1,864,SfDu~\
 1,865,syandU~\
 1,866,kfpU~\
-1,956,rAjf~\
+1,867,Gawa~\
+1,868,vyaTa~\
+1,869,praTa~\
+1,870,prasa~\
+1,871,mrada~\
+1,872,sKada~\
+1,873,kzaji~\
+1,874,dakza~\
+1,875,kfpa~\
+1,876,krapa~\
+1,877,kapa~\
+1,878,kadi~\
+1,879,kradi~\
+1,880,kladi~\
+1,881,kada~\
+1,882,krada~\
+1,883,klada~\
+1,884,YitvarA~\
+1,885,jvara~
+1,886,gaqa~
+1,887,heqa~
+1,888,vawa~
+1,889,Bawa~
+1,890,Rawa~
+1,891,zwaka~
+1,892,caka~
+1,893,kaKe~
+1,894,rage~
+1,895,lage~
+1,896,hrage~
+1,897,hlage~
+1,898,zage~
+1,899,zWage~
+1,900,kage~
+1,901,aka~
+1,902,aga~
+1,903,kaRa~
+1,904,raRa~
+1,905,caRa~
+1,906,SaRa~
+1,907,SraRa~
+1,908,SraTa~
+1,909,SnaTa~
+1,910,SlaTa~
+1,911,knaTa~
+1,912,kraTa~
+1,913,klaTa~
+1,914,cana~
+1,915,vanu~
+1,916,jvala~
+1,917,hvala~
+1,918,hmala~
+1,919,smf
+1,920,dF
+1,921,nF
+1,922,SrA
+# 1,923,???
+1,924,kampa^ne
+1,925,cadir
+# 1,926,???
+1,927,madI~
+1,928,Dvana~
+1,929,dali
+1,930,vali
+1,931,sKali
+1,932,raRi
+1,933,Dvani
+1,934,trapi
+# 1,935,???
+1,936,svana~
+1,937,janI~
+1,938,jFz
+1,939,knasu~
+1,940,raYjo
+1,941,jvala~
+1,942,hvala~
+1,943,hmala~
+# 1,944,???
+1,945,glA
+1,946,snA
+1,947,vanu~
+1,948,vamAM^
+1,949,na
+1,950,ami
+1,951,camA^m
+1,952,Samo
+1,953,yamo
+1,954,sKadir
+1,955,PaRa~
+1,956,rAjf~^
 1,957,wuBrAjf~\
 1,958,wuBrASf~\
 1,959,wuBlASf~\
@@ -878,57 +992,60 @@
 1,992,kru\Sa~
 1,993,kuca~
 1,994,buDa~
-1,995,ruh\a~
+1,995,ruH\a~
 1,996,kasa~
-1,997,hikka~\
-1,998,aYcu~\
-1,999,acu~\
+1,997,hikka~^
+1,998,aYcu~^
+1,999,acu~^
 1,1000,aci~
-1,1001,wuyAcf~\
-1,1002,rewf~\
-1,1003,cate~\
-1,1004,cade~\
-1,1005,proTf~\
-1,1006,midf~\
-1,1007,medf~\
-1,1008,miTf~\
-1,1009,meTf~\
-1,1010,miDf~\
-1,1011,meDf~\
-1,1012,Ridf~\
-1,1013,Redf~\
-1,1014,SfDu~\
-1,1015,mfDu~\
-1,1016,buDi~\r
-1,1017,u~bundi~\r
-1,1018,veRf~\
-1,1019,venf~\
-1,1020,Kanu~\
-1,1021,cIvf~\
-1,1023,cAyf~\
-1,1024,vyaya~\
-1,1025,dASf~\
-1,1026,Bezf~\
-1,1027,Brezf~\
-1,1028,Blezf~\
-1,1029,asa~\
-1,1030,aza~\
-1,1032,spaSa~\
-1,1033,laza~\
-1,1034,caza~\
-1,1035,caza~\
-1,1036,Jaza~\
-1,1037,Brakza~\
-1,1038,Blakza~\
-1,1039,Bakza~\
-1,1040,plakza~\
-1,1041,dAsf~\
-1,1042,mAhf~\
-1,1043,guhU~\
+1,1001,wuyAcf~^
+1,1002,rewf~^
+1,1003,cate~^
+1,1004,cade~^
+1,1005,proTf~^
+1,1006,midf~^
+1,1007,medf~^
+1,1008,miTf~^
+1,1009,meTf~^
+1,1010,miDf~^
+1,1011,meDf~^
+1,1012,Ridf~^
+1,1013,Redf~^
+1,1014,SfDu~^
+1,1015,mfDu~^
+1,1016,buDi~^r
+1,1017,u~bundi~^r
+1,1018,veRf~^
+1,1019,venf~^
+1,1020,Kanu~^
+1,1021,cIvf~^
+# 1,1022,{cIbf~^
+1,1023,cAyf~^
+1,1024,vyaya~^
+1,1025,dASf~^
+1,1026,Bezf~^
+1,1027,Brezf~^
+1,1028,Blezf~^
+1,1029,asa~^
+1,1030,aza~^
+# 1,1031,(aya~^
+1,1032,spaSa~^
+1,1033,laza~^
+1,1034,caza~^
+1,1035,caza~^
+1,1036,Jaza~^
+1,1037,Brakza~^
+1,1038,Blakza~^
+1,1039,Bakza~^
+1,1040,plakza~^
+1,1041,dAsf~^
+1,1042,mAhf~^
+1,1043,guhU~^
 1,1044,SriY
 1,1045,Bf\Y
 1,1046,hf\Y
 1,1047,Df\Y
+# 1,1048,(kf\Y
 1,1049,RI\Y
 1,1050,De\w
 1,1051,glE\
@@ -1026,20 +1143,20 @@
 1,1143,df\Si~r
 1,1144,daM\Sa~
 1,1145,kf\za~
-1,1146,dah\a~
-1,1147,mih\a~
+1,1146,daH\a~
+1,1147,miH\a~
 1,1148,kita~
-1,1149,dAna~\
-1,1150,SAna~\
-1,1151,qupa\ca~\z
-1,1152,zaca~\
-1,1153,Ba\ja~\
-1,1154,ra\Yja~\
-1,1155,Sa\pa~\
-1,1156,tvi\za~\
-1,1157,ya\ja~\
-1,1158,quva\pa~\
-1,1159,vah\a~\
+1,1149,dAna~^
+1,1150,SAna~^
+1,1151,qupa\ca~^z
+1,1152,zaca~^
+1,1153,Ba\ja~^
+1,1154,ra\Yja~^
+1,1155,Sa\pa~^
+1,1156,tvi\za~^
+1,1157,ya\ja~^
+1,1158,quva\pa~^
+1,1159,vaH\a~^
 1,1160,va\sa~
 1,1161,ve\Y
 1,1162,vye\Y
@@ -1048,16 +1165,16 @@
 1,1165,wvo~Svi
 2,1,a\da~
 2,2,ha\na~
-2,3,dvi\za~\
-2,4,duh\a~\
-2,5,dih\a~\
-2,6,lih\a~\
+2,3,dvi\za~^
+2,4,duH\a~^
+2,5,diH\a~^
+2,6,liH\a~^
 2,7,ca\kzi~\N
 2,8,Ira~\
 2,9,Iqa~\
 2,10,ISa~\
 2,11,Asa~\
-2,12,ANah\
+2,12,ANaH\
 2,13,vasa~\
 2,14,kasi~\
 2,15,kasa~\
@@ -1133,15 +1250,16 @@
 3,9,o~hA\k
 3,10,qudA\Y
 3,11,quDA\Y
-3,12,Ri\ji~\r
-3,13,vi\ji~\r
-3,14,vi\zx~\
+3,12,Ri\ji~^r
+3,13,vi\ji~^r
+3,14,vi\zx~^
 3,15,Gf\
 3,16,hf\
 3,17,f\
 3,18,sf\
 3,19,Basa~
 3,20,ki\
+# 3,21,(kita~
 3,22,tura~
 3,23,Diza~
 3,24,Dana~
@@ -1173,6 +1291,15 @@
 4,24,zuha~
 4,25,jFz
 4,26,JFz
+4,27,zUN
+4,28,dUN
+4,29,dIN
+4,30,qI\N
+4,31,DI\N
+4,32,mI\N
+4,33,rI\N
+4,34,lI\N
+4,35,vrI\N
 4,36,pI\N
 4,37,mA\N
 4,38,I\N
@@ -1197,11 +1324,11 @@
 4,57,kliSa~\
 4,58,kASf~\
 4,59,vASf~\
-4,60,mfza~\
-4,61,I~Suci~\r
-4,62,Rah\a~\
-4,63,ra\Yja~\
-4,64,Sa\pa~\
+4,60,mfza~^
+4,61,I~Suci~^r
+4,62,RaH\a~^
+4,63,ra\Yja~^
+4,64,Sa\pa~^
 4,65,pa\da~\
 4,66,Ki\da~\
 4,67,vi\da~\
@@ -1221,7 +1348,7 @@
 4,81,tu\za~
 4,82,du\za~
 4,83,Sli\za~
-4,84,Sa\ka~\
+4,84,Sa\ka~^
 4,85,zvi\dA~
 4,86,kru\Da~
 4,87,kzu\Da~
@@ -1231,10 +1358,10 @@
 4,91,Ra\Sa~
 4,92,tf\pa~
 4,93,df\pa~
-4,94,druh\a~
-4,95,muh\a~
-4,96,zRuh\a~
-4,97,zRih\a~
+4,94,druH\a~
+4,95,muH\a~
+4,96,zRuH\a~
+4,97,zRiH\a~
 4,98,Samu~
 4,99,tamu~
 4,100,damu~
@@ -1256,14 +1383,22 @@
 4,116,byusa~
 4,117,busa~
 4,118,vusa~
+# 4,119,{pyuza~
+# 4,120,{pyusa~
+# 4,121,{puza~
 4,122,pluza~
 4,123,visa~
+# 4,124,{bisa~
 4,125,kusa~
+# 4,126,{kuSa~
+# 4,127,{kuMsa~
+# 4,128,{kuMSa~
 4,129,busa~
 4,130,musa~
 4,131,masI~
 4,132,samI~
 4,133,luwa~
+# 4,134,{luWa~
 4,135,uca~
 4,136,BfSu~
 4,137,BfMSu~
@@ -1281,6 +1416,7 @@
 4,149,rupa~
 4,150,lupa~
 4,151,zwupa~
+# 4,152,{zwUpa~
 4,153,luBa~
 4,154,kzuBa~
 4,155,RaBa~
@@ -1329,12 +1465,12 @@
 5,37,dF
 5,38,f
 5,39,kzI
-6,1,tu\da~\
-6,2,Ru\da~\
-6,3,di\Sa~\
-6,4,Bra\sja~\
-6,5,kzi\pa~\
-6,6,kf\za~\
+6,1,tu\da~^
+6,2,Ru\da~^
+6,3,di\Sa~^
+6,4,Bra\sja~^
+6,5,kzi\pa~^
+6,6,kf\za~^
 6,7,fzI~
 6,8,juzI~\
 6,9,o~vijI~\
@@ -1406,7 +1542,7 @@
 6,75,tfhU~
 6,76,stfhU~
 6,77,tfMhU~
-6,78,izu~
+6,78,iza~
 6,79,miza~
 6,80,kila~
 6,81,tila~
@@ -1458,6 +1594,7 @@
 6,127,vruqa~
 6,128,kruqa~
 6,129,Bfqa~
+# 6,130,(huqa~
 6,131,gurI~\
 6,132,RU
 6,133,DU
@@ -1492,26 +1629,26 @@
 6,162,Ru\da~
 6,163,za\dx~
 6,164,Sa\dx~
-6,165,mila~\
-6,166,mu\cx~\
-6,167,lu\px~\
-6,168,vidx~\
-6,169,li\pa~\
-6,170,zi\ca~\
+6,165,mila~^
+6,166,mu\cx~^
+6,167,lu\px~^
+6,168,vidx~^
+6,169,li\pa~^
+6,170,zi\ca~^
 6,171,kftI~
 6,172,Ki\da~
 6,173,piSa~
-7,1,ru\Di~\r
-7,2,Bi\di~\r
-7,3,ci\di~\r
-7,4,ri\ci~\r
-7,5,vi\ci~\r
-7,6,kzu\di~\r
-7,7,yu\ji~\r
-7,8,u~cfdi~\r
-7,9,u~tfdi~\r
+7,1,ru\Di~^r
+7,2,Bi\di~^r
+7,3,ci\di~^r
+7,4,ri\ci~^r
+7,5,vi\ci~^r
+7,6,kzu\di~^r
+7,7,yu\ji~^r
+7,8,u~cfdi~^r
+7,9,u~tfdi~^r
 7,10,kftI~
-7,11,Yii\nDI~
+7,11,Yi
 7,12,Ki\da~\
 7,13,vi\da~\
 7,14,Si\zx~
@@ -1526,13 +1663,13 @@
 7,23,o~vijI~
 7,24,vfjI~
 7,25,pfcI~
-8,1,tanu~\
-8,2,zanu~\
-8,3,kzaRu~\
-8,4,kziRu~\
-8,5,fRu~\
-8,6,tfRu~\
-8,7,GfRu~\
+8,1,tanu~^
+8,2,zanu~^
+8,3,kzaRu~^
+8,4,kziRu~^
+8,5,fRu~^
+8,6,tfRu~^
+8,7,GfRu~^
 8,8,vanu~\
 8,9,manu~\
 8,10,qukf\Y
@@ -1573,6 +1710,7 @@
 9,35,rI\
 9,36,lI\
 9,37,vlI\
+# 9,38,{blI\
 9,39,plI\
 9,40,vrI\
 9,41,BrI\
@@ -1604,7 +1742,8 @@
 9,67,Kaca~
 9,68,Kava~
 9,69,heWa~
-9,71,graha~\
+# 9,70,{heQa~
+9,71,graha~^
 10,1,cura~
 10,2,citi~
 10,3,yatri~
@@ -1656,6 +1795,7 @@
 10,49,luji~
 10,50,pisa~
 10,51,zAntva~
+# 10,52,{SAntva~
 10,53,Svalka~
 10,54,valka~
 10,55,zRiha~
@@ -1711,13 +1851,23 @@
 10,105,piSa~
 10,106,paqi~
 10,107,pasi~
+# 10,108,{paSi~
 10,109,vraja~
 10,110,Sulka~
 10,111,capi~
 10,112,kzapi~
 10,113,kzaji~
+# 10,114,{caji~
 10,115,Svarta~
+# 10,116,{svarta~
 10,117,SvaBra~
+10,118,jYapa~
+10,119,yama~
+10,120,caha~
+10,121,capa~
+10,122,raha~
+10,123,bala~
+10,124,ciY
 10,125,Gawwa~
 10,126,musta~
 10,127,Kawwa~
@@ -1758,12 +1908,17 @@
 10,162,klapa~
 10,163,hrapa~
 10,164,cuwi~
+# 10,165,(mfqi~
+# 10,166,(tuqi~
 10,167,ila~
 10,168,mrakza~
+# 10,169,{mraca~
 10,170,mleca~
 10,171,mrakza~
 10,172,brUsa~
 10,173,barha~
+# 10,174,{vrUsa~
+# 10,175,{varha~
 10,176,vrUza~
 10,177,garja~
 10,178,garda~
@@ -1774,10 +1929,12 @@
 10,183,Iqa~
 10,184,jasu~
 10,185,piqi~
+# 10,186,{piWi~
 10,187,ruza~
 10,188,ruwa~
 10,189,qipa~
 10,190,zwupa~
+# 10,191,{zwUpa~
 10,192,cita~\
 10,193,daSi~\
 10,194,dasi~\
@@ -1791,6 +1948,8 @@
 10,202,Bartsa~\
 10,203,basta~\
 10,204,ganDa~\
+# 10,205,{vasta~\
+# 10,206,{hasta~\
 10,207,vizka~\
 10,208,hizka~\
 10,209,nizka~\
@@ -1836,7 +1995,7 @@
 10,249,divu~
 10,250,arja~
 10,251,Guzi~r
-10,252,ANah\
+10,252,ANaH^
 10,253,lasa~
 10,254,tasi~
 10,255,BUza~
@@ -1861,8 +2020,8 @@
 10,274,cara~
 10,275,cyu
 10,276,vyusa~
-10,277,Bu\vova\kalka\ne
-10,278,kf\peSca\
+10,277,Bu\vo
+10,278,kf\peSca^
 10,279,grasa~
 10,280,puza~
 10,281,dala~
@@ -1952,7 +2111,7 @@
 10,365,arda~
 10,366,hisi~
 10,367,arha~
-10,368,A\Nah
+10,368,A\NaH
 10,369,SunDa~
 10,370,cada~
 10,371,juza~
@@ -1963,14 +2122,15 @@
 10,376,Apx~
 10,377,tanu~
 10,378,cana~
-10,379,vada~\
+10,379,vada~^
 10,380,vaca~
 10,381,mAna~
+10,382,BU
 10,383,garha~
 10,384,mArga~
 10,385,kaWi~
 10,386,mfjU~
-10,387,mfza~\
+10,387,mfza~^
 10,388,Dfza~
 10,389,kaTa~
 10,390,vara~
@@ -2059,7 +2219,7 @@
 10,473,aNka~
 10,474,aNga~
 10,475,suKa~
-10,476,duhKa~
+10,476,duHKa~
 10,477,rasa~
 10,478,vyaya~
 10,479,rUpa~

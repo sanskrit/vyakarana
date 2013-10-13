@@ -22,7 +22,7 @@ wuBrASf~\ BrASate/BrASyate
 wuBlASf~\ BlASate/BlASyate
 Bramu~ Bramati/Bramyati/BrAmyati
 kramu~ krAmati/krAmyati
-laza~\ lazati/lazyati
+laza~^ lazati/lazyati
 Dinv Dinoti
 kfRv krRoti
 ft ftIyate
@@ -64,7 +64,7 @@ vya\Da~ viDyati
 # ~~~~
 # Kale
 # ~~~~
-tu\da~\ tudati tudatas tudanti tudasi tudaTas tudaTa tudAmi tudAvas tudAmas
+tu\da~^ tudati tudatas tudanti tudasi tudaTas tudaTa tudAmi tudAvas tudAmas
 izu~ icCati
 # krntati
 # Kindati
@@ -109,8 +109,8 @@ aSU~\ aSnute aSnuvAte aSnuvate aSnuze aSnuvATe aSnuDve aSnuve aSnuvahe aSnumahe
 # ~~~~~~~~~~~~~~
 # Kale 409 - 410
 # ~~~~~~~~~~~~~~
-tanu~\ tanoti tanutas tanvanti tanozi tanuTas tanuTa tanomi tanuvas/tanvas tanumas/tanmas
-tanu~\ tanute tanvAte tanvate tanuze tanvATe tanuDve tanve tanuvahe/tanvahe tanumahe/tanmahe
+tanu~^ tanoti tanutas tanvanti tanozi tanuTas tanuTa tanomi tanuvas/tanvas tanumas/tanmas
+tanu~^ tanute tanvAte tanvate tanuze tanvATe tanuDve tanve tanuvahe/tanvahe tanumahe/tanmahe
 
 qukf\Y karoti kurutas kurvanti karozi kuruTas kuruTa karomi kurvas kurmas
 qukf\Y kurute kurvAte kurvate kuruze kurvATe kuruDve kurve kurvahe kurmahe
@@ -130,8 +130,8 @@ jYA\ jAnIte jAnAte jAnate jAnIze jAnATe jAnIDve jAne jAnIvahe jAnImahe
 
 jyA\ jinAti jinItas jinanti jinAsi jinITas jinITa jinAmi jinIvas jinImas
 
-graha~\ gfhRAti gfhRItas gfhRanti gfhRAsi gfhRITas gfhRITa gfhRAmi gfhRIvas gfhRImas
-graha~\ gfhRIte gfhRAte gfhRate gfhRIze gfhRATe gfhRIDve gfhRe gfhRIvahe gfhRImahe
+graha~^ gfhRAti gfhRItas gfhRanti gfhRAsi gfhRITas gfhRITa gfhRAmi gfhRIvas gfhRImas
+graha~^ gfhRIte gfhRAte gfhRate gfhRIze gfhRATe gfhRIDve gfhRe gfhRIvahe gfhRImahe
 
 rI\ riRAti
 lI\ linAti
