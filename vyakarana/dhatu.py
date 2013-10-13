@@ -70,6 +70,11 @@ def vikarana(state):
     if '4' in gana_set:
         yield _yield('Syan')
 
+    # 3.1.70 vā bhrāśabhlāśabhramukramuklamutrasitrutilaṣaḥ
+    if dhatu.raw in ('wuBrASf~\\', 'wuBlASf~\\', 'Bramu~', 'kramu~',
+                     'klamu~', 'trasI~', 'truwa~', 'laza~\\'):
+        yield _yield('Syan')
+
     # 3.1.73 svādibhyaḥ śnuḥ
     if '5' in gana_set:
         yield _yield('Snu')
