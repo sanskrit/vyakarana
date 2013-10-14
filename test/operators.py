@@ -29,3 +29,17 @@ def test_hrasva():
     for original, actual in cases:
         assert o.hrasva(Term(original)).value == actual
 
+
+def test_samprasarana():
+    cases = [
+        ('vac', 'uc'),
+        ('svap', 'sup'),
+        ('yaj', 'ij'),
+        ('grah', 'gfh'),
+        ('jyA', 'ji'),
+        ('vyaD', 'viD'),
+        ('Brasj', 'Bfsj'),
+    ]
+    for original, actual in cases:
+        assert o.samprasarana(Term(original)).value == actual
+
