@@ -63,7 +63,7 @@ def dvirvacana(state):
 
     if _8:
         # 6.1.17 liTyabhyAsyobhayeSAm
-        if dhatu.value in gana.VAC or dhatu.value in gana.GRAH:
+        if dhatu.raw in gana.VAC or dhatu.raw in gana.GRAH:
             abhyasa = abhyasa.samprasarana()
 
     new_state = state.swap(i, dhatu).insert(i, abhyasa)

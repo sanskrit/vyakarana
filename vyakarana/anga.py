@@ -85,8 +85,8 @@ def adesha(state):
 
         # 6.1.16 vacisvapiyajAdInAM kiti
         # 6.1.17 grahi... Giti ca
-        vac_condition = 'k' in next.it and value in gana.VAC
-        grah_condition = value in gana.GRAH and next.any_it('k', 'N')
+        vac_condition = 'k' in next.it and anga.raw in gana.VAC
+        grah_condition = anga.raw in gana.GRAH and next.any_it('k', 'N')
         if vac_condition or grah_condition:
             state = state.swap(i, anga.samprasarana())
 

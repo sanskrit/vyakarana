@@ -14,14 +14,14 @@
 #: defined in the Dhatupatha.
 #:
 #:     6.1.15 vaci-svapi-yajādīnāṃ kiti
-VAC = set('vac svap yaj vap vah vas vay vye hve vad'.split())
+VAC = set('va\ca~ Yizva\pa~ ya\ja~^ vap vah vas vay vye hve vad'.split())
 
 #: 'grah' gana. Generally, these roots take samprasarana when followed
 #: by affixes that are marked with either 'k' or 'n'.
 #:
 #:     6.1.16 grahi-jyā-vayi-vyadhi-vaṣṭi-vicati-vṛścati-pṛcchati-
 #:            bhṛjjatīnāṃ ṅiti ca
-GRAH = set('grah jyA vay vyaD vaS vyac vraSc pracC Brasj'.split())
+GRAH = set('graha~^ jyA\ vaya~\ vya\Da~ vaSa~ vyaca~ o~vraScU~ pra\cCa~ Bra\sja~^'.split())
 
 #: 'phaṇ' gana. An anga formed with one of these roots, when followed by
 #: liṭ, optionally takes ed-ādeśa and abhyāsa-lopa.
