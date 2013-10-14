@@ -117,11 +117,11 @@ def pada_options(state):
     _, dhatu = state.find('dhatu')
 
     # 1.3.12 anudAttaGita Atmanepadam
-    if 'N' in dhatu.it:
+    if 'N' in dhatu.it or 'anudatta' in dhatu.it:
         has_para, has_atma = (False, True)
 
     # 1.3.72 svaritaJitaH kartrabhiprAye kriyAphale
-    elif 'Y' in dhatu.it:
+    elif 'Y' in dhatu.it or 'svarita' in dhatu.it:
         has_para, has_atma = (True, True)
 
     # 1.3.76 anupasargAj jJaH

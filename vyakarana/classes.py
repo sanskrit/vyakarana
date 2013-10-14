@@ -730,12 +730,18 @@ class Upadesha(Term):
     def set_raw(self, raw, **kw):
         self.raw = raw
 
-        if '^' in raw:
-            self.it.add('udatta')
-            raw = raw.replace('^', '')
-        if '\\' in raw:
+        if '~\\' in raw:
             self.it.add('anudatta')
             raw = raw.replace('\\', '')
+        if '~^' in raw:
+            self.it.add('svarita')
+            raw = raw.replace('^', '')
+        if '\\' in raw:
+            self.samjna.add('anudatta')
+            raw = raw.replace('\\', '')
+        if '^' in raw:
+            self.samjna.add('svarita')
+            raw = raw.replace('^', '')
 
         core = raw
 

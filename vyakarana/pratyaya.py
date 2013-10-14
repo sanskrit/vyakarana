@@ -70,7 +70,7 @@ def it_status(anga, p):
     # upadesha (various)
     # ------------------
     # 7.2.10 ekAca upadeze 'nudAttAt
-    if Term(anga.clean).one_syllable and 'anudatta' in anga.it:
+    if Term(anga.clean).one_syllable and 'anudatta' in anga.samjna:
         status = 'anit'
         rank = Rank.APAVADA
 

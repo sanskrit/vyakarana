@@ -53,14 +53,14 @@ lI\ lilAya/lalO lilyatus lilyus lileTa/lilayiTa/lalATa/laliTa lilyaTus lilya lil
 # ~~~~~~~~~~~~
 Sa\kx~ SaSAka Sekatus Sekus SekiTa/SaSakTa SekaTus Seka SaSAka/SaSaka Sekiva Sekima
 
-qupa\ca~\z papAca pecatus pecus peciTa/papakTa pecaTus peca papAca/papaca peciva pecima
+qupa\ca~^z papAca pecatus pecus peciTa/papakTa pecaTus peca papAca/papaca peciva pecima
 
-mu\cx~\ mumoca mumucatus mumucus mumociTa mumucaTus mumuca mumoca mumuciva mumucima
-mu\cx~\ mumuce mumucAte mumucire mumucize mumucATe mumuciDve/mumuciQve mumuce mumucivahe mumucihame
+mu\cx~^ mumoca mumucatus mumucus mumociTa mumucaTus mumuca mumoca mumuciva mumucima
+mu\cx~^ mumuce mumucAte mumucire mumucize mumucATe mumuciDve/mumuciQve mumuce mumucivahe mumucihame
 
 # Different ric -- but which one?
-ri\ci~\r rireca riricatus riricus rireciTa riricaTus ririca rireca ririciva riricima
-# ri\ci~\r ririce riricAte riricire riricize riricATe ririciDve/ririciQve ririce riricivahe riricimahe
+ri\ci~^r rireca riricatus riricus rireciTa riricaTus ririca rireca ririciva riricima
+ri\ci~^r ririce riricAte riricire riricize riricATe ririciDve/ririciQve ririce riricivahe riricimahe
 
 pra\cCa~ papracCa papracCatus papracCus papracCiTa/paprazWa papracCaTus papracCa papracCa papracCiva papracCima
 
@@ -68,7 +68,7 @@ tya\ja~ tatyAja tatyajatus tatyajus tatyajiTa/tatyakTa tatyajaTus tatyaja tatyaj
 
 Ba\Yja~ baBaYja baBaYjatus baBaYjus baBaYjiTa/baBaNkTa baBaYjaTus baBaYja baBaYja baBaYjiva baBaYjima
 
-Bra\sja~\ baBarja/baBrajja baBarjatus/baBrajjatus baBarjus/baBrajjus baBarjiTa/baBrajjiTa/baBrazWa/baBrazWa baBarjaTus/baBrajjaTus baBarja/baBrajja baBarja/baBrajja baBarjiva/baBrajjiva baBarjima/baBrajjima
+Bra\sja~^ baBarja/baBrajja baBarjatus/baBrajjatus baBarjus/baBrajjus baBarjiTa/baBrajjiTa/baBrazWa/baBrazWa baBarjaTus/baBrajjaTus baBarja/baBrajja baBarja/baBrajja baBarjiva/baBrajjiva baBarjima/baBrajjima
 
 quBfY _ _ _ _ _ _ baBAra/baBara baBfva baBfma
 
@@ -103,8 +103,8 @@ ha\na~ jaGAna jaGnatus jaGnus jaGanTa jaGaniTa jaGnaTus jaGna jaGAna jaGana jaGn
 
 janI~\ jajYe jajYAte jajYire jajYize jajYATe jajYiDve jajYe jajYivahe jajYimahe
 
-Kanu~\ caKAna caKnatus caKnus caKaniTa caKnaTus caKna caKAna/caKana caKniva caKnima
-Kanu~\ caKne caKnAte caKnire caKnize caKnATe caKniDve caKne caKnivahe caKnimahe
+Kanu~^ caKAna caKnatus caKnus caKaniTa caKnaTus caKna caKAna/caKana caKniva caKnima
+Kanu~^ caKne caKnAte caKnire caKnize caKnATe caKniDve caKne caKnivahe caKnimahe
 
 # ~~~~~~~~
 # Kale 512
