@@ -29,6 +29,7 @@ def asiddha_helper(state):
     """
 
     had_rs = False
+
     editor = SoundEditor(state)
     for c in editor:
         p = c.prev
@@ -99,9 +100,13 @@ def asiddha_helper(state):
         if x in stu:
 
             # 8.4.40 stoH zcunA zcuH
+            # 8.4.44 zAt (na)
             scu = Sounds('S cu')
-            if w in scu or y in scu:
+            if w == 'S':
+                pass
+            elif w in scu or y in scu:
                 x = Sound(x).closest(scu)
+
 
             # 8.4.41 STunA STuH
             zwu = Sounds('z wu')
