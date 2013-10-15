@@ -514,11 +514,6 @@ class Term(object):
         c.value = c.value.replace(x, y)
         return c
 
-    def reverse(self):
-        c = self.copy()
-        c.value = c.value[::-1]
-        return c
-
     def samprasarana(self):
         value = self.value
         letters = list(value)
@@ -530,15 +525,6 @@ class Term(object):
                 return self.set_value(value)
 
         return self
-
-    def savarna(self, other):
-        first = self[-1].value
-        second = other[0].value
-        ak = Pratyahara('ak')
-        if first in ak and second in ak and first.lower() == second.lower():
-            return True
-        else:
-            return False
 
     def set(self, i, value):
         """Replace the letter at index `i` with `value`."""
