@@ -307,6 +307,13 @@ def sarvadhatuke(state):
         yield state.swap(i, anga.to_dirgha())
 
 
+@tasya(c.samjna('anga'), c.samjna('tin'), None)
+def nal_au_adesha(dhatu, tin, _):
+    # 7.1.34 Ata au NalaH
+    if dhatu.antya().value == 'A' and tin.raw == 'Ral':
+        return 'O'
+
+
 @tasya(None, c.samjna('anga'), c.it('Y', 'R'))
 def nn_vrddhi(_, anga, p):
     # 7.2.115 aco `Jniti (vrddhi)

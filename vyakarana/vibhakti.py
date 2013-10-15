@@ -221,26 +221,3 @@ def la_to_tin(state):
         if la.raw == 'li~w' and 'uttama' in e.samjna and 'R' in e.it:
             e2 = e.remove_it('R')
             yield state.swap(-1, e2)
-
-
-@tin_rule
-def tin_adesha(state):
-    """
-    Apply tin substitutions that depend on the dhatu.
-
-    These rules are separated from `la_to_tin` so that other
-    substitutions have time to occur, such as gai -> gA.
-
-    :param state:
-    """
-    i, dhatu = state.find('dhatu')
-    tin = state[-1]
-
-    if 'tin' not in tin.samjna:
-        return
-
-    # Root-dependent changes
-    # 7.1.34 Ata au NalaH
-    if dhatu.antya().value == 'A' and tin.raw == 'Ral' and tin.value != 'O':
-        tin = tin.update('O')
-        yield state.swap(-1, tin)
