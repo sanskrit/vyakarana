@@ -870,20 +870,22 @@ class Pratyaya(Upadesha):
         if value in ('lu~k', 'Slu~', 'lu~p'):
             self.value = ''
 
-        # 3.4.113 tiGzit sArvadhAtukam
-        # 3.4.115 liT ca (ArdhadhAtukam)
-        if 'S' in self.it and 'li~w' not in self.lakshana:
-            self.samjna.add('sarvadhatuka')
-
-        # 1.2.4 sArvadhAtukam apit
-        if 'sarvadhatuka' in self.samjna and 'p' not in self.it:
-            self.it.add('N')
-
 
 class Krt(Pratyaya):
     def set_raw(self, value, **kw):
         Pratyaya.set_raw(self, value, **kw)
         self.samjna.add('krt')
+
+        # 3.4.113 tiGzit sArvadhAtukam
+        # 3.4.115 liT ca (ArdhadhAtukam)
+        if 'S' in self.it and 'li~w' not in self.lakshana:
+            self.samjna.add('sarvadhatuka')
+        else:
+            self.samjna.add('ardhadhatuka')
+
+        # 1.2.4 sArvadhAtukam apit
+        if 'sarvadhatuka' in self.samjna and 'p' not in self.it:
+            self.it.add('N')
 
 
 class Vibhakti(Pratyaya):
