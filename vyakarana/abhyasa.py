@@ -155,7 +155,7 @@ def clean_abhyasa(state):
 
             # 7.4.72 aznotez ca
             # 'aznoti' refers specifically to 'aSU~'.
-            ashnoti = (dhatu.raw == 'aSU~')
+            ashnoti = (dhatu.raw == 'aSU~\\')
             if dvihal or ashnoti:
                 abhyasa = abhyasa.tasmat(U('nu~w'))
 
