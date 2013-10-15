@@ -19,7 +19,7 @@ def al(*names):
         if antya:
             return term.antya().value in sounds
         else:
-            return term.adi().value in sounds
+            return term.adi in sounds
     return func
 
 

@@ -53,7 +53,7 @@ def dvirvacana(state):
     abhyasa = Term(dhatu.data[1])
 
     # 6.1.2 ajAder dvitIyasya
-    if dhatu.adi().ac:
+    if dhatu.adi in Sounds('ac'):
         pass
 
     # 6.1.3 na ndrAH saMyogAdayaH
@@ -85,10 +85,10 @@ def abhyasa_adesha(state):
     # TODO
 
     a = abhyasa.antya()
-    d = dhatu.adi()
+    d = dhatu.adi
 
     # 6.4.78 abhyAsasyAsavarNe
-    if a.value in 'iIuU' and Sound(a.value).asavarna(d.value):
+    if a.value in 'iIuU' and Sound(a.value).asavarna(d):
         abhyasa = abhyasa.set_value(abhyasa.value + a.to_yan().value)
         yield state.swap(i, abhyasa)
 
@@ -129,9 +129,9 @@ def clean_abhyasa(state):
 
     # 7.4.62 kuhoz cuH
     # 7.4.63 na kavater yaGi (TODO)
-    adi = abhyasa.adi().value
+    adi = abhyasa.adi
     if adi in Sounds('ku h'):
-        abhyasa = abhyasa.adi(Sound(adi).closest(Sounds('cu')))
+        abhyasa = abhyasa.set_value(Sound(adi).closest(Sounds('cu')) + abhyasa.value[1:])
 
     if 'li~w' in tin.lakshana:
         # 7.4.68 vyatho liTi
@@ -142,7 +142,7 @@ def clean_abhyasa(state):
         elif dhatu.raw == 'i\R' and 'k' in tin.it:
             abhyasa = abhyasa.set_value('I')
 
-        elif abhyasa.adi().value == 'a':
+        elif adi == 'a':
             # 7.4.70 ata AdeH
             abhyasa = abhyasa.set_value('A')
 

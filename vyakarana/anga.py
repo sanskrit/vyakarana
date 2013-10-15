@@ -140,9 +140,9 @@ def aci(state):
         return
 
     f = anga.antya().value
-    s = p.adi()
+    s = p.adi
 
-    if not s.ac:
+    if s not in Sounds('ac'):
         return
 
     # 6.4.88 bhuvo vuk luGliToH
@@ -160,7 +160,7 @@ def aci(state):
         # TODO: other categories
         _77 = 'dhatu' in anga.samjna
         # 6.4.78 abhyAsasyAsavarNe
-        _78 = 'abhyasa' in anga.samjna and Sound(f).asavarna(s.value)
+        _78 = 'abhyasa' in anga.samjna and Sound(f).asavarna(s)
 
         if _77 or _78:
             if f in Sounds('i'):
@@ -287,7 +287,7 @@ def sarvadhatuke(state):
         # 6.4.112 znAbhyastayor AtaH
         # 6.4.113 I halyaghoH
         if anga.value == 'nA':
-            if p.adi().hal:
+            if p.adi in Sounds('hal'):
                 new_anga = anga.antya('I')
             else:
                 new_anga = anga.antya('')
@@ -299,11 +299,11 @@ def sarvadhatuke(state):
 
     if 'N' in p.it:
         # 7.2.81 Ato GitaH
-        if anga.antya().value == 'a' and p.adi().value == 'A':
-            yield state.swap(i + i, p.adi('iy'))
+        if anga.antya().value == 'a' and p.adi == 'A':
+            yield state.swap(i + i, p.set_value('iy' + p.value[1:]))
 
     # 7.3.101 ato dīrgho yañi
-    if anga.antya().value == 'a' and p.adi().value in Sounds('yaY'):
+    if anga.antya().value == 'a' and p.adi in Sounds('yaY'):
         yield state.swap(i, anga.to_dirgha())
 
 
@@ -435,7 +435,7 @@ def lit_a_to_e(state):
             status = True
 
         # 6.4.126 na zasadadavAdiguNAnAm
-        vadi = anga.adi().value == 'v'
+        vadi = anga.adi == 'v'
         if anga.raw in ('Sasu~', 'dada~\\') or vadi or 'guna' in anga.samjna:
             status = False
 

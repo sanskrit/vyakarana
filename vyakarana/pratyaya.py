@@ -60,7 +60,7 @@ def it_status(anga, p):
     # ----------
     if 'krt' in p.samjna:
         # 7.2.8 neD vazi kRti
-        _8 = p.adi().value in Sounds('vaS')
+        _8 = p.adi in Sounds('vaS')
 
         # 7.2.9 titutratathasisusarakaseSu ca
         _9 = p.value in ('ti', 'tu', 'tra', 'ta', 'Ta', 'si', 'su', 'sara',
@@ -125,7 +125,7 @@ def it_status(anga, p):
     # ardhadhatuka (set, vet)
     # -----------------------
     # 7.2.35 ArdhadhAtukasyeD valAdeH
-    if 'ardhadhatuka' in p.samjna and p.adi().value in Sounds('val'):
+    if 'ardhadhatuka' in p.samjna and p.adi in Sounds('val'):
         if rank <= Rank.UTSARGA:
             status = 'set'
 

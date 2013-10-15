@@ -421,17 +421,12 @@ class Term(object):
         except IndexError:
             return False
 
-    def adi(self, replacement=None):
-        if replacement is not None:
-            c = self.copy()
-            c.value = replacement + c.value[1:]
-            c.parts = [c]
-            return c
-        else:
-            if self.value:
-                return Term(self.value[0])
-            else:
-                return Term('')
+    @property
+    def adi(self):
+        try:
+            return self.value[0]
+        except IndexError:
+            return None
 
     def add_samjna(self, *names):
         """
