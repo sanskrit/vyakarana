@@ -855,11 +855,9 @@ class Dhatu(Anga):
             self.value = value
 
         self.data = (self.raw, self.value)
-        self.clean = value
 
     def copy(self):
         c = super(Anga, self).copy()
-        c.clean = self.clean
         return c
 
     def set_raw(self, value, **kw):

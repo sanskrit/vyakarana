@@ -10,7 +10,7 @@
 
 import context as c
 import gana
-from classes import Term, Upadesha as U, Pratyaya, Sounds
+from classes import Upadesha as U, Pratyaya, Sounds
 from decorators import *
 from util import Rank
 
@@ -71,26 +71,26 @@ def it_status(anga, p):
     # upadesha (various)
     # ------------------
     # 7.2.10 ekAca upadeze 'nudAttAt
-    if Term(anga.clean).one_syllable and 'anudatta' in anga.samjna:
+    if anga.one_syllable and 'anudatta' in anga.samjna:
         status = 'anit'
         rank = Rank.APAVADA
 
     # 7.2.11 zryukaH kiti
     if 'k' in p.it:
-        if anga.clean == 'Sri' or anga.antya().value in Sounds('uk'):
+        if anga.raw == 'SriY' or anga.antya().value in Sounds('uk'):
             status = 'anit'
 
     # 7.2.12 sani grahaguhoz ca
     if p.value == 'san':
         # 'Sri' is excluded here.
-        if anga.clean in ('grah', 'guh') or anga.antya().value in Sounds('uk'):
+        if anga.raw in ('graha~^', 'guhU~^') or anga.antya().value in Sounds('uk'):
             status = 'anit'
 
     # 7.2.13 kRsRbhRvRstudrusruzruvo liTi
     # When followed by liT, only the roots above are aniT. Therefore,
     # any other root is denied 'aniT' status.
     if 'li~w' in p.lakshana:
-        if anga.clean in gana.KRADI:
+        if anga.value in gana.KRADI:
             status = 'anit'
             rank = Rank.UPADESHA
         elif status == 'anit':
@@ -142,7 +142,7 @@ def it_status(anga, p):
         _44 = anga.raw in ('svf', 'zUG', 'zUN', 'DUY') or 'U' in anga.it
 
         # 7.2.45 radhAdhibhyaz ca
-        _45 = anga.clean in gana.RADH
+        _45 = anga.value in gana.RADH
 
         if _44 or _45:
             status = 'vet'
@@ -203,7 +203,7 @@ def it_status(anga, p):
         _61 = anga.ac
 
         # 7.2.62 upadeze 'tvataH
-        _62 = 'a' in anga.clean
+        _62 = 'a' in anga.value
 
         # 7.2.63 Rto bhAradvAjasya
         # By this opinion, 'anit' is enforced only for roots that end in
@@ -224,15 +224,15 @@ def it_status(anga, p):
 
         # 7.2.64 babhUvAtatanthajagRmbhavavartheti nigame
         #        Implicitly, 'iT' is obligatory in normal language.
-        if anga.clean in ('BU', 'tan', 'grah', 'vf'):
+        if anga.value in ('BU', 'tan', 'grah', 'vf'):
             status = 'set'
 
         # 7.2.65 vibhASA sRjidRzoH
-        elif anga.clean in ('sfj', 'dfS'):
+        elif anga.value in ('sfj', 'dfS'):
             status = 'vet'
 
         # 7.2.66 iD attyarttivyayatInAm
-        elif anga.clean in ('ad', 'f', 'vye'):
+        elif anga.value in ('ad', 'f', 'vye'):
             status = 'set'
 
     # 7.2.67

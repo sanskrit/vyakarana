@@ -444,7 +444,7 @@ def lit_a_to_e(state):
             status = True
 
         # 6.4.123 rAdho hiMsAyAm
-        elif anga.clean == 'rAD':
+        elif anga.value == 'rAD':
             status = 'optional'
 
         # 6.4.124 vA jRRbhramutrasAm
@@ -452,7 +452,7 @@ def lit_a_to_e(state):
             status = 'optional'
 
         # 6.4.125 phaNAM ca saptAnAm
-        elif anga.clean in gana.PHAN:
+        elif anga.raw in DP.dhatu_set('PaRa~', 'svana~'):
             status = 'optional'
 
     if status in (True, 'optional'):

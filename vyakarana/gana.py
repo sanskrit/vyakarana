@@ -23,12 +23,6 @@ VAC = set('va\ca~ Yizva\pa~ ya\ja~^ vap vah vas vay vye hve vad'.split())
 #:            bhṛjjatīnāṃ ṅiti ca
 GRAH = set('graha~^ jyA\ vaya~\ vya\Da~ vaSa~ vyaca~ o~vraScU~ pra\cCa~ Bra\sja~^'.split())
 
-#: 'phaṇ' gana. An anga formed with one of these roots, when followed by
-#: liṭ, optionally takes ed-ādeśa and abhyāsa-lopa.
-#:
-#:     6.4.125 phaṇāṃ ca saptānām
-PHAN = set('PaR rAj BrAj BAS BlAS syam svan'.split())
-
 #: 'krādi' gana. Generally, these roots do not take 'iṭ' with 'liṭ'.
 #:
 #:     7.2.13 kṛ-sṛ-bhṛ-vṛ-stu-dru-sru-śruvo liṭi
