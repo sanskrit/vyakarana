@@ -69,7 +69,7 @@ def substitute(state, i, anga):
     # 7.1.4 ad abhyastAt
     # 7.1.5 AtmanepadeSvanataH
     _4 = 'abhyasta' in anga.samjna
-    _5 = 'atmanepada' in v.samjna and anga.antya().value != 'a'
+    _5 = 'atmanepada' in v.samjna and anga.antya != 'a'
     if _4 or _5:
         v = v.replace('J', 'at')
     else:
@@ -139,7 +139,7 @@ def aci(state):
     if not anga.value:
         return
 
-    f = anga.antya().value
+    f = anga.antya
     s = p.adi
 
     if s not in Sounds('ac'):
@@ -170,7 +170,7 @@ def aci(state):
 
         # 6.4.81 iNo yaN
         if anga.raw == 'i\R':
-            new = anga.antya('y')  # TODO: generalize
+            new = anga.tasya('y')  # TODO: generalize
 
         # 6.4.82 er anekAco 'saMyogapUrvasya
         # TODO: anga.num_syllables > 1
@@ -209,9 +209,9 @@ def ac_adesha(state):
     tin = state[-1]
 
     # 6.4.64 Ato lopa iTi ca
-    if 'ardhadhatuka' in tin.samjna and anga.antya().value == 'A':
+    if 'ardhadhatuka' in tin.samjna and anga.antya == 'A':
         if 'iw' in tin.parts[0].lakshana or 'k' in tin.it:
-            anga = anga.antya('')
+            anga = anga.tasya('')
             yield state.swap(i, anga)
             return
 
@@ -288,9 +288,9 @@ def sarvadhatuke(state):
         # 6.4.113 I halyaghoH
         if anga.value == 'nA':
             if p.adi in Sounds('hal'):
-                new_anga = anga.antya('I')
+                new_anga = anga.tasya('I')
             else:
-                new_anga = anga.antya('')
+                new_anga = anga.tasya('')
             yield state.swap(i, new_anga)
             return
 
@@ -299,18 +299,18 @@ def sarvadhatuke(state):
 
     if 'N' in p.it:
         # 7.2.81 Ato GitaH
-        if anga.antya().value == 'a' and p.adi == 'A':
+        if anga.antya == 'a' and p.adi == 'A':
             yield state.swap(i + i, p.set_value('iy' + p.value[1:]))
 
     # 7.3.101 ato dīrgho yañi
-    if anga.antya().value == 'a' and p.adi in Sounds('yaY'):
+    if anga.antya == 'a' and p.adi in Sounds('yaY'):
         yield state.swap(i, anga.to_dirgha())
 
 
 @tasya(c.samjna('anga'), c.samjna('tin'), None)
 def nal_au_adesha(dhatu, tin, _):
     # 7.1.34 Ata au NalaH
-    if dhatu.antya().value == 'A' and tin.raw == 'Ral':
+    if dhatu.antya == 'A' and tin.raw == 'Ral':
         return 'O'
 
 

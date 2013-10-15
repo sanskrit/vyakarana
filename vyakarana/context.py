@@ -17,7 +17,7 @@ def al(*names):
         if term is None:
             return False
         if antya:
-            return term.antya().value in sounds
+            return term.antya in sounds
         else:
             return term.adi in sounds
     return func

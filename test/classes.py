@@ -106,7 +106,7 @@ def test_term_properties():
 
 def test_term_operations():
     t = Term('gati')
-    assert t.antya('u').value == 'gatu'
+    assert t.tasya('u').value == 'gatu'
     assert t.guna().value == 'gate'
     assert t.vrddhi().value == 'gatE'
     assert t.ti().value == 'i'

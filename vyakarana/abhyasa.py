@@ -84,12 +84,12 @@ def abhyasa_adesha(state):
 
     # TODO
 
-    a = abhyasa.antya()
+    a = abhyasa.antya
     d = dhatu.adi
 
     # 6.4.78 abhyAsasyAsavarNe
-    if a.value in 'iIuU' and Sound(a.value).asavarna(d):
-        abhyasa = abhyasa.set_value(abhyasa.value + a.to_yan().value)
+    if a in 'iIuU' and Sound(a).asavarna(d):
+        abhyasa = abhyasa.set_value(abhyasa.value + Term(a).to_yan().value)
         yield state.swap(i, abhyasa)
 
 

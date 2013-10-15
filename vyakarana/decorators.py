@@ -122,7 +122,7 @@ def tasya(left_ctx, cur_ctx, right_ctx):
                 # 1.1.52 alo 'ntyasya
                 # 1.1.53 Gic ca (TODO)
                 if len(result) == 1:
-                    cur = cur.antya(result)
+                    cur = cur.tasya(result)
                 # 1.1.55 anekAlSit sarvasya
                 else:
                     cur = cur.set_value(result)
@@ -134,8 +134,8 @@ def tasya(left_ctx, cur_ctx, right_ctx):
             # "Nearest" substitution
             else:
                 # 1.1.50 sthAne 'ntaratamaH
-                last = Sound(cur.antya().value).closest(result)
-                cur = cur.antya(last)
+                last = Sound(cur.antya).closest(result)
+                cur = cur.tasya(last)
 
             yield left, cur, right
 

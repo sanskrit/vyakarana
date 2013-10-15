@@ -56,7 +56,7 @@ def asiddha_helper(state):
 
             # 8.2.36 vrazca-bhrasja-sRja-mRja-yaja-rAja-bhrAjacCazAM SaH
             roots = {'vraSc', 'Brasj', 'sfj', 'mfj', 'yaj', 'rAj', 'BrAj'}
-            if c.last and (c.term.value in roots or c.term.antya().value in 'SC'):
+            if c.last and (c.term.value in roots or c.term.antya in 'SC'):
                 x = 'z'
 
         # 8.2.41 SaDhoH kaH si

@@ -461,14 +461,12 @@ class Term(object):
         c.value = ''.join(letters)
         return c
 
-    def antya(self, replacement=None):
-        if replacement is not None:
-            c = self.copy()
-            c.value = c.value[:-1] + replacement
-            c.parts = [c]
-            return c
-        else:
-            return Term(self.value[-1] if self.value else '')
+    @property
+    def antya(self):
+        try:
+            return self.value[-1]
+        except IndexError:
+            return None
 
     def any_it(self, *args):
         return any(a in self.it for a in args)
@@ -591,6 +589,10 @@ class Term(object):
         """
         c = self.copy()
 
+        if isinstance(other, basestring):
+            c.value = c.value[:-1] + other
+            return c
+
         # 1.1.54 AdeH parasya
         if adi:
             c.value = other.value + self.value[1:]
@@ -641,13 +643,13 @@ class Term(object):
         return c
 
     def to_hrasva(self):
-        return self.antya(sounds.shorten(self.value[-1]))
+        return self.tasya(sounds.shorten(self.value[-1]))
 
     def to_dirgha(self):
-        return self.antya(sounds.lengthen(self.value[-1]))
+        return self.tasya(sounds.lengthen(self.value[-1]))
 
     def to_yan(self):
-        return self.antya(sounds.semivowel(self.value[-1]))
+        return self.tasya(sounds.semivowel(self.value[-1]))
 
     def upadha(self, replacement=None):
         """The penult."""

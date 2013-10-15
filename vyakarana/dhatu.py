@@ -37,7 +37,7 @@ def adesha(state):
     # the rule can apply.
     _45 = Dhatu(dhatu.raw).ec and tin.raw[0] != 'S'
     if _45:
-        dhatu = dhatu.antya('A')
+        dhatu = dhatu.tasya('A')
         yield state.swap(i, dhatu)
 
 

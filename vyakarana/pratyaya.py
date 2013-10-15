@@ -77,13 +77,13 @@ def it_status(anga, p):
 
     # 7.2.11 zryukaH kiti
     if 'k' in p.it:
-        if anga.raw == 'SriY' or anga.antya().value in Sounds('uk'):
+        if anga.raw == 'SriY' or anga.antya in Sounds('uk'):
             status = 'anit'
 
     # 7.2.12 sani grahaguhoz ca
     if p.value == 'san':
         # 'Sri' is excluded here.
-        if anga.raw in ('graha~^', 'guhU~^') or anga.antya().value in Sounds('uk'):
+        if anga.raw in ('graha~^', 'guhU~^') or anga.antya in Sounds('uk'):
             status = 'anit'
 
     # 7.2.13 kRsRbhRvRstudrusruzruvo liTi
@@ -210,7 +210,7 @@ def it_status(anga, p):
         # 'f'. If we accept the opinion, other roots are 'set'. If we
         # reject the opinion, other roots are 'anit'. Therefore, other
         # roots are either 'set' or 'anit'. That is, they are 'vet'.
-        _63 = anga.antya().value == 'f'
+        _63 = anga.antya == 'f'
 
         if rank <= Rank.APAVADA:
             if _63:
