@@ -237,6 +237,7 @@ def ku(state):
     :param abhyasa:
     :param anga:
     """
+    print state
     i, abhyasa = state.find('abhyasa')
     j, anga = state.find('anga', empty=False)
     p = state[j+1]

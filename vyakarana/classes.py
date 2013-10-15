@@ -576,7 +576,18 @@ class Term(object):
         c = self.copy()
 
         if isinstance(other, basestring):
-            c.value = c.value[:-1] + other
+            # 1.1.52 alo 'ntyasya
+            # 1.1.55 anekAlSit sarvasya
+            if len(other) <= 1:
+                c.value = c.value[:-1] + other
+            else:
+                c.value = other
+            return c
+
+        if not hasattr(other, 'value'):
+            # 1.1.50 sthAne 'ntaratamaH
+            last = Sound(self.antya).closest(other)
+            c.value = c.value[:-1] + last
             return c
 
         # 1.1.54 AdeH parasya
@@ -596,7 +607,6 @@ class Term(object):
         elif 'w' in other.it:
             c.value = other.value + self.value
             c.parts.insert(0, other)
-
 
         # 1.1.52 alo 'ntyasya
         # 1.1.53 Gic ca

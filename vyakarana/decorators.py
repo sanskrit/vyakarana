@@ -117,25 +117,13 @@ def tasya(left_ctx, cur_ctx, right_ctx):
                 yield left, cur, right
                 return
 
-            # String substitution
-            if isinstance(result, basestring):
-                # 1.1.52 alo 'ntyasya
-                # 1.1.53 Gic ca (TODO)
-                if len(result) == 1:
-                    cur = cur.tasya(result)
-                # 1.1.55 anekAlSit sarvasya
-                else:
-                    cur = cur.set_value(result)
-
             # Operator substitution
             elif hasattr(result, '__call__'):
                 cur = result(cur, right=right)
 
-            # "Nearest" substitution
+            # Other substitution
             else:
-                # 1.1.50 sthAne 'ntaratamaH
-                last = Sound(cur.antya).closest(result)
-                cur = cur.tasya(last)
+                cur = cur.tasya(result)
 
             yield left, cur, right
 
