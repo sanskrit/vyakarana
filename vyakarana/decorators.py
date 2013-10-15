@@ -9,7 +9,7 @@
 """
 
 from functools import wraps
-from classes import *
+from classes import Option
 
 # New-style rules. Temporary.
 NEW_RULES = []
@@ -109,6 +109,13 @@ def tasya(left_ctx, cur_ctx, right_ctx):
     def matches(left, cur, right):
         return left_ctx(left) and cur_ctx(cur) and right_ctx(right)
 
+    # Unique ID for this function, since functions are added sequentially
+    # to a single shared list. This is used to mark certain terms with
+    # the operations applied to them. For example, if an optional rule
+    # is rejected, we mark the result to prevent applying that rule
+    # again.
+    function_id = len(NEW_RULES)
+
     def decorator(fn):
         @wraps(fn)
         def wrapped(left, cur, right):
@@ -117,15 +124,24 @@ def tasya(left_ctx, cur_ctx, right_ctx):
                 yield left, cur, right
                 return
 
+            # Optional substitution
+            if isinstance(result, Option):
+                # declined
+                yield left, cur.add_op(function_id), right
+                if function_id in cur.ops:
+                    return
+                # accepted
+                result = result.data
+
             # Operator substitution
-            elif hasattr(result, '__call__'):
-                cur = result(cur, right=right)
+            if hasattr(result, '__call__'):
+                new_cur = result(cur, right=right)
 
             # Other substitution
             else:
-                cur = cur.tasya(result)
+                new_cur = cur.tasya(result)
 
-            yield left, cur, right
+            yield left, new_cur, right
 
         wrapped.matches = matches
         NEW_RULES.append(wrapped)

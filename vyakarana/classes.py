@@ -312,7 +312,7 @@ class Term(object):
                   the augment 'v' (from 'vu~k').
     """
 
-    __slots__ = ['raw', 'value', 'samjna', 'lakshana', 'parts']
+    __slots__ = ['raw', 'value', 'samjna', 'lakshana', 'parts', 'ops']
 
     def __init__(self, value):
         # The raw string, including 'it' letters and accent marks
@@ -323,14 +323,19 @@ class Term(object):
         self.samjna = set()
         #
         self.lakshana = set()
+        self.ops = frozenset()
+        #
         self.parts = [self]
 
     def __eq__(self, other):
         if other is None:
             return False
+        if self is other:
+            return True
         return (self.raw == other.raw and self.value == other.value
                 and self.samjna == other.samjna
-                and self.lakshana == other.lakshana)
+                and self.lakshana == other.lakshana
+                and self.ops == other.ops)
 
     def __nonzero__(self):
         return bool(self.value)
@@ -353,6 +358,7 @@ class Term(object):
         c = cls(self.value)
         c.samjna = self.samjna.copy()
         c.lakshana = self.lakshana.copy()
+        c.ops = self.ops
         c.parts = self.parts[:]
         return c
 
@@ -441,6 +447,11 @@ class Term(object):
     def add_lakshana(self, term):
         c = self.copy()
         c.lakshana.add(term)
+        return c
+
+    def add_op(self, *ops):
+        c = self.copy()
+        c.ops = self.ops | set(ops)
         return c
 
     def al_tasya(self, src, dest):
@@ -697,6 +708,7 @@ class Upadesha(Term):
         c.value = self.value
         c.samjna = self.samjna.copy()
         c.lakshana = self.lakshana.copy()
+        c.ops = self.ops
         c.parts = self.parts[:]
         c.data = self.data
         c.it = self.it.copy()
@@ -892,3 +904,24 @@ class Vibhakti(Pratyaya):
     def set_raw(self, raw, **kw):
         Pratyaya.set_raw(self, raw, vibhakti=True, **kw)
         self.samjna.add('vibhakti')
+
+
+class Option(object):
+    """Wrapper for a returned result that can be accepted optionally."""
+    def __init__(self, data):
+        self.data = data
+
+    def __repr__(self):
+        return '<%s(%s)>' % self.__class__.__name__, repr(self.data)
+
+
+class Anyatarasyam(Option):
+    """Wrapper for a returned result that is indifferently accepted."""
+
+
+class Va(Option):
+    """Wrapper for a returned result that is preferably accepted."""
+
+
+class Vibhasha(Option):
+    """Wrapper for a returned result that is preferably not accepted."""

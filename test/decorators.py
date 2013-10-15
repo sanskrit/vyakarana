@@ -1,5 +1,6 @@
-from vyakarana.decorators import *
 from vyakarana.context import *
+from vyakarana.classes import Term, Dhatu, Pratyaya
+from vyakarana.decorators import tasya
 
 def str2window(s):
     return [Term(x) if x != '_' else None for x in s.split()]

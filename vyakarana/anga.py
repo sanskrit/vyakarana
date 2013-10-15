@@ -22,7 +22,7 @@
 import gana
 import context as c
 import operators as o
-from classes import Sounds, Sound, Term, Upadesha as U
+from classes import Sounds, Sound, Term, Upadesha as U, Anyatarasyam
 from dhatupatha import DHATUPATHA as DP
 from decorators import *
 
@@ -306,6 +306,13 @@ def sarvadhatuke(state):
     # 7.3.101 ato dīrgho yañi
     if anga.antya == 'a' and p.adi in Sounds('yaY'):
         yield state.swap(i, anga.to_dirgha())
+
+
+@tasya(None, c.raw('Bra\sja~^'), c.samjna('ardhadhatuka'))
+def bhrasjo_ram(left, dhatu, right):
+    # 6.4.47 bhrasjo ropadhayo ram anyatarasyAM
+    if dhatu.upadha().value == 's':
+        return Anyatarasyam(U('Bra\sja~^').set_value('Barj'))
 
 
 @tasya(c.samjna('anga'), c.samjna('tin'), None)
