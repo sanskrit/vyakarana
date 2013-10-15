@@ -79,6 +79,12 @@ def samprasarana(cur, right=None):
     return cur.set_value(''.join(reversed(rev_letters)))
 
 
+def replace(target, result):
+    def func(cur, right=None):
+        return cur.set_value(cur.value.replace(target, result))
+    return func
+
+
 def vrddhi(cur, right=None):
     # 1.1.5 kGiti ca (na)
     if right and right.any_it('k', 'N'):

@@ -259,4 +259,10 @@ def it_status(anga, p):
 
 @new_window(c.lakshana('Slu~'), c.samjna('pratyaya'), None)
 def pratyaya_lopa(shlu, p, right):
-    return (None, p.add_lakshana('Slu~'), right)
+    return None, p.add_lakshana('Slu~'), right
+
+
+@new_window(None, c.it('m'), None)
+def mit_insertion(base, mit, right):
+    if base is not None:
+        return base.tasya(mit), None, right

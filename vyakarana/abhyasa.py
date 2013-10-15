@@ -50,7 +50,7 @@ def dvirvacana(state):
     # 6.1.1 ekAco dve prathamasya
     # HACK to allow dvirvacana to apply even when conflicting operations
     # have already occurred.
-    abhyasa = Term(dhatu.data[1])
+    abhyasa = Upadesha(dhatu.data[1])
 
     # 6.1.2 ajAder dvitIyasya
     if dhatu.adi in Sounds('ac'):
