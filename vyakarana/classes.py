@@ -667,6 +667,7 @@ class Term(object):
                 letters = list(c.value)
                 letters[-2] = replacement
                 c.value = ''.join(letters)
+                c.data = (c.raw, c.value)
                 c.parts = [c]
                 return c
             else:

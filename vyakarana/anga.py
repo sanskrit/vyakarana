@@ -30,27 +30,6 @@ rule, rules = make_rule_decorator('anga')
 
 
 @rule
-@once('na_lopa')
-def na_lopa(state, i, anga):
-    """Causes deletion of 'n'.
-
-    - stamB: staBnAti, staBnoti
-    """
-    p = state[i + 1]
-
-    # 6.4.23 znAn nalopaH (TODO)
-    # 6.4.24 aniditAM hala upadhAyAH kGiti
-    # HACK: check against second value
-    base = Term(anga.data[1])
-    hal = base.hal
-    na_upadha = base.upadha().value in Sounds('Yam')
-    kniti = p.any_it('k', 'N')
-    if 'i' not in anga.it and hal and na_upadha and kniti:
-        anga = anga.upadha('')
-        yield state.swap(i, anga)
-
-
-@rule
 @once('substitute')
 def substitute(state, i, anga):
     """Rules from the beginning of 7.1"""
@@ -306,6 +285,24 @@ def sarvadhatuke(state):
     # 7.3.101 ato dīrgho yañi
     if anga.antya == 'a' and p.adi in Sounds('yaY'):
         yield state.swap(i, anga.to_dirgha())
+
+
+@tasya(None, c.samjna('anga'), c.it('k', 'N'))
+def na_lopa(_, anga, p):
+    """Causes deletion of 'n'.
+
+    - stamB: staBnAti, staBnoti
+    """
+
+    # 6.4.23 znAn nalopaH (TODO)
+    # 6.4.24 aniditAM hala upadhAyAH kGiti
+    # HACK: check against second value
+    base = Term(anga.data[1])
+    hal = base.hal
+    na_upadha = base.upadha().value in Sounds('Yam')
+    # kniti is already accounted for.
+    if 'i' not in anga.it and hal and na_upadha:
+        return o.upadha('')
 
 
 @tasya(None, c.raw('Bra\sja~^'), c.samjna('ardhadhatuka'))
