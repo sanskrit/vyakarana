@@ -174,7 +174,7 @@ def test_dhatu():
         assert d.value == value
 
 
-def test_pratyaya():
+def test_krt():
     pairs = [
         ('san', 'sa', ['n']),
         ('yaN', 'ya', ['N']),
@@ -189,8 +189,9 @@ def test_pratyaya():
         ('kvasu~', 'vas', ['k', 'u~'])
     ]
     for raw, value, its in pairs:
-        p = Pratyaya(raw)
+        p = Krt(raw)
         assert 'pratyaya' in p.samjna
+        assert 'krt' in p.samjna
         assert p.raw == raw
         assert p.value == value
         assert p.it == set(its)

@@ -8,7 +8,7 @@
     :license: MIT and BSD
 """
 
-from classes import Dhatu, Pratyaya
+from classes import Dhatu, Krt
 from decorators import *
 from dhatupatha import DHATUPATHA as DP
 
@@ -49,7 +49,7 @@ def vikarana(state):
     gana_set = DP.gana_set(dhatu)
 
     def _yield(s):
-        p = Pratyaya(s)
+        p = Krt(s)
         p.samjna.add('anga')
         return state.insert(i+1, p)
 

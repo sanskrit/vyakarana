@@ -882,7 +882,7 @@ class Pratyaya(Upadesha):
 
 class Krt(Pratyaya):
     def set_raw(self, value, **kw):
-        Pratyaya.set_raw(self, value, pratyaya=True, **kw)
+        Pratyaya.set_raw(self, value, **kw)
         self.samjna.add('krt')
 
 
