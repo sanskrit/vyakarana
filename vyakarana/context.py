@@ -14,6 +14,8 @@ from classes import Sounds
 def al(*names):
     sounds = Sounds(*names)
     def func(term, antya=True):
+        if term is None:
+            return False
         if antya:
             return term.antya().value in sounds
         else:
@@ -23,40 +25,40 @@ def al(*names):
 
 def it(*names):
     def func(term, **kw):
-        return any(n in term.it for n in names)
+        return term is not None and any(n in term.it for n in names)
     return func
 
 
 def lakshana(*names):
     def func(term, **kw):
-        return any(n in term.lakshana for n in names)
+        return term is not None and any(n in term.lakshana for n in names)
     return func
 
 
 def raw(*names):
     names = frozenset(names)
     def func(term, **kw):
-        return term.raw in names
+        return term is not None and term.raw in names
     return func
 
 
 def samjna(*names):
     def func(term, **kw):
-        return any(n in term.samjna for n in names)
+        return term is not None and any(n in term.samjna for n in names)
     return func
 
 
 def upadha(*names):
     sounds = Sounds(*names)
     def func(term, **kw):
-        return term.upadha().value in sounds
+        return term is not None and term.upadha().value in sounds
     return func
 
 
 def value(*names):
     names = frozenset(names)
     def func(term, **kw):
-        return term.value in names
+        return term is not None and term.value in names
     return func
 
 
@@ -73,4 +75,4 @@ def or_(*functions):
 
 
 def Sit_adi(term):
-    return term.raw and term.raw[0] == 'S'
+    return term is not None and term.raw and term.raw[0] == 'S'

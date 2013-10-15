@@ -99,11 +99,6 @@ def vikarana(state):
         if dhatu.raw in ('sta\mBu~', 'stu\mBu~', 'ska\mBu~', 'sku\mBu~', 'sku\Y'):
             yield _yield('Snu')
 
-    # 3.1.25 satyApa...
-    # TODO: move to proper section
-    if '10' in gana_set:
-        yield _yield('Ric')
-
 
 def pada_options(state):
     """Decide whether a state can use parasmaipada and atmanepada.

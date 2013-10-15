@@ -3,7 +3,11 @@
     vyakarana.operators
     ~~~~~~~~~~~~~~~~~~~
 
-    TODO: write description
+    Various operators. An operator takes an :class:`Upadesha`, applies
+    some sort of transformation, and returns a new :class:`Upadesha` for
+    its result.
+
+    All converters accept an optional right context `right`.
 
     :license: MIT and BSD
 """
@@ -26,14 +30,22 @@ def dirgha(cur, right=None):
 
 
 def guna(cur, right=None):
+    # 1.1.5 kGiti ca (na)
+    if right is not None and right.any_it('k', 'N'):
+        return cur
+
+    # 1.1.2 adeG guNaH
+    # 1.1.3 iko guNavRddhI
     converter = dict(zip('iIuUfFxX', 'eeooaaaa'))
     letters = list(cur.value)
     for i, L in enumerate(letters):
         if L in converter:
             letters[i] = converter[L]
+            if L in 'fF':
+                letters[i] += 'r'
             break
 
-    return cur.set_value(''.join(letters))
+    return cur.set_value(''.join(letters)).add_samjna('guna')
 
 
 def hrasva(cur, right=None):
@@ -47,9 +59,8 @@ def hrasva(cur, right=None):
     return cur.set_value(''.join(letters))
 
 
-def samprasarana(cur):
+def samprasarana(cur, right=None):
     rev_letters = list(reversed(cur.value))
-    found = False
     for i, L in enumerate(rev_letters):
         # 1.1.45 ig yaNaH saMprasAraNAm
         # TODO: enforce short vowels automatically
@@ -66,3 +77,28 @@ def samprasarana(cur):
         pass
 
     return cur.set_value(''.join(reversed(rev_letters)))
+
+
+def vrddhi(cur, right=None):
+    # 1.1.5 kGiti ca (na)
+    if right and right.any_it('k', 'N'):
+        return cur
+
+    # 1.1.1 vRddhir Adaic
+    # 1.1.3 iko guNavRddhI
+    converter = dict(zip('iIuUfFxX', 'EEOOAAAA'))
+    letters = list(cur.value)
+    for i, L in enumerate(letters):
+        if L in converter:
+            letters[i] = converter[L]
+            if L in 'fF':
+                letters[i] += 'r'
+            break
+
+    return cur.set_value(''.join(letters))
+
+
+def upadha(L):
+    def func(cur, right=None):
+        return cur.upadha(L)
+    return func

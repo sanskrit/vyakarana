@@ -8,6 +8,7 @@
     :license: MIT and BSD
 """
 
+import context as c
 import gana
 from classes import Term, Upadesha as U, Pratyaya, Sounds
 from decorators import *
@@ -254,3 +255,8 @@ def it_status(anga, p):
     # 7.2.78 IDajanor dhve ca
 
     return status or 'anit'
+
+
+@new_window(c.lakshana('Slu~'), c.samjna('pratyaya'), None)
+def pratyaya_lopa(shlu, p, right):
+    return (None, p.add_lakshana('Slu~'), right)

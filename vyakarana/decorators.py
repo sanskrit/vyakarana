@@ -66,8 +66,33 @@ def always_true(*a, **kw):
     return True
 
 
+def new_window(left_ctx, cur_ctx, right_ctx):
+    # If ctx is ``None`` or undefined, it's trivially true.
+    left_ctx = left_ctx or always_true
+    cur_ctx = cur_ctx or always_true
+    right_ctx = right_ctx or always_true
+
+    def matches(left, cur, right):
+        return left_ctx(left) and cur_ctx(cur) and right_ctx(right)
+
+    def decorator(fn):
+        @wraps(fn)
+        def wrapped(left, cur, right):
+            result = fn(left, cur, right)
+            if result is None:
+                yield left, cur, right
+            else:
+                yield result
+
+        wrapped.matches = matches
+        NEW_RULES.append(wrapped)
+        return wrapped
+    return decorator
+
+
+
 def tasya(left_ctx, cur_ctx, right_ctx):
-    """Decorator for rules that perform substitution ('tasya').
+    """Decorator for rules that perform substitution on a single term.
 
     :param left_ctx: a context function that matches what comes before
                      the sthAna. If ``None``, accept all contexts.

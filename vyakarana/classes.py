@@ -326,6 +326,8 @@ class Term(object):
         self.parts = [self]
 
     def __eq__(self, other):
+        if other is None:
+            return False
         return (self.raw == other.raw and self.value == other.value
                 and self.samjna == other.samjna
                 and self.lakshana == other.lakshana)
@@ -497,21 +499,8 @@ class Term(object):
 
         1.1.2 adeG guNaH
         """
-        letters = list(self.value[::-1])
-        for i, L in enumerate(letters):
-            if i > 1:
-                break
-            if i == 1 and L in sounds.LONG_VOWELS:
-                break
-            if L in Sounds('ac'):
-                letters[i] = sounds.guna(letters[i])
-                break
-        new_value = ''.join(reversed(letters))
-        result = self.set_value(new_value)
-        if new_value != self.value:
-            return result.add_samjna('guna')
-        else:
-            return result
+        import operators
+        return operators.guna(self)
 
     def lopa(self):
         """
@@ -696,7 +685,7 @@ class Upadesha(Term):
 
     """A Term with indicatory letters."""
 
-    __slots__ = ['it']
+    __slots__ = ['it', 'data']
     nasal_re = re.compile('([aAiIuUfFxXeEoO]~)')
 
     def __init__(self, raw=None, **kw):
@@ -707,6 +696,8 @@ class Upadesha(Term):
         if raw:
             self.set_raw(raw, **kw)
 
+        self.data = (self.raw, self.value)
+
     def copy(self):
         c = self.__class__(raw=None)
         c.raw = self.raw
@@ -714,6 +705,7 @@ class Upadesha(Term):
         c.samjna = self.samjna.copy()
         c.lakshana = self.lakshana.copy()
         c.parts = self.parts[:]
+        c.data = self.data
         c.it = self.it.copy()
         return c
 
@@ -725,6 +717,14 @@ class Upadesha(Term):
     def remove_it(self, letters):
         c = self.copy()
         c.it.difference_update(letters)
+        return c
+
+
+    def set_value(self, value):
+        c = self.copy()
+        c.value = value
+        c.parts = [c]
+        c.data = c.data[:2] + (value,)
         return c
 
     def set_raw(self, raw, **kw):
@@ -854,6 +854,7 @@ class Dhatu(Anga):
         if value != self.value:
             self.value = value
 
+        self.data = (self.raw, self.value)
         self.clean = value
 
     def copy(self):

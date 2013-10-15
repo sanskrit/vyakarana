@@ -40,9 +40,12 @@ def na_lopa(state, i, anga):
 
     # 6.4.23 znAn nalopaH (TODO)
     # 6.4.24 aniditAM hala upadhAyAH kGiti
-    na_upadha = anga.upadha().value in Sounds('Yam')
+    # HACK: check against second value
+    base = Term(anga.data[1])
+    hal = base.hal
+    na_upadha = base.upadha().value in Sounds('Yam')
     kniti = p.any_it('k', 'N')
-    if 'i' not in anga.it and anga.hal and na_upadha and kniti:
+    if 'i' not in anga.it and hal and na_upadha and kniti:
         anga = anga.upadha('')
         yield state.swap(i, anga)
 
@@ -90,24 +93,6 @@ def adesha(state):
         if vac_condition or grah_condition:
             state = state.swap(i, anga.samprasarana())
 
-        # 1.1.5 kGiti ca
-        elif next.any_it('k', 'N'):
-            continue
-
-        # 7.2.115 aco `Jniti (vrddhi)
-        # 7.2.116 ata upadhAyAH
-        elif next.any_it('Y', 'R'):
-            if anga.ac or anga.upadha().value == 'a':
-                anga = anga.vrddhi()
-            else:
-                anga = anga.guna()
-
-            state = state.swap(i, anga)
-
-        # 7.3.84 sArvadhAtukArdhadhAtukayoH
-        elif next.any_samjna('sarvadhatuka', 'ardhadhatuka'):
-            anga = anga.guna()
-            state = state.swap(i, anga)
 
     yield state
 
@@ -322,6 +307,17 @@ def sarvadhatuke(state):
         yield state.swap(i, anga.to_dirgha())
 
 
+@tasya(None, c.samjna('anga'), c.it('Y', 'R'))
+def nn_vrddhi(_, anga, p):
+    # 7.2.115 aco `Jniti (vrddhi)
+    if anga.ends_in('ac'):
+        return o.vrddhi
+
+    # 7.2.116 ata upadhAyAH
+    if anga.upadha().value == 'a':
+        return o.upadha('A')
+
+
 @tasya(None, c.samjna('anga'), c.raw('Syan'))
 def syani(left, anga, right):
     """Rules conditioned by the suffix 'Syan'."""
@@ -376,6 +372,21 @@ def siti(left, anga, right):
     # 7.3.83 jusi ca
     if right.raw == 'jus':
         return o.guna
+
+
+@tasya(None, c.samjna('anga'), c.samjna('pratyaya'))
+def guna(_, anga, p):
+    # 7.3.84 sArvadhAtukArdhadhAtukayoH
+    # TODO: why ik-anta ?
+    if p.any_samjna('sarvadhatuka', 'ardhadhatuka') and anga.ends_in('ik'):
+        return o.guna
+
+    # 7.3.85 jAgro 'viciNNalGitsu
+    # 7.3.86 pugantalaghUpadhasya ca
+    if anga.upadha().value in set('ifxu'):
+        return o.guna
+    # 7.3.87 nAbhyastasyAci piti sArvadhAtuke
+    # 7.3.87 bhUsuvos tiGi
 
 
 def lit_a_to_e(state):

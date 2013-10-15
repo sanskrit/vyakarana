@@ -4,7 +4,6 @@ from util import SoundEditor
 
 def apply(state):
     editor = SoundEditor(state)
-    print [x.value for x in state]
     for cur in editor:
         next = cur.next
         if next.value is None:

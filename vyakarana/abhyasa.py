@@ -48,7 +48,9 @@ def dvirvacana(state):
         return
 
     # 6.1.1 ekAco dve prathamasya
-    abhyasa = Term(dhatu.value)
+    # HACK to allow dvirvacana to apply even when conflicting operations
+    # have already occurred.
+    abhyasa = Term(dhatu.data[1])
 
     # 6.1.2 ajAder dvitIyasya
     if dhatu.adi().ac:

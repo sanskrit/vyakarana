@@ -43,3 +43,13 @@ def test_samprasarana():
     for original, actual in cases:
         assert o.samprasarana(Term(original)).value == actual
 
+def test_vrddhi():
+    cases = [
+        ('ji', 'jE'),
+        ('nI', 'nE'),
+        ('lu', 'lO'),
+        ('pU', 'pO'),
+        ('sad', 'sad'),  # iko guNavRddhI
+    ]
+    for original, actual in cases:
+        assert o.vrddhi(Term(original)).value == actual

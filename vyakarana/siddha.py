@@ -39,11 +39,12 @@ def asiddha_helper(state):
         w, x, y, z = (p.value, c.value, n.value, n2.value)
 
         # 8.2.29 skoH saMyogAdyor ante ca
-        if x in 'sk' and y in Sounds('hal') and z in Sounds('Jal'):
-            x = ''
+        # TODO: saMyoga
+        # HACK: why n.first ? where is that stated?
+        if x in 'sk' and y in Sounds('Jal') and n.first:
+            x = '_'
 
         if y in Sounds('Jal'):
-
             # 8.2.30 coH kuH
             cu = Sounds('cu')
             if x in cu and y in Sounds('Jal') and y not in cu:
@@ -132,13 +133,9 @@ def asiddha_helper(state):
         if x == 'M' and y in Sounds('yay'):
             x = Sound(x).closest(Sound(y).savarna_set)
 
-        c.value = x
+        c.value = x if x != '_' else ''
 
-    new_state = editor.join()
-    final_result = ''.join(x.value for x in new_state)
-    pada = Term(final_result)
-
-    yield state.replace_all([pada])
+    yield editor.join()
 
 
 def asiddhavat(state):
@@ -153,9 +150,12 @@ def asiddhavat(state):
 
 
 def asiddha(state):
+    print 'asiddha:', state
+    state_value, result_value = (''.join(x.value for x in state), None)
     for result in asiddha_helper(state):
-        if result[0].value == state[0].value:
-            yield result
+        result_value = ''.join(x.value for x in result)
+        if result_value == state_value:
+            yield state.replace_all([Term(result_value)])
         else:
             for x in asiddha(result):
                 yield x

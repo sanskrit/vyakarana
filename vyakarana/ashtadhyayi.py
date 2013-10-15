@@ -55,6 +55,9 @@ class State(object):
     def __repr__(self):
         return '<State(%r, %r)>' % (self.items, self.ops)
 
+    def __str__(self):
+        return repr([x.value for x in self.items])
+
     def add_op(self, op):
         """Add an operation to the State. Functions can check which
         operations have been applied and act accordingly.
@@ -138,11 +141,16 @@ class State(object):
             c.items[i - 1] = window[0]
         if i + 1 < len(self.items):
             c.items[i + 1] = window[-1]
+        c.items = [x for x in c.items if x is not None]
         return c
 
 
 class History(list):
-    pass
+    def __str__(self):
+        lines = ['History:']
+        for state in self:
+            lines.append('  %s' % repr([x.value for x in state]))
+        return '\n'.join(lines)
 
 # The Ashtadhyayi's derivational system consists of taking a set of
 # terms and repeatedly applying rules to that set until a finished word
@@ -185,20 +193,9 @@ def apply_normal_rules(state):
     """
     yielded = False
 
-    # new-style
-    for i, item in enumerate(state):
-        window = state.window(i)
-        for rule in NEW_RULES:
-            if not rule.matches(*window):
-                continue
-            for new_window in rule(*window):
-                if new_window != window:
-                    yield state.swap_window(i, new_window)
-                    yielded = True
-            if yielded:
-                return
+    print state
 
-
+    # old-style
     for i, item in reversed(list(enumerate(state))):
         keys = item.samjna.union(item.lakshana)
 
@@ -210,10 +207,27 @@ def apply_normal_rules(state):
                 except TypeError:
                     results = rule(state)
                 for new_state in results:
+                    print '  ', rule.__name__, ':', new_state
                     yield new_state
                     yielded = True
                 if yielded:
                     return
+
+    # new-style
+    for i, item in enumerate(state):
+        window = state.window(i)
+        for rule in NEW_RULES:
+            if not rule.matches(*window):
+                continue
+            for new_window in rule(*window):
+                if new_window != window:
+                    print '  ', rule.__name__, ':', state.swap_window(i, new_window)
+                    yield state.swap_window(i, new_window)
+                    yielded = True
+            if yielded:
+                return
+
+
 
 
 def step(state):
@@ -245,11 +259,11 @@ def derive(start):
     if isinstance(start, list):
         start = State(start)
 
-    h = History()
-    h.append(start)
+    history = History()
+    history.append(start)
 
-    while h:
-        cur = h.pop()
+    while history:
+        cur = history.pop()
         for state in step(cur):
             if not state:
                 continue
@@ -257,7 +271,7 @@ def derive(start):
                 # state.trace()
                 yield state
             else:
-                h.append(state)
+                history.append(state)
 
 
 def init():
