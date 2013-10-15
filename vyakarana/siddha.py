@@ -89,11 +89,12 @@ def asiddha_helper(state):
         # 8.4.2 aTkupvAGnuMvyavAye 'pi
         # According to commentary, 8.4.1 also applies to 'f' and 'F'.
         # TODO: AG, num
-        had_rs = had_rs or x in 'rzfF'
-        if x == 'n' and had_rs:
+        if x in 'rzfF':
+            had_rs = True
+        elif x == 'n' and had_rs:
             x = 'R'
             had_rs = False
-        if x not in Sounds('aw ku pu'):
+        elif x not in Sounds('aw ku pu'):
             had_rs = False
 
         stu = Sounds('s tu')
