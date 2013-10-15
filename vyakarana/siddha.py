@@ -39,9 +39,8 @@ def asiddha_helper(state):
         w, x, y, z = (p.value, c.value, n.value, n2.value)
 
         # 8.2.29 skoH saMyogAdyor ante ca
-        # TODO: saMyoga
-        # HACK: why n.first ? where is that stated?
-        if x in 'sk' and y in Sounds('Jal') and n.first:
+        # TODO: pada end
+        if x in 'sk' and y in Sounds('hal') and z in Sounds('Jal'):
             x = '_'
 
         if y in Sounds('Jal'):
