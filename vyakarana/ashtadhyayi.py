@@ -181,7 +181,6 @@ rules = {
     'abhyasa': abhyasa.rules,
     'vibhakti': vibhakti.tin_rules,
     'dhatu': [dhatu.adesha,
-              dhatu.vikarana,
               abhyasa.dvirvacana]
 }
 

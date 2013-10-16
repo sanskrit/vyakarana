@@ -8,6 +8,7 @@
     :license: MIT and BSD
 """
 
+import context as c
 from classes import Dhatu, Krt
 from decorators import *
 from dhatupatha import DHATUPATHA as DP
@@ -41,21 +42,14 @@ def adesha(state):
         yield state.swap(i, dhatu)
 
 
-@once('vikarana')
-def vikarana(state):
-    """Vikarana for classes 1 through 9."""
+@tasmat(c.samjna('dhatu'), c.and_(c.samjna('tin'), c.samjna('sarvadhatuka')))
+def vikarana(dhatu, p):
+    """Vikarana for classes 1 through 10."""
 
-    i, dhatu = state.find('dhatu')
     gana_set = DP.gana_set(dhatu)
 
     def _yield(s):
-        p = Krt(s)
-        p.samjna.add('anga')
-        return state.insert(i+1, p)
-
-    next = state[i+1]
-    if 'sarvadhatuka' not in next.samjna:
-        return
+        return Krt(s).add_samjna('anga')
 
     # 3.1.68 kartari śap
     if '1' in gana_set or '10' in gana_set:
@@ -75,9 +69,19 @@ def vikarana(state):
                      'klamu~', 'trasI~', 'truwa~', 'laza~^'):
         yield _yield('Syan')
 
+    # 3.1.71 yaso 'nupasargAt
+
+    # 3.1.72 saMyasaz ca (TODO)
+
     # 3.1.73 svādibhyaḥ śnuḥ
     if '5' in gana_set:
         yield _yield('Snu')
+
+    # 3.1.74 zruvaH zR ca
+
+    # 3.1.75 akSo 'nyatarasyAM
+
+    # 3.1.76 tanUkaraNe takSaH
 
     # 3.1.77 tudādibhyaḥ śaḥ
     if '6' in gana_set:
@@ -91,13 +95,15 @@ def vikarana(state):
     if '8' in gana_set:
         yield _yield('u')
 
+    # 3.1.80 dhinvikRNvyor a ca
+
     # 3.1.81 kryādibhyaḥ śnā
     if '9' in gana_set:
         yield _yield('SnA')
 
-        # 3.1.82 stambhustumbhuskambhuskumbhuskuñbhyaḥ śnuś ca
-        if dhatu.raw in ('sta\mBu~', 'stu\mBu~', 'ska\mBu~', 'sku\mBu~', 'sku\Y'):
-            yield _yield('Snu')
+    # 3.1.82 stambhustumbhuskambhuskumbhuskuñbhyaḥ śnuś ca
+    if dhatu.raw in ('sta\mBu~', 'stu\mBu~', 'ska\mBu~', 'sku\mBu~', 'sku\Y'):
+        yield _yield('Snu')
 
 
 def pada_options(state):

@@ -73,6 +73,47 @@ def new_window(left_ctx, cur_ctx, right_ctx):
     return decorator
 
 
+def tasmat(left_ctx, right_ctx):
+    """Decorator for rules that perform insertion after a single term.
+
+    :param left_ctx: a context function that matches what comes before
+                     the insertion. If ``None``, accept all contexts.
+    :param right_ctx: a context function that matches what comes after
+                     the insertion. If ``None``, accept all contexts.
+    """
+    left_ctx = left_ctx or always_true
+    right_ctx = right_ctx or always_true
+
+    def matches(state, i):
+        left, right, _ = state.window(i)
+        return left_ctx(left) and right_ctx(right)
+
+    function_id = len(NEW_RULES)
+
+    def decorator(fn):
+        @wraps(fn)
+        def wrapped(state, i):
+            # If previously applied, reject and avoid looping.
+            # TODO: find more elegant way to control this
+            if function_id in state.ops:
+                return
+
+            left, right, _ = state.window(i)
+            result = fn(left, right)
+            if result is None:
+                return
+
+            for r in result:
+                if r is not None:
+                    yield state.insert(i, r).add_op(function_id)
+
+
+        wrapped.matches = matches
+        NEW_RULES.append(wrapped)
+        return wrapped
+    return decorator
+
+
 def tasya(left_ctx, cur_ctx, right_ctx):
     """Decorator for rules that perform substitution on a single term.
 
