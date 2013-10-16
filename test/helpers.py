@@ -11,7 +11,7 @@
 
 import os
 from vyakarana import ashtadhyayi as A
-from vyakarana.classes import Dhatu, Pratyaya
+from vyakarana.classes import Dhatu, Vibhakti
 
 def data_path(name):
     """Return a relative path to test file `name`."""
@@ -42,15 +42,17 @@ def load_paradigms(filename):
     for line in read_data(filename):
         items = line.split()
         dhatu = items[0]
+        forms = items[1:]
 
-        form_list = []
-        for person_number in items[1:]:
-            for form in person_number.split('/'):
-                if form == '_':
-                    continue
-                form_list.append(form)
+        purusha = ['prathama', 'madhyama', 'uttama']
+        vacana = ['ekavacana', 'dvivacana', 'bahuvacana']
 
-        yield dhatu, form_list
+        for i, person_number in enumerate(forms):
+            if person_number == '_':
+                continue
+
+            person, number = purusha[i / 3], vacana[i % 3]
+            yield dhatu, set(person_number.split('/')), person, number
 
 
 def verb_data(filename, la):
@@ -63,12 +65,12 @@ def verb_data(filename, la):
     :param la: the upadeśa name of one of the lakāras.
     """
     test_cases = []
-    for dhatu, form_list in load_paradigms(filename):
-        history = list(A.derive([Dhatu(dhatu), Pratyaya(la)]))
-        print [x[0].value for x in history]
+    for dhatu, expected, person, number in load_paradigms(filename):
+        d = Dhatu(dhatu)
+        p = Vibhakti(la).add_samjna(person, number)
+        actual = set(x[0].value for x in A.derive([d, p]))
+        print actual
 
-        result_set = set(x[0].value for x in history)
-        for form in form_list:
-            test_cases.append((form, result_set))
+        test_cases.append((expected, actual))
 
     return test_cases

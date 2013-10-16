@@ -10,6 +10,7 @@
 
 import itertools
 
+import context as c
 import dhatu as D
 import util
 from classes import Vibhakti as V
@@ -22,9 +23,6 @@ VACANA = ['ekavacana', 'dvivacana', 'bahuvacana']
 VIBHAKTI = ['prathama', 'dvitiya', 'trtiya', 'caturthi', 'pancami', 'sasthi',
             'saptami']
 
-tin_rule, tin_rules = make_rule_decorator('vibhakti')
-la_rule, la_rules = make_rule_decorator('vibhakti')
-
 
 def label_by_triplet(terms, labels):
     """
@@ -33,9 +31,10 @@ def label_by_triplet(terms, labels):
     :param terms: a list of Terms
     :param labels: a list of strings
     """
+    num_labels = len(labels)
     for i, chunk in enumerate(util.iter_group(terms, 3)):
-        for v in chunk:
-            v.samjna.add(labels[i % len(labels)])
+        for term in chunk:
+            term.add(labels[i % num_labels])
 
 
 def label_by_item(terms, labels):
@@ -53,8 +52,8 @@ def label_by_item(terms, labels):
     :param terms: a list of strings
     """
     labels = itertools.cycle(labels)
-    for v in terms:
-        v.samjna.add(next(labels))
+    for term in terms:
+        term.add(next(labels))
 
 
 def label_by_group(terms, labels):
@@ -71,153 +70,92 @@ def label_by_group(terms, labels):
     :param terms: a list of Terms
     :param terms: a list of strings
     """
-    length = len(terms)
-    num_labels = len(labels)
-    for i, g in enumerate(util.iter_group(terms, length / num_labels)):
-        for v in g:
-            v.samjna.add(labels[i])
+    num_groups = len(terms) /  len(labels)
+    for i, group in enumerate(util.iter_group(terms, num_groups)):
+        for term in group:
+            term.add(labels[i])
 
 
-def la_to_sup(state):
-    """
-
-    :param state:
-    """
-
-    # Basic endings
-    # 4.1.2 svaujasamauTchaSTAbhyAMbhisGebhyAmbhyas-
-    #       GasibhyAMbhyasGasosAmGyossup
-    sup_list = """su~   O    jas
-                  am    Ow   Sas
-                  wA    ByAm Bis
-                  Ne    ByAm Byas
-                  Nasi~ ByAm Byas
-                  Nas   os   Am
-                  Ni    os   sup""".split()
-
-    base_sup = [V(x) for x in sup_list]
-
-    # Case
-    label_by_triplet(base_sup, VIBHAKTI)
-
-    # Number
-    # 1.4.103 supaH (1.4.102 tAnyekavacananadvivacanabahuvacanAnyekazaH)
-    label_by_item(base_sup, VACANA)
-
-    endings = sup_list
-
-    for e in endings:
-        yield state.swap(-1, e)
+def c_lakara(p):
+    return p is not None and 'vibhakti' in p.samjna and p.raw[0] == 'l'
 
 
-@la_rule
-def la_to_tin(state):
-    """Apply 3.4.77 - 3.4.117 to convert `la` to `tiN`.
+def tin_key(samjna, pada=None):
+    if pada:
+        x = pada
+    else:
+        for x in PADA:
+            if x in samjna:
+                break
+    for y in PURUSHA:
+        if y in samjna:
+            break
+    for z in VACANA:
+        if z in samjna:
+            break
 
-    3.4.109 - 3.4.112 are considered in `tin_adesha`.
+    return x, y, z
 
-    :param state:
-    """
-    # 'la' is always at the end of the word
-    _, dhatu = state.find('dhatu')
-    la = state[-1]
-    if 'tin' in la.samjna:
-        return
 
-    # Basic endings
-    # 3.4.78 tiptasjhisipthasthamipvasmastAtAmjhathAsAthAMdhvamiDvahimahiG
-    base_tin = [V(x) for x in """
-                              tip tas  Ji
-                              sip Tas  Ta
-                              mip vas  mas
-                              ta  AtAm Ja
-                              TAs ATAm Dvam
-                              iw  vahi mahiG
-                               """.split()]
+@replace(c.samjna('dhatu'), c_lakara, None)
+def lasya(dhatu, la, _):
+    base_tin = """tip tas Ji sip Tas Ta mip vas mas
+                  ta AtAm Ja TAs ATAm Dvam iw vahi mahiG""".split()
+    base_samjna = [set(['tin']) for s in base_tin]
 
-    # Pada
     # 1.4.99 laH parasmaipadam
     # 1.4.100 taGAnAv Atmanepadam
-    label_by_group(base_tin, PADA)
+    label_by_group(base_samjna, PADA)
 
-    # Person
     # 1.4.101 tiGas trINi trINi prathamamadhyamottamAH
-    label_by_triplet(base_tin, PURUSHA)
+    label_by_triplet(base_samjna, PURUSHA)
 
-    # Number
     # 1.4.102 tAnyekavacananadvivacanabahuvacanAnyekazaH
-    label_by_item(base_tin, VACANA)
+    label_by_item(base_samjna, VACANA)
 
-    # Sarvadhatuka / Ardhadhatuka
-    # 3.4.113 tiGzit sArvadhAtukam
-    # 3.4.114 ArdhadhAtukaM zeSaH
-    # 3.4.115 liT ca
-    for v in base_tin:
-        v.lakshana.add(la.raw)
-        v.samjna.add('tin')
-        if la.raw == 'li~w':
-            v.samjna.add('ardhadhatuka')
-        else:
-            v.samjna.add('sarvadhatuka')
-            # 1.2.4 sArvadhAtukam apit (-> Nit)
-            if 'p' not in v.it:
-                v.it.add('N')
+    key2index = {tin_key(x): i for i, x in enumerate(base_samjna)}
 
-    # Split in parasmaipada and atmanepada, use as appropriate
-    p_base, a_base = list(util.iter_group(base_tin, 9))
-
-    has_para, has_atma = D.pada_options(state)
-    p_endings = p_base if has_para else []
-    a_endings = a_base if has_atma else []
-
-    # Transformations (3.4)
-    # ---------------------
+    la_type = la.raw
+    has_para, has_atma = D.pada_options(dhatu)
+    indices = []
+    if has_para:
+        indices.append(key2index[tin_key(la.samjna, pada='parasmaipada')])
     if has_atma:
-        # 3.4.78 Tita AtmanepadAnAM Ter e
-        if 'w' in la.it:
-            endings = [x.ti('e') for x in a_endings]
+        indices.append(key2index[tin_key(la.samjna, pada='atmanepada')])
 
-            for i, x in enumerate(a_base):
-                # 3.4.79 thAsas se
-                if x.raw == 'TAs':
-                    endings[i] = endings[i].update('se')
+    for i in indices:
+        base = base_tin[i]
+        samjna = base_samjna[i]
+
+        # 3.4.77 lasya
+        # 3.4.78 tiptasjhisipthasthamipvasmastAtAmjhathAsAthAMdhvamiDvahimahiG
+        la = la.set_raw(base)
+
+        if has_atma:
+            # 3.4.79 Tita AtmanepadAnAM Ter e
+            if 'w' in la.it:
+                la = la.ti('e')
+
+                # 3.4.80 thAsaH se
+                if la.raw == 'TAs':
+                    la = la.set_raw('se')
 
                 # 3.4.80 liTas tajhayor ezirec
-                if la.raw == 'li~w':
-                    if x.raw == 'ta':
-                        endings[i] = endings[i].update('eS')
-                    elif x.raw == 'Ja':
-                        endings[i] = endings[i].update('irec')
+                if la_type == 'li~w':
+                    if la.raw == 'ta':
+                        la = la.set_raw('eS')
+                    elif la.raw == 'Ja':
+                        la = la.set_raw('irec')
 
-            a_endings = endings
+        if has_para:
+            # 3.4.81 parasmaipadAnAM NalatususthalathusaNalvamAH
+            if la_type == 'li~w':
+                lit_tin = 'Ral atus us Tal aTus a Ral va ma'.split()
+                tin_pairs = zip(base_tin[:9], lit_tin)
+                for base_ending, lit_ending in tin_pairs:
+                    if la.raw == base_ending:
+                        la = la.set_raw(lit_ending)
 
-    if has_para:
-        # 3.4.81 parasmaipadAnAM NalatususthalathusaNalvamAH
-        if la.raw == 'li~w':
-            new = 'Ral atus us Tal aTus a Ral va ma'.split()
-            old_new = zip(p_endings, new)
-            p_endings = [o.update(n) for (o, n) in old_new]
+        break
 
-    endings = p_endings + a_endings
-
-    # Analogous extension
-    # -------------------
-    # This adds 'it' letters to endings that don't have them by default.
-    if la.raw == 'li~w':
-        # 1.2.5 asaMyogAl liT kit
-        if not dhatu.samyoga:
-            for i, e in enumerate(endings):
-                if 'p' not in e.it:
-                    endings[i] = e.add_it('k')
-
-        # 1.2.6 indhibhavatibhyAM ca
-        if dhatu.value in ('BU', 'inD'):
-            for i, e in enumerate(endings):
-                endings[i] = e.add_it('k')
-
-    # 7.1.91 Nal uttamo vA
-    for e in endings:
-        yield state.swap(-1, e)
-        if la.raw == 'li~w' and 'uttama' in e.samjna and 'R' in e.it:
-            e2 = e.remove_it('R')
-            yield state.swap(-1, e2)
+    return la.add_samjna('tin')

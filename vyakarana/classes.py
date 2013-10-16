@@ -296,7 +296,6 @@ class Term(object):
 
     :param value: the human-readable version of this term
     :param samjna: the technical designations that apply to this term
-
     :param lakshana: the names that refer to this term. For example, an
                      operation conditioned by "lit" is also condition by
                      "Nal", since "Nal" comes from "lit". This term
@@ -337,17 +336,11 @@ class Term(object):
                 and self.lakshana == other.lakshana
                 and self.ops == other.ops)
 
+    def __ne__(self, other):
+        return not self == other
+
     def __nonzero__(self):
-        return bool(self.value)
-
-    def __getitem__(self, i):
-        try:
-            return Term(self.value[i])
-        except IndexError:
-            return Term('')
-
-    def __getslice__(self, i, j):
-        return Term(self.value[i:j])
+        return True
 
     def __repr__(self):
         return "<{0}('{1}')>".format(self.__class__.__name__, self.value)
@@ -361,21 +354,6 @@ class Term(object):
         c.ops = self.ops
         c.parts = self.parts[:]
         return c
-
-    def _ends_in(selection):
-        group = Sounds(selection)
-
-        def fn(self):
-            return self[-1].value in group
-        return fn
-
-    ac = property(_ends_in('ac'))
-    dirgha = property(_ends_in('At It Ut Ft'))
-    hrasva = property(_ends_in('at it ut ft xt'))
-    ec = property(_ends_in('ec'))
-    hal = property(_ends_in('hal'))
-    ik = property(_ends_in('ik'))
-    del _ends_in
 
     @property
     def guru(self):
@@ -488,64 +466,6 @@ class Term(object):
     def any_samjna(self, *args):
         return any(a in self.samjna for a in args)
 
-    def deaspirate(self):
-        c = self.copy()
-        c.value = sounds.deaspirate(c.value[0]) + c.value[1:]
-        return c
-
-    def ends_in(self, selection):
-        group = Sounds(selection)
-        return self[-1].value in group
-
-    def guna(self):
-        """Apply guna. But if the term ends in a conjunct consonant,
-        do nothing.
-
-        1.1.2 adeG guNaH
-        """
-        import operators
-        return operators.guna(self)
-
-    def lopa(self):
-        """
-        Apply 'lopa' to this term.
-
-        1.1.60 adarzanaM lopaH
-        1.1.62 pratyayalope pratyayalakSaNam
-        """
-        return self.set_value('')
-
-    def replace(self, x, y):
-        """Replace all instances of `x` with `y`.
-
-        :param x: the string to replace
-        :param y: the string replacement
-        """
-        c = self.copy()
-        c.value = c.value.replace(x, y)
-        return c
-
-    def samprasarana(self):
-        value = self.value
-        letters = list(value)
-
-        for i, L in enumerate(letters):
-            if L in Pratyahara('ac'):
-                samp = sounds.samprasarana(letters[i-1])
-                value = value[:i-1] + samp + value[i+1:]
-                return self.set_value(value)
-
-        return self
-
-    def set(self, i, value):
-        """Replace the letter at index `i` with `value`."""
-        c = self.copy()
-        letters = list(c.value)
-        letters[i] = value
-        c.value = ''.join(letters)
-        c.parts = [c]
-        return c
-
     def set_value(self, value):
         c = self.copy()
         c.value = value
@@ -649,15 +569,6 @@ class Term(object):
             c.value = ''.join(splits[:-2]) + replacement
         return c
 
-    def to_hrasva(self):
-        return self.tasya(sounds.shorten(self.value[-1]))
-
-    def to_dirgha(self):
-        return self.tasya(sounds.lengthen(self.value[-1]))
-
-    def to_yan(self):
-        return self.tasya(sounds.semivowel(self.value[-1]))
-
     def upadha(self, replacement=None):
         """The penult."""
         length = len(self.value)
@@ -675,16 +586,6 @@ class Term(object):
         else:
             return Term('')
 
-    def vrddhi(self):
-        """Apply vrddhi."""
-        c = self.copy()
-        letters = list(self.value[::-1])
-        for i, L in enumerate(letters):
-            if L in sounds.VOWELS:
-                letters[i] = sounds.vrddhi(letters[i])
-                break
-        return c.set_value(''.join(reversed(letters)))
-
 
 class Upadesha(Term):
 
@@ -699,7 +600,7 @@ class Upadesha(Term):
         self.value = None
         self.it = set()
         if raw:
-            self.set_raw(raw, **kw)
+            self._set_raw(raw, **kw)
 
         self.data = (self.raw, self.value)
 
@@ -733,7 +634,7 @@ class Upadesha(Term):
         c.data = c.data[:2] + (value,)
         return c
 
-    def set_raw(self, raw, **kw):
+    def _set_raw(self, raw, **kw):
         self.raw = raw
 
         if '~\\' in raw:
@@ -816,9 +717,9 @@ class Upadesha(Term):
         self.lakshana.add(raw)
         self.parts = [self]
 
-    def update(self, raw, **kw):
+    def set_raw(self, raw, **kw):
         c = self.copy()
-        c.set_raw(raw, **kw)
+        c._set_raw(raw, **kw)
         return c
 
 
@@ -829,8 +730,8 @@ class Anga(Upadesha):
 
     __slots__ = []
 
-    def set_raw(self, value, **kw):
-        Upadesha.set_raw(self, value, **kw)
+    def _set_raw(self, value, **kw):
+        Upadesha._set_raw(self, value, **kw)
         self.samjna.add('anga')
 
 
@@ -866,8 +767,8 @@ class Dhatu(Anga):
         c = super(Anga, self).copy()
         return c
 
-    def set_raw(self, value, **kw):
-        Anga.set_raw(self, value, **kw)
+    def _set_raw(self, value, **kw):
+        Anga._set_raw(self, value, **kw)
         self.samjna.add('dhatu')
 
 
@@ -875,8 +776,8 @@ class Dhatu(Anga):
 # --------
 
 class Pratyaya(Upadesha):
-    def set_raw(self, value, **kw):
-        Upadesha.set_raw(self, value, pratyaya=True, **kw)
+    def _set_raw(self, value, **kw):
+        Upadesha._set_raw(self, value, pratyaya=True, **kw)
         self.samjna.add('pratyaya')
 
         # 1.1.__ pratyayasya lukzlulupaH
@@ -885,8 +786,8 @@ class Pratyaya(Upadesha):
 
 
 class Krt(Pratyaya):
-    def set_raw(self, value, **kw):
-        Pratyaya.set_raw(self, value, **kw)
+    def _set_raw(self, value, **kw):
+        Pratyaya._set_raw(self, value, **kw)
         self.samjna.add('krt')
 
         # 3.4.113 tiGzit sArvadhAtukam
@@ -902,8 +803,8 @@ class Krt(Pratyaya):
 
 
 class Vibhakti(Pratyaya):
-    def set_raw(self, raw, **kw):
-        Pratyaya.set_raw(self, raw, vibhakti=True, **kw)
+    def _set_raw(self, raw, **kw):
+        Pratyaya._set_raw(self, raw, vibhakti=True, **kw)
         self.samjna.add('vibhakti')
 
 

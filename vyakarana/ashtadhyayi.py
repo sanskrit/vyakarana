@@ -105,6 +105,11 @@ class State(object):
                 return x
         return None
 
+    def remove(self, index):
+        c = self.copy()
+        c.items.pop(index)
+        return c
+
     def replace_all(self, items):
         c = self.copy()
         c.items = items
@@ -152,38 +157,6 @@ class History(list):
             lines.append('  %s' % repr([x.value for x in state]))
         return '\n'.join(lines)
 
-# The Ashtadhyayi's derivational system consists of taking a set of
-# terms and repeatedly applying rules to that set until a finished word
-# remains. These rules:
-#
-#     (1) are conditioned by technical designations and
-#     (2) have dependencies on many other parts of the system.
-#
-# To address both of these issues, rules are selected using the dict
-# below. A technical designation corresponds to some functions that
-# apply related rules in chunks. Some of these functions check against
-# the current state's `ops` set to make sure that any dependent
-# operations have already been applied. The ordered list ensures that
-# operations apply in a predictable order.
-rules = {
-    'la~w': vibhakti.la_rules,
-    'li~w': vibhakti.la_rules,
-    'lu~w': vibhakti.la_rules,
-    'lf~w': vibhakti.la_rules,
-    'lo~w': vibhakti.la_rules,
-    'la~N': vibhakti.la_rules,
-    'li~N': vibhakti.la_rules,
-    'lu~N': vibhakti.la_rules,
-    'lf~N': vibhakti.la_rules,
-    'tin': vibhakti.tin_rules,
-    'anga': anga.rules,
-    'ardhadhatuka': pratyaya.rules,
-    'abhyasa': abhyasa.rules,
-    'vibhakti': vibhakti.tin_rules,
-    'dhatu': [dhatu.adesha,
-              abhyasa.dvirvacana]
-}
-
 
 def apply_normal_rules(state):
     """
@@ -192,33 +165,13 @@ def apply_normal_rules(state):
     """
     yielded = False
 
-    print state
-
-    # old-style
-    for i, item in reversed(list(enumerate(state))):
-        keys = item.samjna.union(item.lakshana)
-
-        for key in keys:
-            # Apply rules and yield new states
-            for rule in rules.get(key, []):
-                try:
-                    results = rule(state, i, item)
-                except TypeError:
-                    results = rule(state)
-                for new_state in results:
-                    print '  ', rule.__name__, ':', new_state
-                    yield new_state
-                    yielded = True
-                if yielded:
-                    return
-
     # new-style
     for i in range(len(state)):
         for rule in NEW_RULES:
             if not rule.matches(state, i):
                 continue
-            for new_state in rule(state, i):
-                print '  ', rule.__name__, ':', new_state
+            for new_state in rule.apply(state, i):
+                print '  ', rule, new_state
                 yield new_state
                 yielded = True
             if yielded:

@@ -3,172 +3,194 @@
     vyakarana.decorators
     ~~~~~~~~~~~~~~~~~~~~
 
-    Various decocators.
+    Various decorators.
 
     :license: MIT and BSD
 """
 
-from functools import wraps
 from classes import Option
+from itertools import chain, islice, izip, repeat
 
 # New-style rules. Temporary.
 NEW_RULES = []
-
-def once(name):
-    def decorator(fn):
-        @wraps(fn)
-        def wrapped(state, *a):
-            if name in state.ops:
-                return
-            state = state.add_op(name)
-            try:
-                for x in fn(state, *a):
-                    yield x
-            except TypeError:
-                for x in fn(state):
-                    yield x
-        return wrapped
-    return decorator
-
-
-def make_rule_decorator(module_name):
-    """Create a special decorator for marking functions as rules.
-
-    :param module_name: the name associated with the calling module.
-    """
-
-    rule_list = []
-    def rule_decorator(fn):
-        rule_list.append(fn)
-        return fn
-
-    return rule_decorator, rule_list
 
 
 def always_true(*a, **kw):
     return True
 
 
-def new_window(left_ctx, cur_ctx, right_ctx):
-    # If ctx is ``None`` or undefined, it's trivially true.
-    left_ctx = left_ctx or always_true
-    cur_ctx = cur_ctx or always_true
-    right_ctx = right_ctx or always_true
-
-    def matches(state, i):
-        left, cur, right = state.window(i)
-        return left_ctx(left) and cur_ctx(cur) and right_ctx(right)
-
-    def decorator(fn):
-        @wraps(fn)
-        def wrapped(state, i):
-            left, cur, right = state.window(i)
-            result = fn(left, cur, right)
-            if result is not None:
-                yield state.swap_window(i, result)
-
-        wrapped.matches = matches
-        NEW_RULES.append(wrapped)
-        return wrapped
-    return decorator
+def padslice(state, i):
+    return chain(islice(state, i, None), repeat(None))
 
 
-def tasmat(left_ctx, right_ctx):
-    """Decorator for rules that perform insertion after a single term.
+class Procedure(object):
 
-    :param left_ctx: a context function that matches what comes before
-                     the insertion. If ``None``, accept all contexts.
-    :param right_ctx: a context function that matches what comes after
-                     the insertion. If ``None``, accept all contexts.
+    """Represents a group of related rules from the Ashtadhyayi.
+
     """
-    left_ctx = left_ctx or always_true
-    right_ctx = right_ctx or always_true
 
-    def matches(state, i):
+    def __init__(self, filters, body):
+        #: Unique ID for this function. This is used to mark certain
+        #: terms with the operations applied to them. For example, if an
+        #: optional rule is rejected, we mark the result to prevent
+        #: applying that rule again.
+        self._id = len(NEW_RULES)
+
+        #: An array of filters from `vyakarana.contexts`.
+        self.filters = [f or always_true for f in filters]
+
+        self.num_filters = len(self.filters)
+
+        #: The function body. The input and output of this function can
+        #: take any form.
+        self.body = body
+
+        self._name = body.__name__
+
+        NEW_RULES.append(self)
+
+    def __repr__(self):
+        cls = self.__class__.__name__
+        return '<%s(%s)>' % (cls, self._name)
+
+    def _window(self, state, i):
+        if i:
+            window = state[i-1:i-1+self.num_filters]
+        else:
+            window = [None] + state[i:i-1+self.num_filters]
+
+        window = window + [None] * (self.num_filters - len(window))
+        return window
+
+    def matches(self, state, i):
+        return False
+
+    def apply(self, state, i):
+        yield
+
+
+class StateProcedure(Procedure):
+
+    """Procedure that performs an arbitrary transformation."""
+
+    def matches(self, state, i):
+        return all(f(x) for f, x in izip(self.filters, padslice(state, i)))
+
+    def apply(self, state, i):
+        result = self.body(state, i)
+        if result is None:
+            return
+
+        yield result
+
+
+class TasyaProcedure(Procedure):
+
+    """Procedure that performs substitution on a single term.
+
+        1.1.49 SaSThI sthAneyogA
+    """
+
+    def matches(self, state, i):
+        window = self._window(state, i)
+        return all(f(x) for f, x in izip(self.filters, window))
+
+    def apply(self, state, i):
+        fn = self.body
+        window = self._window(state, i)
+        result = fn(*window)
+        if result is None:
+            return
+
+        cur = window[1]
+        # Optional substitution
+        if isinstance(result, Option):
+            if fn._id in cur.ops:
+                return
+            # declined
+            yield state.swap(i, cur.add_op(fn._id))
+            # accepted
+            result = result.data
+
+        # Operator substitution
+        if hasattr(result, '__call__'):
+            new_cur = result(cur, right=window[2])
+
+        # Other substitution
+        else:
+            new_cur = cur.tasya(result)
+
+        if new_cur != cur:
+            yield state.swap(i, new_cur)
+
+
+
+class ReplaceProcedure(TasyaProcedure):
+
+    """Procedure that replaces a single term."""
+
+    def apply(self, state, i):
+        fn = self.body
+        window = self._window(state, i)
+        result = fn(*window)
+        if result is None:
+            return
+
+        cur = window[1]
+        new_cur = result
+        if new_cur != cur:
+            yield state.swap(i, new_cur)
+
+
+class TasmatProcedure(Procedure):
+
+    """Procedure that performs insertion after a single term.
+
+        1.1.67 tasmAdityuttarasya
+    """
+
+    def matches(self, state, i):
+        return all(f(x) for f, x in izip(self.filters, state.window(i)))
+
+    def apply(self, state, i):
+        # If previously applied, reject and avoid looping.
+        # TODO: find more elegant way to control this
+        if self._id in state.ops:
+            return
+
+        fn = self.body
         left, right, _ = state.window(i)
-        return left_ctx(left) and right_ctx(right)
+        result = fn(left, right)
+        if result is None:
+            return
 
-    function_id = len(NEW_RULES)
-
-    def decorator(fn):
-        @wraps(fn)
-        def wrapped(state, i):
-            # If previously applied, reject and avoid looping.
-            # TODO: find more elegant way to control this
-            if function_id in state.ops:
-                return
-
-            left, right, _ = state.window(i)
-            result = fn(left, right)
-            if result is None:
-                return
-
-            for r in result:
-                if r is not None:
-                    yield state.insert(i, r).add_op(function_id)
+        for r in result:
+            if r is not None:
+                yield state.insert(i, r).add_op(self._id)
 
 
-        wrapped.matches = matches
-        NEW_RULES.append(wrapped)
-        return wrapped
+def tasmat(*filters):
+    """Decorator to create a :class:`TasmatProcedure`"""
+    def decorator(body):
+        return TasmatProcedure(filters=filters, body=body)
     return decorator
 
 
-def tasya(left_ctx, cur_ctx, right_ctx):
-    """Decorator for rules that perform substitution on a single term.
+def tasya(*filters):
+    """Decorator to create a :class:`TasyaProcedure`"""
+    def decorator(body):
+        return TasyaProcedure(filters=filters, body=body)
+    return decorator
 
-    :param left_ctx: a context function that matches what comes before
-                     the sthAna. If ``None``, accept all contexts.
-    :param cur_ctx: a context function that matches the sthAna.
-                    If ``None``, accept all contexts.
-    :param right_ctx: a context function that matches what comes after
-                     the sthAna. If ``None``, accept all contexts.
-    """
-    # If ctx is ``None`` or undefined, it's trivially true.
-    left_ctx = left_ctx or always_true
-    cur_ctx = cur_ctx or always_true
-    right_ctx = right_ctx or always_true
+def replace(*filters):
+    """Decorator to create a :class:`ReplaceProcedure`"""
+    def decorator(body):
+        return ReplaceProcedure(filters=filters, body=body)
+    return decorator
 
-    def matches(state, i):
-        left, cur, right = state.window(i)
-        return left_ctx(left) and cur_ctx(cur) and right_ctx(right)
 
-    # Unique ID for this function, since functions are added sequentially
-    # to a single shared list. This is used to mark certain terms with
-    # the operations applied to them. For example, if an optional rule
-    # is rejected, we mark the result to prevent applying that rule
-    # again.
-    function_id = len(NEW_RULES)
-
-    def decorator(fn):
-        @wraps(fn)
-        def wrapped(state, i):
-            left, cur, right = state.window(i)
-            result = fn(left, cur, right)
-            if result is None:
-                return
-
-            # Optional substitution
-            if isinstance(result, Option):
-                if function_id in cur.ops:
-                    return
-                # declined
-                yield state.swap_window(i, (left, cur.add_op(function_id), right))
-                # accepted
-                result = result.data
-
-            # Operator substitution
-            if hasattr(result, '__call__'):
-                new_cur = result(cur, right=right)
-
-            # Other substitution
-            else:
-                new_cur = cur.tasya(result)
-
-            if (left, new_cur, right) != (left, cur, right):
-                yield state.swap_window(i, (left, new_cur, right))
-
-        wrapped.matches = matches
-        NEW_RULES.append(wrapped)
-        return wrapped
+def state(*filters):
+    """Decorator to create a :class:`StateProcedure`"""
+    def decorator(body):
+        return StateProcedure(filters=filters, body=body)
     return decorator

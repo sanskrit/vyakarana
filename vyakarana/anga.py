@@ -26,11 +26,7 @@ from classes import Sounds, Sound, Term, Upadesha as U, Anyatarasyam
 from dhatupatha import DHATUPATHA as DP
 from decorators import *
 
-rule, rules = make_rule_decorator('anga')
 
-
-@rule
-@once('substitute')
 def substitute(state, i, anga):
     """Rules from the beginning of 7.1"""
     # 7.1.1 yuvoranAkau
@@ -57,11 +53,8 @@ def substitute(state, i, anga):
     yield state.swap(i + 1, v)
 
 
-@rule
-@once('anga_adesha')
 def adesha(state):
     for i, anga in state.find_all('anga'):
-        value = anga.value
         next = state.next(i)
 
         # 6.1.16 vacisvapiyajAdInAM kiti
@@ -75,16 +68,14 @@ def adesha(state):
     yield state
 
 
-@rule
-@once('rt')
 def rt(state):
     i, anga = state.find('anga')
     p = state[i+1]
     if 'li~w' in p.lakshana:
         # 7.4.10 Rtaz ca saMyogAder guNaH
-        _10 = anga.samyogadi and anga.ends_in('ft')
+        _10 = anga.samyogadi and anga.antya == 'f'
         # 7.4.11 RcchatyRRtAm
-        _11 = anga.raw == 'f\\' or anga.ends_in('Ft')
+        _11 = anga.raw == 'f\\' or anga.antya == 'F'
 
         if _10 or _11:
             yield state.swap(i, anga.guna())
@@ -93,8 +84,7 @@ def rt(state):
         if anga.raw in ('SF', 'dF', 'pF'):
             yield state.swap(i, anga.to_hrasva())
 
-@rule
-@once('anga_aci')
+
 def aci(state):
     """
     Apply rules conditioned by a following vowel.
@@ -158,8 +148,6 @@ def aci(state):
             yield state.swap(i, new)
 
 
-@rule
-@once('ac_adesha')
 def ac_adesha(state):
     """
     Perform substitutions on the anga. These substitutions can occur
@@ -204,8 +192,6 @@ def ac_adesha(state):
             yield s
 
 
-@rule
-@once('anga_ku')
 def ku(state):
     """Apply rules that perform 'ku' substitutions.
 
@@ -247,7 +233,6 @@ def ku(state):
                 yield state.swap(j, anga.al_tasya('c j', 'ku'))
 
 
-@rule
 def sarvadhatuke(state):
     """Apply the rules conditioned by 'aṅgasya' and 'sārvadhātuke'."""
     i, anga = state.find('anga')
@@ -319,8 +304,9 @@ def nal_au_adesha(dhatu, tin, _):
 
 @tasya(None, c.samjna('anga'), c.it('Y', 'R'))
 def nn_vrddhi(_, anga, p):
+    """Rules that apply vṛddhi as conditioned by ṇ and ñ"""
     # 7.2.115 aco `Jniti (vrddhi)
-    if anga.ends_in('ac'):
+    if anga.antya in Sounds('ac'):
         return o.vrddhi
 
     # 7.2.116 ata upadhAyAH
@@ -386,6 +372,7 @@ def siti(left, anga, right):
 
 @tasya(None, c.samjna('anga'), c.samjna('pratyaya'))
 def guna(_, anga, p):
+    """Rules that apply guna substitutions."""
     # 7.3.84 sArvadhAtukArdhadhAtukayoH
     # TODO: why ik-anta ?
     if p.any_samjna('sarvadhatuka', 'ardhadhatuka') and anga.ends_in('ik'):

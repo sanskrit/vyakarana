@@ -4,16 +4,16 @@ from util import SoundEditor
 
 def apply(state):
     editor = SoundEditor(state)
-    for cur in editor:
-        next = cur.next
-        if next.value is None:
-            continue
+    # for cur in editor:
+    #     next = cur.next
+    #     if next.value is None:
+    #         continue
 
-        x, y = cur.value, next.value
-        if x in Sounds('ac'):
-            cur.value, next.value = ac_sandhi(x, y)
-        elif x in Sounds('hal'):
-            cur.value, next.value = hal_sandhi(x, y)
+    #     x, y = cur.value, next.value
+    #     if x in Sounds('ac'):
+    #         cur.value, next.value = ac_sandhi(x, y)
+    #     elif x in Sounds('hal'):
+    #         cur.value, next.value = hal_sandhi(x, y)
 
     yield editor.join()
 

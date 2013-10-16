@@ -3,7 +3,12 @@
     vyakarana.dhatu
     ~~~~~~~~~~~~~~~
 
-    Rules that apply specifically to a dhatu.
+    Rules that apply specifically to a dhātu. Almost all such rules are
+    within the domain of 3.1.91:
+
+        3.1.91 dhātoḥ
+
+    which holds until the end of 3.4.
 
     :license: MIT and BSD
 """
@@ -12,9 +17,9 @@ import context as c
 from classes import Dhatu, Krt
 from decorators import *
 from dhatupatha import DHATUPATHA as DP
+import util
 
 
-@once('dhatu_adesha')
 def adesha(state):
     """
     Perform substitutions on the dhatu. These substitutions can occur
@@ -106,7 +111,7 @@ def vikarana(dhatu, p):
         yield _yield('Snu')
 
 
-def pada_options(state):
+def pada_options(dhatu):
     """Decide whether a state can use parasmaipada and atmanepada.
     Some states can use both.
 
@@ -114,8 +119,6 @@ def pada_options(state):
     """
     # TODO: accent
     has_para = has_atma = False
-
-    _, dhatu = state.find('dhatu')
 
     # 1.3.12 anudAttaGita Atmanepadam
     if 'N' in dhatu.it or 'anudatta' in dhatu.it:

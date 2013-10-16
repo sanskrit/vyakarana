@@ -15,11 +15,8 @@ from decorators import *
 from util import Rank
 
 TAS = Pratyaya('tAs').add_samjna('ardhadhatuka')
-rule, rules = make_rule_decorator('pratyaya')
 
 
-@rule
-@once('it')
 def it(state):
     """
 
@@ -257,12 +254,14 @@ def it_status(anga, p):
     return status or 'anit'
 
 
-@new_window(c.lakshana('Slu~'), c.samjna('pratyaya'), None)
-def pratyaya_lopa(shlu, p, right):
-    return None, p.add_lakshana('Slu~'), right
+@state(c.lakshana('Slu~'), c.samjna('pratyaya'))
+def pratyaya_lopa(state, i):
+    # return None, p.add_lakshana('Slu~'), right
+    pass
 
 
-@new_window(None, c.it('m'), None)
-def mit_insertion(base, mit, right):
-    if base is not None:
-        return base.tasya(mit), None, right
+@state(c.it('m'))
+def mit_insertion(state, i):
+    base = state[i]
+    mit = state[i + 1]
+    return state.swap(i, base.tasya(mit)).remove(i + 1)

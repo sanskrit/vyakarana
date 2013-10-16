@@ -108,3 +108,18 @@ def upadha(L):
     def func(cur, right=None):
         return cur.upadha(L)
     return func
+
+
+def al_tasya(target, result):
+    target = Sounds(target)
+    result = Sounds(result)
+    def func(cur):
+        letters = list(cur.value)
+        for i, L in enumerate(letters):
+            if L in target:
+                letters[i] = Sound(L).closest(result)
+                if L in 'fF':
+                    letters[i] += 'r'
+                break
+        return cur.set_value(''.join(letters))
+    return func
