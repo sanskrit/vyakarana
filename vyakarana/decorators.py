@@ -72,23 +72,22 @@ def new_window(left_ctx, cur_ctx, right_ctx):
     cur_ctx = cur_ctx or always_true
     right_ctx = right_ctx or always_true
 
-    def matches(left, cur, right):
+    def matches(state, i):
+        left, cur, right = state.window(i)
         return left_ctx(left) and cur_ctx(cur) and right_ctx(right)
 
     def decorator(fn):
         @wraps(fn)
-        def wrapped(left, cur, right):
+        def wrapped(state, i):
+            left, cur, right = state.window(i)
             result = fn(left, cur, right)
-            if result is None:
-                yield left, cur, right
-            else:
-                yield result
+            if result is not None:
+                yield state.swap_window(i, result)
 
         wrapped.matches = matches
         NEW_RULES.append(wrapped)
         return wrapped
     return decorator
-
 
 
 def tasya(left_ctx, cur_ctx, right_ctx):
@@ -106,7 +105,8 @@ def tasya(left_ctx, cur_ctx, right_ctx):
     cur_ctx = cur_ctx or always_true
     right_ctx = right_ctx or always_true
 
-    def matches(left, cur, right):
+    def matches(state, i):
+        left, cur, right = state.window(i)
         return left_ctx(left) and cur_ctx(cur) and right_ctx(right)
 
     # Unique ID for this function, since functions are added sequentially
@@ -118,18 +118,18 @@ def tasya(left_ctx, cur_ctx, right_ctx):
 
     def decorator(fn):
         @wraps(fn)
-        def wrapped(left, cur, right):
+        def wrapped(state, i):
+            left, cur, right = state.window(i)
             result = fn(left, cur, right)
             if result is None:
-                yield left, cur, right
                 return
 
             # Optional substitution
             if isinstance(result, Option):
-                # declined
-                yield left, cur.add_op(function_id), right
                 if function_id in cur.ops:
                     return
+                # declined
+                yield state.swap_window(i, (left, cur.add_op(function_id), right))
                 # accepted
                 result = result.data
 
@@ -141,7 +141,8 @@ def tasya(left_ctx, cur_ctx, right_ctx):
             else:
                 new_cur = cur.tasya(result)
 
-            yield left, new_cur, right
+            if (left, new_cur, right) != (left, cur, right):
+                yield state.swap_window(i, (left, new_cur, right))
 
         wrapped.matches = matches
         NEW_RULES.append(wrapped)

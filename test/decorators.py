@@ -1,21 +1,22 @@
+from vyakarana.ashtadhyayi import State
 from vyakarana.context import *
 from vyakarana.classes import Term, Dhatu, Pratyaya
 from vyakarana.decorators import tasya
 
-def str2window(s):
-    return [Term(x) if x != '_' else None for x in s.split()]
+def str2state(s):
+    return State([Term(x) for x in s.split()])
 
 
-def window2str(window):
-    return ' '.join(x.value if x else '_' for x in window)
+def state2str(state):
+    return ' '.join(x.value if x else '_' for x in state)
 
 
-def verify(cases, rule, to_window=str2window):
+def verify(cases, rule, to_state=str2state):
     for original, expected in cases:
-        window = to_window(original)
-        assert rule.matches(*window)
+        state = to_state(original)
+        assert rule.matches(state, 0)
 
-        result = window2str(list(rule(*window))[0])
+        result = state2str(list(rule(state, 0))[0])
         assert result == expected
 
 
@@ -25,10 +26,10 @@ def test_tasya_with_ekal():
         return Sounds('yaR')
 
     cases = [
-        ('_ agni atra', '_ agny atra'),
-        ('_ maDu atra', '_ maDv atra'),
-        ('_ hotf atra', '_ hotr atra'),
-        ('_ nadI atra', '_ nady atra'),
+        ('agni atra', 'agny atra'),
+        ('maDu atra', 'maDv atra'),
+        ('hotf atra', 'hotr atra'),
+        ('nadI atra', 'nady atra'),
     ]
     verify(cases, iko_yan_aci)
 
@@ -39,12 +40,12 @@ def test_tasya_with_anekal():
         return 'jA'
 
     cases = [
-        ('_ jYA\\ SnA', '_ jA nA'),
-        ('_ janI~\\ SnA', '_ jA nA'),
+        ('jYA\\ SnA', 'jA nA'),
+        ('janI~\\ SnA', 'jA nA'),
     ]
 
-    def to_window(s):
-        x, y, z = s.split()
-        return [Term(x), Dhatu(y), Pratyaya(z)]
+    def to_state(s):
+        x, y = s.split()
+        return State([Dhatu(x), Pratyaya(y)])
 
-    verify(cases, anga_siti, to_window)
+    verify(cases, anga_siti, to_state)

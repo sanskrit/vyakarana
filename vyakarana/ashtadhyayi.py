@@ -214,20 +214,16 @@ def apply_normal_rules(state):
                     return
 
     # new-style
-    for i, item in enumerate(state):
-        window = state.window(i)
+    for i in range(len(state)):
         for rule in NEW_RULES:
-            if not rule.matches(*window):
+            if not rule.matches(state, i):
                 continue
-            for new_window in rule(*window):
-                if new_window != window:
-                    print '  ', rule.__name__, ':', state.swap_window(i, new_window)
-                    yield state.swap_window(i, new_window)
-                    yielded = True
+            for new_state in rule(state, i):
+                print '  ', rule.__name__, ':', new_state
+                yield new_state
+                yielded = True
             if yielded:
                 return
-
-
 
 
 def step(state):
