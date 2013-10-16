@@ -58,7 +58,6 @@ def substitute(state, i, anga):
 
 
 @rule
-@require('dvirvacana')
 @once('anga_adesha')
 def adesha(state):
     for i, anga in state.find_all('anga'):
@@ -95,7 +94,6 @@ def rt(state):
             yield state.swap(i, anga.to_hrasva())
 
 @rule
-@require('anga_adesha')
 @once('anga_aci')
 def aci(state):
     """
