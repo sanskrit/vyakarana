@@ -13,11 +13,11 @@
     :license: MIT and BSD
 """
 
-import context as c
-from classes import Dhatu, Krt
-from decorators import *
-from dhatupatha import DHATUPATHA as DP
+import filters as F
 import util
+from dhatupatha import DHATUPATHA as DP
+from templates import *
+from upadesha import Dhatu, Krt
 
 
 def adesha(state):
@@ -47,7 +47,7 @@ def adesha(state):
         yield state.swap(i, dhatu)
 
 
-@tasmat(c.samjna('dhatu'), c.and_(c.samjna('tin'), c.samjna('sarvadhatuka')))
+# @tasmat(f.samjna('dhatu'), f.and_(f.samjna('tin'), f.samjna('sarvadhatuka')))
 def vikarana(dhatu, p):
     """Vikarana for classes 1 through 10."""
 
@@ -121,11 +121,11 @@ def pada_options(dhatu):
     has_para = has_atma = False
 
     # 1.3.12 anudAttaGita Atmanepadam
-    if 'N' in dhatu.it or 'anudatta' in dhatu.it:
+    if dhatu.any_samjna('Nit', 'anudattet'):
         has_para, has_atma = (False, True)
 
     # 1.3.72 svaritaJitaH kartrabhiprAye kriyAphale
-    elif 'Y' in dhatu.it or 'svarita' in dhatu.it:
+    if dhatu.any_samjna('Yit', 'svaritet'):
         has_para, has_atma = (True, True)
 
     # 1.3.76 anupasargAj jJaH

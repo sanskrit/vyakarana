@@ -53,6 +53,83 @@ class Rank(object):
     NIPATANA = 5
 
 
+class State(object):
+    """A sequence of terms.
+
+    This represents a single step in some derivation."""
+
+    __slots__ = ['items', 'rules']
+
+    def __init__(self, items, rules=None):
+        #: A list of :class:`Upadesha`s.
+        self.items = items
+        self.rules = rules or []
+
+    def __eq__(self, other):
+        if other is None:
+            return False
+        if self is other:
+            return True
+
+        return self.items == other.items
+
+    def __getitem__(self, i):
+        return self.items[i]
+
+    def __iter__(self):
+        return iter(self.items)
+
+    def __len__(self):
+        return len(self.items)
+
+    def __repr__(self):
+        return '<State(%r)>' % self.items
+
+    def __str__(self):
+        return repr([x.asiddha for x in self.items])
+
+    def copy(self):
+        return State(self.items[:], self.rules[:])
+
+    def insert(self, i, item):
+        c = self.copy()
+        c.items.insert(i, item)
+        return c
+
+    def remove(self, index):
+        c = self.copy()
+        c.items.pop(index)
+        return c
+
+    def replace_all(self, items):
+        c = self.copy()
+        c.items = items
+        return c
+
+    def swap(self, i, item):
+        c = self.copy()
+        c.items[i] = item
+        return c
+
+    def window(self, i):
+        x, y, z = None, self.items[i], None
+        if i > 0:
+            x = self.items[i - 1]
+        if i + 1 < len(self.items):
+            z = self.items[i + 1]
+        return x, y, z
+
+    def swap_window(self, i, window):
+        c = self.copy()
+        c.items[i] = window[1]
+        if i > 0:
+            c.items[i - 1] = window[0]
+        if i + 1 < len(self.items):
+            c.items[i + 1] = window[-1]
+        c.items = [x for x in c.items if x is not None]
+        return c
+
+
 class SoundEditor(object):
 
     def __init__(self, state):

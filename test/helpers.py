@@ -11,7 +11,7 @@
 
 import os
 from vyakarana import ashtadhyayi as A
-from vyakarana.classes import Dhatu, Vibhakti
+from vyakarana.upadesha import Dhatu, Vibhakti
 
 def data_path(name):
     """Return a relative path to test file `name`."""
@@ -68,7 +68,7 @@ def verb_data(filename, la):
     for dhatu, expected, person, number in load_paradigms(filename):
         d = Dhatu(dhatu)
         p = Vibhakti(la).add_samjna(person, number)
-        actual = set(x[0].value for x in A.derive([d, p]))
+        actual = set(A.derive([d, p]))
         print actual
 
         test_cases.append((expected, actual))

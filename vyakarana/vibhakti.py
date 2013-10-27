@@ -10,11 +10,12 @@
 
 import itertools
 
-import context as c
+import filters as f
+import operators as o
 import dhatu as D
 import util
-from classes import Vibhakti as V
-from decorators import *
+from upadesha import Vibhakti as V
+from templates import *
 
 
 PADA = ['parasmaipada', 'atmanepada']
@@ -76,9 +77,9 @@ def label_by_group(terms, labels):
             term.add(labels[i])
 
 
-def c_lakara(p):
+def f_lakara(p, *a):
     return p is not None and 'vibhakti' in p.samjna and p.raw[0] == 'l'
-
+f_lakara = f.Filter(name='f_lakara', body=f_lakara, rank=Rule.UNKNOWN)
 
 def tin_key(samjna, pada=None):
     if pada:
@@ -97,8 +98,10 @@ def tin_key(samjna, pada=None):
     return x, y, z
 
 
-@replace(c.samjna('dhatu'), c_lakara, None)
-def lasya(dhatu, la, _):
+@state('dhatu', f_lakara)
+def lasya():
+    """3.4.77 lasya"""
+
     base_tin = """tip tas Ji sip Tas Ta mip vas mas
                   ta AtAm Ja TAs ATAm Dvam iw vahi mahiG""".split()
     base_samjna = [set(['tin']) for s in base_tin]
@@ -115,47 +118,49 @@ def lasya(dhatu, la, _):
 
     key2index = {tin_key(x): i for i, x in enumerate(base_samjna)}
 
-    la_type = la.raw
-    has_para, has_atma = D.pada_options(dhatu)
-    indices = []
-    if has_para:
-        indices.append(key2index[tin_key(la.samjna, pada='parasmaipada')])
-    if has_atma:
-        indices.append(key2index[tin_key(la.samjna, pada='atmanepada')])
-
-    for i in indices:
-        base = base_tin[i]
-        samjna = base_samjna[i]
-
-        # 3.4.77 lasya
-        # 3.4.78 tiptasjhisipthasthamipvasmastAtAmjhathAsAthAMdhvamiDvahimahiG
-        la = la.set_raw(base)
-
-        if has_atma:
-            # 3.4.79 Tita AtmanepadAnAM Ter e
-            if 'w' in la.it:
-                la = la.ti('e')
-
-                # 3.4.80 thAsaH se
-                if la.raw == 'TAs':
-                    la = la.set_raw('se')
-
-                # 3.4.80 liTas tajhayor ezirec
-                if la_type == 'li~w':
-                    if la.raw == 'ta':
-                        la = la.set_raw('eS')
-                    elif la.raw == 'Ja':
-                        la = la.set_raw('irec')
-
+    def tin_adesha(state, index):
+        dhatu = state[index]
+        la = state[index + 1]
+        la_type = la.raw
+        has_para, has_atma = D.pada_options(dhatu)
+        indices = []
         if has_para:
-            # 3.4.81 parasmaipadAnAM NalatususthalathusaNalvamAH
-            if la_type == 'li~w':
-                lit_tin = 'Ral atus us Tal aTus a Ral va ma'.split()
-                tin_pairs = zip(base_tin[:9], lit_tin)
-                for base_ending, lit_ending in tin_pairs:
-                    if la.raw == base_ending:
-                        la = la.set_raw(lit_ending)
+            i = key2index[tin_key(la.samjna, pada='parasmaipada')]
+            new_raw = base_tin[i]
+            tin = la.set_raw(new_raw).add_samjna('tin', 'parasmaipada')
+            yield state.swap(index + 1, tin)
+        if has_atma:
+            i = key2index[tin_key(la.samjna, pada='atmanepada')]
+            new_raw = base_tin[i]
+            tin = la.set_raw(new_raw).add_samjna('tin', 'atmanepada')
+            yield state.swap(index + 1, tin)
 
-        break
 
-    return la.add_samjna('tin')
+    return [
+        ('3.4.78',
+            None, None,
+            tin_adesha),
+    ]
+
+
+@tasya('dhatu', 'tin')
+def tin_adesha():
+    """3.4.77 lasya"""
+
+    base_p_tin = 'tip tas Ji sip Tas Ta mip vas mas'.split()
+    lit_p_tin = 'Ral atus us Tal atus a Ral va ma'.split()
+
+    return [
+        ('3.4.79',
+            None, f.samjna('atmanepada') & f.samjna('wit'),
+            o.ti('e')),
+        ('3.4.80',
+            None, f.samjna('atmanepada') & f.samjna('wit') & f.raw('TAs'),
+            'se'),
+        ('3.4.81',
+            None, f.samjna('atmanepada') & f.raw('ta', 'Ja') & f.samjna('li~w'),
+            o.yathasamkhya(['ta', 'Ja'], ['eS', 'irec'])),
+        ('3.4.82',
+            None, f.raw(*base_p_tin) & f.samjna('parasmaipada') & f.lakshana('li~w'),
+            o.yathasamkhya(base_p_tin, lit_p_tin)),
+    ]

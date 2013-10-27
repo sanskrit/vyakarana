@@ -8,7 +8,7 @@
     :license: MIT and BSD
 """
 
-import context as c
+import filters as f
 import gana
 from classes import Upadesha as U, Pratyaya, Sounds
 from decorators import *
@@ -254,14 +254,14 @@ def it_status(anga, p):
     return status or 'anit'
 
 
-@state(c.lakshana('Slu~'), c.samjna('pratyaya'))
-def pratyaya_lopa(state, i):
-    # return None, p.add_lakshana('Slu~'), right
-    pass
+# @state(f.lakshana('Slu~'), f.samjna('pratyaya'))
+# def pratyaya_lopa(state, i):
+#     # return None, p.add_lakshana('Slu~'), right
+#     pass
 
 
-@state(c.it('m'))
-def mit_insertion(state, i):
-    base = state[i]
-    mit = state[i + 1]
-    return state.swap(i, base.tasya(mit)).remove(i + 1)
+# @state(f.it('m'))
+# def mit_insertion(state, i):
+#     base = state[i]
+#     mit = state[i + 1]
+#     return state.swap(i, base.tasya(mit)).remove(i + 1)

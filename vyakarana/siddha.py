@@ -7,7 +7,8 @@
 
     :license: MIT and BSD
 """
-from classes import Sounds, Sound, Pratyahara, Term
+from sounds import Sounds, Sound, Pratyahara
+from upadesha import Upadesha
 from util import SoundEditor, SoundIndex
 
 
@@ -155,7 +156,9 @@ def asiddha(state):
     for result in asiddha_helper(state):
         result_value = ''.join(x.value for x in result)
         if result_value == state_value:
-            yield state.replace_all([Term(result_value)])
+            yield state
+            return
         else:
             for x in asiddha(result):
                 yield x
+                return

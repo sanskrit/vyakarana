@@ -22,6 +22,32 @@ def verify(cases, context_creator, test):
             assert not test(context, n)
 
 
+def test_adi():
+    cases = [
+        (['al'],
+            'indra agni vAyu jAne agnO Bagavat Atman lih dfS',
+            '',
+        ),
+        (['ac'],
+            'indra agni agnO Atman',
+            'vAyu jAne Bagavat lih dfS',
+        ),
+        (['hal'],
+            'vAyu jAne Bagavat lih dfS',
+            'indra agni agnO Atman',
+        ),
+        (['ec'],
+            'eDa ozaDi EkzvAka Oqulomi',
+            'indra agni vAyu jAne agnO Bagavat Atman lih dfS',
+        ),
+        (['Sar'],
+            'SItala za sarpa',
+            'indra agni vAyu jAne agnO Bagavat Atman lih dfS',
+        ),
+    ]
+    verify(cases, adi, lambda f, x: f(Term(x)))
+
+
 def test_al():
     cases = [
         (['al'],
@@ -47,31 +73,6 @@ def test_al():
     ]
     verify(cases, al, lambda f, x: f(Term(x)))
 
-
-def test_al_adi():
-    cases = [
-        (['al'],
-            'indra agni vAyu jAne agnO Bagavat Atman lih dfS',
-            '',
-        ),
-        (['ac'],
-            'indra agni agnO Atman',
-            'vAyu jAne Bagavat lih dfS',
-        ),
-        (['hal'],
-            'vAyu jAne Bagavat lih dfS',
-            'indra agni agnO Atman',
-        ),
-        (['ec'],
-            'eDa ozaDi EkzvAka Oqulomi',
-            'indra agni vAyu jAne agnO Bagavat Atman lih dfS',
-        ),
-        (['Sar'],
-            'SItala za sarpa',
-            'indra agni vAyu jAne agnO Bagavat Atman lih dfS',
-        ),
-    ]
-    verify(cases, al, lambda f, x: f(Term(x), antya=False))
 
 
 def test_it():
