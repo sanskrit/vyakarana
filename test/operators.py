@@ -1,13 +1,19 @@
-from vyakarana.classes import *
+from vyakarana.upadesha import *
 import vyakarana.operators as o
+
+
+def verify(cases, operator):
+    for original, expected in cases:
+        term = Upadesha('a~').set_value(original)
+        assert operator(term).value == expected
+
 
 def test_dirgha():
     cases = [
         ('kram', 'krAm'),
         ('zWiv', 'zWIv'),
     ]
-    for original, actual in cases:
-        assert o.dirgha(Term(original)).value == actual
+    verify(cases, o.dirgha)
 
 
 def test_guna():
@@ -17,8 +23,7 @@ def test_guna():
         ('mid', 'med'),
         ('mud', 'mod'),
     ]
-    for original, actual in cases:
-        assert o.guna(Term(original)).value == actual
+    verify(cases, o.guna)
 
 
 def test_hrasva():
@@ -26,8 +31,7 @@ def test_hrasva():
         ('rI', 'ri'),
         ('pU', 'pu'),
     ]
-    for original, actual in cases:
-        assert o.hrasva(Term(original)).value == actual
+    verify(cases, o.hrasva)
 
 
 def test_samprasarana():
@@ -40,8 +44,8 @@ def test_samprasarana():
         ('vyaD', 'viD'),
         ('Brasj', 'Bfsj'),
     ]
-    for original, actual in cases:
-        assert o.samprasarana(Term(original)).value == actual
+    verify(cases, o.samprasarana)
+
 
 def test_vrddhi():
     cases = [
@@ -51,5 +55,4 @@ def test_vrddhi():
         ('pU', 'pO'),
         ('sad', 'sad'),  # iko guNavRddhI
     ]
-    for original, actual in cases:
-        assert o.vrddhi(Term(original)).value == actual
+    verify(cases, o.vrddhi)

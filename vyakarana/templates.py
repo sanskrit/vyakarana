@@ -18,7 +18,7 @@ from dhatupatha import DHATUPATHA as DP
 from itertools import chain, islice, izip, izip_longest, repeat
 
 # New-style rules. Temporary.
-NEW_RULES = []
+ALL_RULES = []
 
 
 def padslice(state, i):
@@ -86,8 +86,6 @@ class Rule(object):
         #: The relative strength of this rule. The higher the rank, the
         #: more powerful the rule.
         self.rank = max(f.rank for f in filters)
-
-        NEW_RULES.append(self)
 
     def __repr__(self):
         class_name = self.__class__.__name__
@@ -195,7 +193,7 @@ class StateRule(Rule):
 
     For some locus ``(state, index)``, the rule applies filters starting
     from ``state[index]``. `self.operator` is a function that accepts a
-    ``(state, index)`` pair and returns a new state.
+    ``(state, index)`` pair and yields new states.
     """
 
     __slots__ = ()
@@ -212,124 +210,36 @@ class StateRule(Rule):
 # Rule creators
 # ~~~~~~~~~~~~~
 
-def generate_base_filter(data):
-    """Creates a filter to match the context specified by `data`."""
-    samjna_set = set([
-        'kit',
-        'Kit',
-        'Git',
-        'Nit',
-        'Yit',
-        'wit',
-        'qit',
-        'Nit',
-        'pit',
-        'mit',
-        'Sit',
-        'atmanepada',
-        'parasmaipada',
-        'dhatu',
-        'anga',
-        'pada',
-        'pratyaya',
-        'sarvadhatuka',
-        'ardhadhatuka',
-        'abhyasa',
-        'abhyasta',
-        'tin',
-        'sup',
-    ])
-    sound_set = set([
-        'a',
-        'at',
-        'i',
-        'it',
-        'u',
-        'ut',
-        'f',
-        'ft',
-        'ac',
-        'ec',
-        'ak',
-        'ik',
-        'hal',
-        'Jal',
-        'JaS',
-        'jaS',
-        'car',
-    ])
-    pratyaya_set = set([
-        'luk',
-        'Slu',
-        'lup',
-        'la~w',
-        'li~w',
-        'lu~w',
-        'lf~w',
-        'le~w',
-        'lo~w',
-        'la~N',
-        'li~N',
-        'lu~N',
-        'lf~N',
-        'Sap',
-        'Syan',
-        'Snu',
-        'Sa',
-        'Snam',
-        'u',
-        'SnA',
-        'Ric',
-    ])
-
-    if data is None:
-        return F.anything
-
-    # Make `data` iterable
-    if isinstance(data, basestring) or hasattr(data, '__call__'):
-        data = [data]
-
-    base_filter = None
-    for datum in data:
-        matcher = None
-        # String selector: value, samjna, or sound
-        if isinstance(datum, basestring):
-            if datum in samjna_set:
-                matcher = F.samjna(datum)
-            elif datum in sound_set:
-                matcher = F.al(datum)
-            elif datum in pratyaya_set:
-                matcher = F.lakshana(datum)
-            else:
-                matcher = F.raw(datum)
-
-        # Function
-        else:
-            matcher = datum
-
-        if base_filter is None:
-            base_filter = matcher
-        else:
-            base_filter = base_filter | matcher
-
-    return base_filter
-
-
 def generate_filter(data, base=None, prev=None):
+    """Create and return a filter for a tuple rule.
+
+    :param data: one of the following:
+                 - ``None``, which signals that `base` should be used.
+                 - ``True``, which signals that `prev` should be used.
+                 - an arbitrary object, which is sent to `filters.auto`.
+                   The result is "and"-ed with `base`, if `base` is
+                   defined.
+    :param base: the corresponding base filter.
+    :param prev: the corresponding filter created on the previous tuple.
+    """
     if data is None:
         return base
-
     if data is True:
         return prev
 
-    extension = generate_base_filter(data)
-    if base is None or base is F.anything:
+    extension = F.auto(data)
+    if base is None or base is F.allow_all:
         return extension
     else:
         return extension & base
 
 
 def process_tuple_rules(rules, base_filters):
+    """
+
+    :param rules: a list of tuple rules
+    :param base_filters: a list of :class:`Filter`s.
+    """
     prev_name = None
     prev_filters = [None] * 3
     prev_result = None
@@ -349,22 +259,69 @@ def process_tuple_rules(rules, base_filters):
         prev_name, prev_filters, prev_result = name, filters, result
 
 
-def tasya(*gen_filters, **kw):
-    base_filters = [generate_base_filter(f) for f in gen_filters]
+def tasya(*base_filters, **kw):
+    """Decorator for a function that returns a list of tuple rules. Each
+    tuple defines a substitution.
+
+    This decorator defines a template that is applied to each of the
+    tuples in the returned list. The tuples have the following format::
+
+        (name, f1, f2, ..., fn, op)
+
+    with the following meanings:
+
+    - ``name`` is a string identifier for the rule, e.g. ``'6.4.77'``
+    - ``f1`` through ``fn`` can take various values. For details, see
+      `generate_filter`.
+    - ``op`` is a valid operator function. If ``op`` is ``True``, the
+      operator for the previous rule is used. ``op`` is applied to the
+      term that matches ``f2``.
+
+    Each of the tuples is converted to a :class:`TasyaRule` and appended
+    to a global rule list.
+
+    :param base_filters: a list of objects, each of which is sent to
+                         `filters.auto`.
+    """
+    base_filters = [F.auto(f) for f in base_filters]
+
     def decorator(fn):
         rules = fn()
         for name, filters, op in process_tuple_rules(rules, base_filters):
-            TasyaRule(name, filters, op)
+            rule = TasyaRule(name, filters, op)
+            ALL_RULES.append(rule)
 
     return decorator
 
 
 def state(*filters):
-    base_filters = [generate_base_filter(f) for f in filters]
+    """Decorator for a function that returns a list of tuple rules. Each
+    tuple defines a state transformation.
+
+    This decorator defines a template that is applied to each of the
+    tuples in the returned list. The tuples have the following format::
+
+        (name, f1, f2, ..., fn, body)
+
+    with the following meanings:
+
+    - ``name`` is a string identifier for the rule, e.g. ``'6.4.77'``
+    - ``f1`` through ``fn`` can take various values. For details, see
+      `generate_filter`.
+    - `'op`` accepts a state with its index and yields new states.
+
+    Each of the tuples is converted to a :class:`StateRule` and appended
+    to a global rule list.
+
+    :param base_filters: a list of objects, each of which is sent to
+                         `filters.auto`.
+    """
+    base_filters = [F.auto(f) for f in filters]
 
     def decorator(fn):
         rules = fn()
         for name, filters, op in process_tuple_rules(rules, base_filters):
-            StateRule(name, filters, op)
+            rule = StateRule(name, filters, op)
+            ALL_RULES.append(rule)
 
     return decorator

@@ -272,8 +272,8 @@ def placeholder(*args):
 
 
 @unparameterized
-def anything(*args):
-    """Matches anything."""
+def allow_all(*args):
+    """Matches everything."""
     return True
 
 
@@ -282,3 +282,112 @@ ekac = placeholder
 each = placeholder
 samyogadi = placeholder
 samyogapurva = placeholder
+
+
+# Automatic filter
+# ~~~~~~~~~~~~~~~~
+
+def auto(data):
+    """Creates a filter to match the context specified by `data`.
+
+    :param data:
+    """
+    samjna_set = set([
+        'kit',
+        'Kit',
+        'Git',
+        'Nit',
+        'Yit',
+        'wit',
+        'qit',
+        'Nit',
+        'pit',
+        'mit',
+        'Sit',
+        'atmanepada',
+        'parasmaipada',
+        'dhatu',
+        'anga',
+        'pada',
+        'pratyaya',
+        'sarvadhatuka',
+        'ardhadhatuka',
+        'abhyasa',
+        'abhyasta',
+        'tin',
+        'sup',
+    ])
+    sound_set = set([
+        'a',
+        'at',
+        'i',
+        'it',
+        'u',
+        'ut',
+        'f',
+        'ft',
+        'ac',
+        'ec',
+        'ak',
+        'ik',
+        'hal',
+        'Jal',
+        'JaS',
+        'jaS',
+        'car',
+    ])
+    pratyaya_set = set([
+        'luk',
+        'Slu',
+        'lup',
+        'la~w',
+        'li~w',
+        'lu~w',
+        'lf~w',
+        'le~w',
+        'lo~w',
+        'la~N',
+        'li~N',
+        'lu~N',
+        'lf~N',
+        'Sap',
+        'Syan',
+        'Snu',
+        'Sa',
+        'Snam',
+        'u',
+        'SnA',
+        'Ric',
+    ])
+
+    if data is None:
+        return allow_all
+
+    # Make `data` iterable
+    if isinstance(data, basestring) or hasattr(data, '__call__'):
+        data = [data]
+
+    base_filter = None
+    for datum in data:
+        matcher = None
+        # String selector: value, samjna, or sound
+        if isinstance(datum, basestring):
+            if datum in samjna_set:
+                matcher = samjna(datum)
+            elif datum in sound_set:
+                matcher = al(datum)
+            elif datum in pratyaya_set:
+                matcher = lakshana(datum)
+            else:
+                matcher = raw(datum)
+
+        # Function
+        else:
+            matcher = datum
+
+        if base_filter is None:
+            base_filter = matcher
+        else:
+            base_filter |= matcher
+
+    return base_filter

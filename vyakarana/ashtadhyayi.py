@@ -17,19 +17,11 @@ import dhatu
 import sandhi
 import siddha
 import vibhakti
-from templates import NEW_RULES
+from templates import ALL_RULES
 from util import State
 
 log = logging.getLogger(__name__)
 initialized = False
-
-
-class History(list):
-    def __str__(self):
-        lines = ['History:']
-        for state in self:
-            lines.append('  %s' % repr([x.value for x in state]))
-        return '\n'.join(lines)
 
 
 def apply_next_rule(state):
@@ -40,7 +32,7 @@ def apply_next_rule(state):
 
     :param state: the current :class:`State`
     """
-    for ra, ia in itertools.product(NEW_RULES, range(len(state))):
+    for ra, ia in itertools.product(ALL_RULES, range(len(state))):
         ra_states = None
         if not ra.name.startswith('3'):
             continue
@@ -54,7 +46,7 @@ def apply_next_rule(state):
         # Marks whether a rule has been overruled
         overruled = False
 
-        for rb, sa in itertools.product(NEW_RULES, ra_states):
+        for rb, sa in itertools.product(ALL_RULES, ra_states):
             ra_rb_states = []
             for ib in range(len(sa)):
                 if rb.matches(sa, ib):
@@ -95,22 +87,21 @@ def derive(sequence):
         init()
 
     start = State(sequence)
-    history = History()
-    history.append(start)
+    stack = [start]
 
-    print '---'
-    print start
-    while history:
-        state = history.pop()
+    log.debug('---')
+    log.debug(start)
+    while stack:
+        state = stack.pop()
         new_states = apply_next_rule(state)
         if new_states:
             for s in new_states:
                 log.debug('    %s --> %s' % (state, s))
-            history.extend(new_states)
+            stack.extend(new_states)
 
         # No applicable rules; state is in its final form.
         else:
-            print state
+            log.debug('final: %s' % state)
             yield ''.join(x.asiddha for x in state)
 
 

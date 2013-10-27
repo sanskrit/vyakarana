@@ -1,25 +1,39 @@
-from vyakarana.classes import *
-from vyakarana.context import *
+import vyakarana.filters as F
+from vyakarana.upadesha import *
 
 
-def verify(cases, context_creator, test):
-    """Verify a context function on some input.
+def verify(cases, filter_creator, tester):
+    """Verify a filter function on some input.
 
     :param cases: a list of 3-tuples containing:
-                  - a list of arguments to `context_creator`
+                  - a list of arguments to `filter_creator`
                   - a list of positive examples
                   - a list of negative examples
-    :param context_creator: a function that takes a list of *args and
-                            returns a parameterized context function.
-    :param test: a function that takes a parameterized context function
+    :param filter_creator: a function that takes a list of *args and
+                            returns a parameterized filter function.
+    :param test: a function that takes a parameterized filter function
                  and an example and returns a bool.
     """
     for pattern, yes, no in cases:
-        context = context_creator(*pattern)
+        filt = filter_creator(*pattern)
         for y in yes.split():
-            assert test(context, y)
+            assert tester(filt, y)
         for n in no.split():
-            assert not test(context, n)
+            assert not tester(filt, n)
+
+
+def term_tester(filt, data):
+    term =  Upadesha('a~').set_value(data)
+    return filt(term, None, None)
+
+
+def pratyaya_tester(filt, data):
+    return filt(Pratyaya(data), None, None)
+
+
+def dhatu_tester(filt, data):
+    return filt(Dhatu(data), None, None)
+
 
 
 def test_adi():
@@ -45,7 +59,7 @@ def test_adi():
             'indra agni vAyu jAne agnO Bagavat Atman lih dfS',
         ),
     ]
-    verify(cases, adi, lambda f, x: f(Term(x)))
+    verify(cases, F.adi, term_tester)
 
 
 def test_al():
@@ -71,18 +85,18 @@ def test_al():
             'indra agni vAyu jAne agnO Bagavat Atman lih',
         ),
     ]
-    verify(cases, al, lambda f, x: f(Term(x)))
+    verify(cases, F.al, term_tester)
 
 
 
-def test_it():
+def test_it_samjna():
     cases = [
-        (['k', 'N'],
+        (['kit', 'Nit'],
             'kta ktvA iyaN uvaN kvasu~',
             'GaY ap yat anIyar',
         )
     ]
-    verify(cases, it, lambda f, x: f(Pratyaya(x)))
+    verify(cases, F.samjna, pratyaya_tester)
 
 
 def test_lakshana():
@@ -92,7 +106,7 @@ def test_lakshana():
             'lu~w lo~w',
         )
     ]
-    verify(cases, lakshana, lambda f, x: f(Pratyaya(x)))
+    verify(cases, F.lakshana, pratyaya_tester)
 
 
 def test_raw():
@@ -102,7 +116,7 @@ def test_raw():
             'gamx~ SF dF pF',
         )
     ]
-    verify(cases, raw, lambda f, x: f(Dhatu(x)))
+    verify(cases, F.raw, dhatu_tester)
 
 
 def test_samjna():
@@ -114,11 +128,11 @@ def test_samjna():
     ]
 
     for pattern, yes, no in cases:
-        f = samjna(*pattern)
+        f = F.samjna(*pattern)
         for y in yes.split():
-            assert f(Anga(y))
+            assert f(Anga(y), None, None)
         for n in no.split():
-            assert not f(Pratyaya(n))
+            assert not f(Pratyaya(n), None, None)
 
 
 def test_upadha():
@@ -128,7 +142,7 @@ def test_upadha():
             'granTa nara nayati',
         )
     ]
-    verify(cases, upadha, lambda f, x: f(Term(x)))
+    verify(cases, F.upadha, term_tester)
 
 
 def test_value():
@@ -138,7 +152,7 @@ def test_value():
             'gamx~ SF dF pF',
         )
     ]
-    verify(cases, value, lambda f, x: f(Dhatu(x)))
+    verify(cases, F.value, dhatu_tester)
 
 
 def test_and_():
@@ -148,8 +162,8 @@ def test_and_():
             'car pAna granTa nara nayati',
         )
     ]
-    verify(cases, lambda names: and_(upadha(names), al('hal')),
-           lambda f, x: f(Term(x)))
+    verify(cases, lambda names: F.upadha(names) & F.al('hal'),
+           term_tester)
 
 
 def test_or_():
@@ -159,5 +173,5 @@ def test_or_():
             'granTa nara nayati',
         )
     ]
-    verify(cases, lambda names: or_(upadha(names), al('hal')),
-           lambda f, x: f(Term(x)))
+    verify(cases, lambda names: F.upadha(names) | F.al('hal'),
+           term_tester)
