@@ -73,8 +73,8 @@ class State(object):
 
         return self.items == other.items
 
-    def __getitem__(self, i):
-        return self.items[i]
+    def __getitem__(self, index):
+        return self.items[index]
 
     def __iter__(self):
         return iter(self.items)
@@ -94,9 +94,11 @@ class State(object):
     def copy(self):
         return State(self.items[:], self.history[:])
 
-    def insert(self, i, item):
+    def insert(self, index, item, rule=None):
         c = self.copy()
-        c.items.insert(i, item)
+        c.items.insert(index, item)
+        if rule is not None:
+            c._push_rule(rule, index)
         return c
 
     def make_rule_key(self, rule, index):

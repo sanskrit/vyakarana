@@ -8,7 +8,7 @@
     :license: MIT and BSD
 """
 
-import filters as f
+import filters as F
 import gana
 from sounds import Sounds
 from upadesha import Upadesha as U, Pratyaya
@@ -18,19 +18,24 @@ from util import Rank
 TAS = Pratyaya('tAs').add_samjna('ardhadhatuka')
 
 
-def it(state):
-    """
+@tasya('dhatu', 'pratyaya')
+def it():
+    def it_operator(cur, state, index):
+        dhatu = state[index - 1]
+        status = it_status(dhatu, cur)
 
-    :param state:
-    """
-    i, anga = state.find('anga')
-    p = state[i+1]
+        if status == 'set':
+            return cur.tasya(U('iw'))
+        elif status == 'vet':
+            return Va(cur.tasya(U('iw')))
+        else:
+            return cur
 
-    status = it_status(anga, p)
-    if status in ('set', 'vet'):
-        yield state.swap(i+1, p.tasya(U('iw')))
-    if status in ('anit', 'vet'):
-        yield state
+    return [
+        ('7.2.10 - 7.2.78',
+            None, None,
+            it_operator)
+    ]
 
 
 def it_status(anga, p):
@@ -69,17 +74,17 @@ def it_status(anga, p):
     # upadesha (various)
     # ------------------
     # 7.2.10 ekAca upadeze 'nudAttAt
-    if anga.one_syllable and 'anudatta' in anga.samjna:
+    if F.ekac(anga, None, None) and 'anudatta' in anga.samjna:
         status = 'anit'
         rank = Rank.APAVADA
 
     # 7.2.11 zryukaH kiti
-    if 'k' in p.it:
+    if 'kit' in p.samjna:
         if anga.raw == 'SriY' or anga.antya in Sounds('uk'):
             status = 'anit'
 
     # 7.2.12 sani grahaguhoz ca
-    if p.value == 'san':
+    if p.raw == 'san':
         # 'Sri' is excluded here.
         if anga.raw in ('graha~^', 'guhU~^') or anga.antya in Sounds('uk'):
             status = 'anit'
@@ -137,7 +142,7 @@ def it_status(anga, p):
         # 7.2.43 Rtaz ca saMyogAdeH
 
         # 7.2.44 svaratisUtisUyatidhUJUdito vA
-        _44 = anga.raw in ('svf', 'zUG', 'zUN', 'DUY') or 'U' in anga.it
+        _44 = anga.raw in ('svf', 'zUG', 'zUN', 'DUY') or 'Udit' in anga.samjna
 
         # 7.2.45 radhAdhibhyaz ca
         _45 = anga.value in gana.RADH
@@ -198,7 +203,7 @@ def it_status(anga, p):
         # the table above.)
 
         # 7.2.61 acas tAsvat thaly aniTo nityam
-        _61 = anga.ac
+        _61 = F.al('ac')(anga, None, None)
 
         # 7.2.62 upadeze 'tvataH
         _62 = 'a' in anga.value

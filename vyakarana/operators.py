@@ -28,7 +28,7 @@ def parameterized(fn):
     return wrapped
 
 
-def dirgha(cur, right=None):
+def dirgha(cur, state, index):
     converter = dict(zip('aiufx', 'AIUFX'))
     letters = list(cur.value)
     for i, L in enumerate(letters):
@@ -39,7 +39,12 @@ def dirgha(cur, right=None):
     return cur.set_value(''.join(letters))
 
 
-def guna(cur, right=None):
+def guna(cur, state, index):
+    try:
+        right = state[index + 1]
+    except IndexError:
+        right = None
+
     # 1.1.5 kGiti ca (na)
     if right is not None and right.any_samjna('kit', 'Nit'):
         return cur
@@ -58,7 +63,7 @@ def guna(cur, right=None):
     return cur.set_value(''.join(letters)).add_samjna('guna')
 
 
-def hrasva(cur, right=None):
+def hrasva(cur, state, index):
     converter = dict(zip('AIUFXeEoO', 'aiufxiiuu'))
     letters = list(cur.value)
     for i, L in enumerate(letters):
@@ -69,7 +74,7 @@ def hrasva(cur, right=None):
     return cur.set_value(''.join(letters))
 
 
-def samprasarana(cur, right=None):
+def samprasarana(cur, state, index):
     rev_letters = list(reversed(cur.value))
     for i, L in enumerate(rev_letters):
         # 1.1.45 ig yaNaH saMprasAraNAm
@@ -91,7 +96,7 @@ def samprasarana(cur, right=None):
 
 @parameterized
 def replace(target, result):
-    def func(cur, right=None):
+    def func(cur, state, index):
         return cur.set_value(cur.value.replace(target, result))
     return func
 
@@ -99,7 +104,7 @@ def replace(target, result):
 @parameterized
 def ti(result):
     ac = Sounds('ac')
-    def func(cur, right=None):
+    def func(cur, state, index):
         for i, L in enumerate(reversed(cur.value)):
             if L in ac:
                 break
@@ -110,7 +115,12 @@ def ti(result):
     return func
 
 
-def vrddhi(cur, right=None):
+def vrddhi(cur, state, index):
+    try:
+        right = state[index + 1]
+    except IndexError:
+        right = None
+
     # 1.1.5 kGiti ca (na)
     if right and right.any_samjna('kit', 'Nit'):
         return cur
@@ -131,7 +141,7 @@ def vrddhi(cur, right=None):
 
 @parameterized
 def upadha(L):
-    def func(cur, right=None):
+    def func(cur, state, index):
         return cur.upadha(L)
     return func
 
@@ -140,7 +150,7 @@ def upadha(L):
 def al_tasya(target, result):
     target = Sounds(target)
     result = Sounds(result)
-    def func(cur, **kw):
+    def func(cur, state, index):
         letters = list(cur.value)
         for i, L in enumerate(letters):
             if L in target:
@@ -156,6 +166,6 @@ def al_tasya(target, result):
 def yathasamkhya(targets, results):
     print 'yathasamkha'
     converter = dict(zip(targets, results))
-    def func(cur, **kw):
+    def func(cur, state, index):
         return cur.set_raw(converter[cur.raw])
     return func

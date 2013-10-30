@@ -70,9 +70,14 @@ class Rule(object):
     #: Rank of a rule that produces a specific form
     NIPATANA = 4
 
+    #: Rank of an ordinary rule
     VIDHI = 0
-    ATIDESHA = 1
+    #: Rank of a designation.
     SAMJNA = 1
+    #: Rank of an extension rule. This simulation treats these the same
+    #: way as designation rules.
+    ATIDESHA = 1
+    #: The current rule type, which is used to create the rule rank.
     RULE_TYPE = VIDHI
 
     __slots__ = ('name', 'filters', 'operator', 'rank')
@@ -146,31 +151,69 @@ class TasyaRule(Rule):
         pairs = zip(self.filters, term_slice)
         return all(f(term, state, index) for f, term in pairs)
 
-    def apply(self, state, i):
-        cur = state[i]
+    def apply(self, state, index):
+        cur = state[index]
         result = self.operator
 
         # Optional substitution
         if isinstance(result, Option):
+            if self.name in cur.ops:
+                return
             # declined
-            yield state.swap(i, cur.add_op(self.name), rule=self)
+            yield state.mark_rule(self, index)
             # accepted
             result = result.data
 
         # Operator substitution
         if hasattr(result, '__call__'):
-            try:
-                right = state[i + 1]
-            except IndexError:
-                right = None
-            new_cur = result(cur, right=right)
+            new_cur = result(cur, state, index)
+
+            if isinstance(new_cur, Option):
+                yield state.mark_rule(self, index)
+                new_cur = new_cur.data
 
         # Other substitution
         else:
             new_cur = cur.tasya(result)
 
         if new_cur != cur:
-            yield state.swap(i, new_cur, rule=self)
+            yield state.swap(index, new_cur, rule=self)
+
+
+class TasmatRule(Rule):
+
+    """An insertion rule.
+
+    For some locus ``(state, index)``, the rule applies filters starting
+    from ``state[index]``. `self.operator` is an :class:`Upadesha` that
+    is inserted at ``state[index]``.
+    """
+
+    __slots__ = ()
+
+    def apply(self, state, index):
+        result = self.operator
+
+        # Optional insertion
+        if isinstance(result, Option):
+            # declined
+            yield state.mark_rule(self, index)
+            # accepted
+            result = result.data
+
+        # Operator insertion
+        if hasattr(result, '__call__'):
+            inserted = result(state, index)
+            if isinstance(inserted, Option):
+                yield state.mark_rule(self, index)
+                inserted = inserted.data
+
+        # Other insertion
+        else:
+            inserted = result
+
+        if inserted is not None:
+            yield state.insert(index + len(self.filters) - 1, inserted, rule=self)
 
 
 class SamjnaRule(TasyaRule):
@@ -206,21 +249,6 @@ class SamjnaRule(TasyaRule):
 class AtideshaRule(SamjnaRule):
 
     RULE_TYPE = Rule.ATIDESHA
-
-
-class TasmatRule(Rule):
-
-    """An insertion rule.
-
-    For some locus ``(state, index)``, the rule applies filters starting
-    from ``state[index]``. `self.operator` is an :class:`Upadesha` that
-    is inserted at ``state[index]``.
-    """
-
-    __slots__ = ()
-
-    def apply(self, state, i):
-        raise NotImplementedError('TasmatRule(%s)' % self.name)
 
 
 class StateRule(Rule):
@@ -338,6 +366,18 @@ def atidesha(*base_filters, **kw):
         rules = fn()
         for name, filters, op in process_tuple_rules(rules, base_filters):
             rule = AtideshaRule(name, filters, op)
+            ALL_RULES.append(rule)
+
+    return decorator
+
+
+def tasmat(*base_filters, **kw):
+    base_filters = [F.auto(f) for f in base_filters]
+
+    def decorator(fn):
+        rules = fn()
+        for name, filters, op in process_tuple_rules(rules, base_filters):
+            rule = TasmatRule(name, filters, op)
             ALL_RULES.append(rule)
 
     return decorator

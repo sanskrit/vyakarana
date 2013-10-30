@@ -330,7 +330,7 @@ def angasya_abhyasasya():
     shar = Sounds('Sar')
     khay = Sounds('Kay')
 
-    def _60_61(cur, **kw):
+    def _60_61(cur, state, index):
         first_hal = first_ac = ''
         for i, L in enumerate(cur.value):
             if i == 1 and cur.value[0] in shar and L in khay:

@@ -135,7 +135,7 @@ class NewAshtadhyayi(Ashtadhyayi):
                 if not ra_states:
                     # if ra_states is None:
                     #     log.debug('  SKIP %s (no match)' % ra)
-                    #     if ra.name == '7.3.86' and ia == 1:
+                    #     if ra.name == '7.4.11' and ia == 1:
                     #         print ra.filters
                     #         print ra.filters[0](state[0], state, 0)
                     #         print ra.filters[1](state[1], state, 1)

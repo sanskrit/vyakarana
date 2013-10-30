@@ -79,7 +79,7 @@ def label_by_group(terms, labels):
 
 def f_lakara(p, *a):
     return p is not None and 'vibhakti' in p.samjna and p.raw[0] == 'l'
-f_lakara = f.Filter(name='f_lakara', body=f_lakara, rank=Rule.UNKNOWN)
+f_lakara = f.Filter(name='f_lakara', body=f_lakara, rank=Rule.UPADESHA)
 
 def tin_key(samjna, pada=None):
     if pada:

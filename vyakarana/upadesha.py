@@ -263,21 +263,22 @@ class Upadesha(object):
             return self.set_value(value)
 
         # 1.1.47 mid aco 'ntyAt paraH
-        if 'm' in other.it:
+        if 'mit' in other.samjna:
             ti = self.ti().value
             c = self.ti(ti[0] + other.value + ti[1:])
 
         # 1.1.46 Adyantau Takitau
-        elif 'k' in other.it:
-            c.value += other.value
-            c.parts.append(other)
-        elif 'w' in other.it:
-            c.value = other.value + self.value
-            c.parts.insert(0, other)
+        elif 'kit' in other.samjna:
+            value += other.value
+            return self.set_value(value)
+
+        elif 'wit' in other.samjna:
+            value = other.value + value
+            return self.set_value(value)
 
         # 1.1.52 alo 'ntyasya
         # 1.1.53 Gic ca
-        elif len(other.value) == 1 or 'N' in other.it:
+        elif len(other.value) == 1 or 'Nit' in other.samjna:
             c.value = self.value[:-1] + other.value
             c.parts.append(other)
 
