@@ -88,6 +88,29 @@ def test_al():
     verify(cases, F.al, term_tester)
 
 
+def test_gana():
+    pairs = [
+        ('BU', 'wvo~Svi'),
+        ('a\\da~', 'hnu\N'),
+        ('hu\\', 'gA\\'),
+        ('divu~', 'gfDu~'),
+        ('zu\Y', 'kzI'),
+        ('tu\da~^', 'piSa~'),
+        ('ru\Di~^r', 'pfcI~'),
+        ('tanu~^', 'qukf\Y'),
+        ('qukrI\Y', 'graha~^'),
+        ('cura~', 'tutTa~'),
+    ]
+    cases = []
+    for i, pair in enumerate(pairs):
+         first, last = pair
+         yes = ' '.join(pair)
+         no = ' '.join(' '.join(p) for j, p in enumerate(pairs) if i != j)
+         print no
+         cases.append(([first], yes, no))
+
+    verify(cases, F.gana, dhatu_tester)
+
 
 def test_it_samjna():
     cases = [
@@ -97,16 +120,6 @@ def test_it_samjna():
         )
     ]
     verify(cases, F.samjna, pratyaya_tester)
-
-
-def test_lakshana():
-    cases = [
-        (['la~w', 'li~w'],
-            'la~w li~w',
-            'lu~w lo~w',
-        )
-    ]
-    verify(cases, F.lakshana, pratyaya_tester)
 
 
 def test_raw():

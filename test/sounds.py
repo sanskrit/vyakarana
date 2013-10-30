@@ -57,7 +57,7 @@ def test_pratyahara():
         assert len(pra) == len(s)
 
     yes('aR', 'aAiIuU')
-    yes('aR', VOWELS.union(SEMIVOWELS.union(set('h'))), second_R=True)
+    yes('aR', VOWELS | SEMIVOWELS | set('h'), second_R=True)
     yes('eN', 'eo')
     yes('ec', 'eEoO')
 

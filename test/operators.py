@@ -5,7 +5,7 @@ import vyakarana.operators as o
 def verify(cases, operator):
     for original, expected in cases:
         term = Upadesha('a~').set_value(original)
-        assert operator(term).value == expected
+        assert operator(term, None, None).value == expected
 
 
 def test_dirgha():
