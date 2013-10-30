@@ -7,8 +7,7 @@ from util import SoundEditor
 
 def convert(op):
     def func(s):
-        print s, op(Upadesha(s + 'a~')).value
-        return op(Upadesha(s + 'a~')).value
+        return op(Upadesha(s + 'a~'), None, None).value
     return func
 
 dirgha = convert(O.dirgha)

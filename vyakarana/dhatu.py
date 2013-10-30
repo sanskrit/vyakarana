@@ -47,6 +47,20 @@ def adesha(state):
         yield state.swap(i, dhatu)
 
 
+@tasmat('dhatu', 'tin')
+def sanadyanta_dhatu():
+
+    def k(s):
+        return Krt(s).add_samjna('dhatu')
+
+    return [
+        ('3.1.28',
+            # TODO: vicCi, pani
+            ('gupU~', 'DUpa~', 'paRa~\\'), None,
+            k('Aya'))
+    ]
+
+
 @tasmat('dhatu', F.samjna('tin') & F.samjna('sarvadhatuka'))
 def vikarana():
     """Vikarana for classes 1 through 10."""
@@ -66,34 +80,31 @@ def vikarana():
             None, None,
             k('Sap')),
         ('3.1.69',
-            F.gana('divu~', 'gfDu~'), None,
+            F.gana('divu~'), None,
             k('Syan')),
         ('3.1.70',
             bhrasha_bhlasha, None,
             True),
         ('3.1.73',
-            F.gana('zu\\Y', 'kzI'), None,
+            F.gana('zu\\Y'), None,
             k('Snu')),
         ('3.1.77',
-            F.gana('tu\da~^', 'piSa~'), None,
+            F.gana('tu\da~^'), None,
             k('Sa')),
         ('3.1.78',
-            F.gana('ru\Di~^r', 'pfcI~'), None,
+            F.gana('ru\Di~^r'), None,
             k('Snam')),
         ('3.1.79',
-            F.gana('tanu~^', 'qukf\Y'), None,
+            F.gana('tanu~^'), None,
             k('u')),
         ('3.1.81',
-            F.gana('qukrI\Y', 'graha~^'), None,
+            F.gana('qukrI\Y'), None,
             k('SnA')),
         # TODO: ca
         ('3.1.68',
             stambhu_stumbhu, None,
             k('Snu')),
     ]
-
-    def _yield(s):
-        return Krt(s).add_samjna('anga')
 
 
 def pada_options(dhatu):

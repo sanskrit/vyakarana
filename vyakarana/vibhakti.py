@@ -145,7 +145,7 @@ def lasya():
     ]
 
 
-@tasya('dhatu', 'tin')
+@tasya(None, 'tin')
 def tin_adesha():
     """3.4.77 lasya"""
 

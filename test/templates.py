@@ -1,7 +1,7 @@
-from vyakarana.ashtadhyayi import State
-from vyakarana.context import *
-from vyakarana.classes import Term, Dhatu, Pratyaya
-from vyakarana.decorators import tasya
+import vyakarana.filters as F
+from vyakarana.upadesha import Dhatu, Pratyaya
+from vyakarana.templates import tasya
+from vyakarana.util import State
 
 def str2state(s):
     return State([Term(x) for x in s.split()])

@@ -9,7 +9,7 @@
     take some :class:`Upadesha` and return a new :class:`Upadesha`.
 
     This module defines a variety of parameterized and unparameterized
-    operators. All operators accept an optional right context `right`.
+    operators.
 
     :license: MIT and BSD
 """
@@ -28,6 +28,74 @@ def parameterized(fn):
     return wrapped
 
 
+# Parameterized operators
+# ~~~~~~~~~~~~~~~~~~~~~~~
+# Each function accepts arbitrary arguments and returns a valid operator.
+
+@parameterized
+def adi(result):
+    def func(cur, state, index):
+        return cur.tasya(result, adi=True)
+    return func
+
+
+@parameterized
+def al_tasya(target, result):
+    target = Sounds(target)
+    result = Sounds(result)
+    def func(cur, state, index):
+        letters = list(cur.value)
+        for i, L in enumerate(letters):
+            if L in target:
+                letters[i] = Sound(L).closest(result)
+                if L in 'fF' and letters[i] in Sounds('aR'):
+                    letters[i] += 'r'
+                break
+        return cur.set_value(''.join(letters))
+    return func
+
+
+@parameterized
+def replace(target, result):
+    def func(cur, state, index):
+        return cur.set_value(cur.value.replace(target, result))
+    return func
+
+
+@parameterized
+def ti(result):
+    ac = Sounds('ac')
+    def func(cur, state, index):
+        for i, L in enumerate(reversed(cur.value)):
+            if L in ac:
+                break
+
+        value = cur.value[:-(i+1)] + result
+        return cur.set_value(value)
+
+    return func
+
+
+@parameterized
+def upadha(L):
+    def func(cur, state, index):
+        return cur.upadha(L)
+    return func
+
+
+@parameterized
+def yathasamkhya(targets, results):
+    print 'yathasamkha'
+    converter = dict(zip(targets, results))
+    def func(cur, state, index):
+        return cur.set_raw(converter[cur.raw])
+    return func
+
+
+# Unparameterized operators
+# ~~~~~~~~~~~~~~~~~~~~~~~~~
+# Each function defines an operator.
+
 def dirgha(cur, state, index):
     converter = dict(zip('aiufx', 'AIUFX'))
     letters = list(cur.value)
@@ -42,7 +110,7 @@ def dirgha(cur, state, index):
 def guna(cur, state, index):
     try:
         right = state[index + 1]
-    except IndexError:
+    except (IndexError, TypeError):
         right = None
 
     # 1.1.5 kGiti ca (na)
@@ -94,31 +162,10 @@ def samprasarana(cur, state, index):
     return cur.set_value(''.join(reversed(rev_letters)))
 
 
-@parameterized
-def replace(target, result):
-    def func(cur, state, index):
-        return cur.set_value(cur.value.replace(target, result))
-    return func
-
-
-@parameterized
-def ti(result):
-    ac = Sounds('ac')
-    def func(cur, state, index):
-        for i, L in enumerate(reversed(cur.value)):
-            if L in ac:
-                break
-
-        value = cur.value[:-(i+1)] + result
-        return cur.set_value(value)
-
-    return func
-
-
 def vrddhi(cur, state, index):
     try:
         right = state[index + 1]
-    except IndexError:
+    except (IndexError, TypeError):
         right = None
 
     # 1.1.5 kGiti ca (na)
@@ -138,34 +185,3 @@ def vrddhi(cur, state, index):
 
     return cur.set_value(''.join(letters))
 
-
-@parameterized
-def upadha(L):
-    def func(cur, state, index):
-        return cur.upadha(L)
-    return func
-
-
-@parameterized
-def al_tasya(target, result):
-    target = Sounds(target)
-    result = Sounds(result)
-    def func(cur, state, index):
-        letters = list(cur.value)
-        for i, L in enumerate(letters):
-            if L in target:
-                letters[i] = Sound(L).closest(result)
-                if L in 'fF' and letters[i] in Sounds('aR'):
-                    letters[i] += 'r'
-                break
-        return cur.set_value(''.join(letters))
-    return func
-
-
-@parameterized
-def yathasamkhya(targets, results):
-    print 'yathasamkha'
-    converter = dict(zip(targets, results))
-    def func(cur, state, index):
-        return cur.set_raw(converter[cur.raw])
-    return func

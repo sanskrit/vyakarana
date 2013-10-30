@@ -16,7 +16,6 @@ from itertools import chain, islice, izip, izip_longest, repeat
 
 import filters as F
 from dhatupatha import DHATUPATHA as DP
-from upadesha import Upadesha
 
 # New-style rules. Temporary.
 ALL_RULES = []
@@ -112,7 +111,7 @@ class Rule(object):
         """
         pairs = izip_longest(self.filters, islice(state, index, None),
                              fillvalue=None)
-        return all(f(term, state, index) for f, term in pairs)
+        return all(f(term, state, index) for f, term in pairs if f)
 
     def yields(self, state, index):
         if self.matches(state, index):

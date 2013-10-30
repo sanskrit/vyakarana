@@ -157,11 +157,10 @@ def al(*names):
 
 
 @parameterized
-def gana(start, end):
+def gana(start, end=None):
     gana_set = DP.dhatu_set(start, end)
 
     def func(term, state, index):
-        print term.raw, start, end, len(gana_set), term.raw in gana_set
         return term.raw in gana_set
 
     return func, FilterType.UPADESHA

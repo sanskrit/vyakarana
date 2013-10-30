@@ -19,9 +19,8 @@
 
 import filters as F
 import operators as O
-from dhatupatha import DHATUPATHA as DP
 from sounds import Sounds
-from templates import tasya, state
+from templates import tasya, state, Va, Vibhasha, Anyatarasyam
 
 
 @tasya(None, 'anga', None, locus='asiddhavat')
@@ -192,12 +191,22 @@ def angasya_pratyaya_adesha():
     ]
 
 
-# @tasya(F.al('At'), F.each('anga', 'Ral'))
+@tasya('At', F.samjna('anga') & F.lakshana('Ral'))
 def ata_au_nalah():
     return [
         ('7.1.34',
             None, None, None,
             'O')
+    ]
+
+
+@tasya('anga', 'sarvadhatuka')
+def angasya_sarvadhatuke_at():
+    return [
+        ('7.2.81',
+            'at', F.adi('At') & F.samjna('Nit'),
+            O.adi('iy')
+            )
     ]
 
 
@@ -245,7 +254,7 @@ def angasya_ku():
 def angasya_shyani():
     return [
         ('7.3.74',
-            DP.dhatu_set('Samu~', 'madI~'), None,
+            None, F.gana('Samu~', 'madI~'), None,
             O.dirgha)
     ]
 
@@ -274,7 +283,7 @@ def angasya_shiti():
             None, ('jYA\\', 'janI~\\'), None,
             'jA'),
         ('7.3.80',
-            None, DP.dhatu_set('pUY', 'plI\\'), None,
+            None, F.gana('pUY', 'plI\\'), None,
             O.hrasva),
         ('7.3.82',
             None, 'YimidA~', None,
@@ -329,7 +338,7 @@ def angasya_liti():
         # TODO: va,
         ('7.4.12',
             None, ('SF', 'dF', 'pF'), None,
-            O.hrasva)
+            Va(O.hrasva))
     ]
 
 

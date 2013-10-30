@@ -235,6 +235,9 @@ class Upadesha(object):
     def set_asiddhavat(self, asiddhavat):
         return self.copy(data=self.data.replace(asiddhavat=asiddhavat))
 
+    def set_asiddha(self, asiddha):
+        return self.copy(data=self.data.replace(asiddha=asiddha))
+
     def tasya(self, other, adi=False):
         """
         Perform a substitution according to the normal rules.
@@ -242,6 +245,15 @@ class Upadesha(object):
         :param other: the term to insert
         """
         value = self.value
+
+        # 1.1.54 AdeH parasya
+        if adi:
+            try:
+                value = other.value + value[1:]
+            except AttributeError:
+                value = other + value[1:]
+            return self.set_value(value)
+
         if isinstance(other, basestring):
             # 1.1.52 alo 'ntyasya
             # 1.1.55 anekAlSit sarvasya
@@ -255,11 +267,6 @@ class Upadesha(object):
             # 1.1.50 sthAne 'ntaratamaH
             last = Sound(self.antya).closest(other)
             value = value[:-1] + last
-            return self.set_value(value)
-
-        # 1.1.54 AdeH parasya
-        if adi:
-            value = other.value + value[1:]
             return self.set_value(value)
 
         # 1.1.47 mid aco 'ntyAt paraH

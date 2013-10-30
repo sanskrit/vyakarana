@@ -9,7 +9,7 @@
 """
 
 from vyakarana import vibhakti
-from vyakarana.classes import *
+from vyakarana.upadesha import *
 
 
 a_labels = 'a1'.split()

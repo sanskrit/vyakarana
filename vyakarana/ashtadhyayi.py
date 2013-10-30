@@ -3,7 +3,7 @@
     vyakarana.ashtadhyayi
     ~~~~~~~~~~~~~~~~~~~~~
 
-    Coordinates the other parts of the grammar.
+    Coordinates the rules of the Sūtrapāṭha.
 
     :license: MIT and BSD
 """
@@ -37,7 +37,9 @@ class Ashtadhyayi(object):
         dhatu_file = os.path.join(dirname, 'data', 'dhatupatha.csv')
         dhatupatha.DHATUPATHA.init(dhatu_file)
 
+        #: The rules of the grammar, from highest priority to lowest.
         self.sorted_rules = sorted(ALL_RULES, cmp = lambda x, y: cmp(y.rank, x.rank))
+        #: Maps a rule's name to a :class:`Rule` instance.
         self.rule_map = {x.name: x for x in ALL_RULES}
 
     def apply_next_rule(self, state):
@@ -48,48 +50,48 @@ class Ashtadhyayi(object):
 
         :param state: the current :class:`State`
         """
-        for ra, ia in itertools.product(ALL_RULES, range(len(state))):
-            ra_states = None
+        sorted_rules = self.sorted_rules
+        for a, ra in enumerate(sorted_rules):
+            for ia in range(len(state)):
 
-            # List of valid states that could be produced from `ra`
-            if ra.matches(state, ia):
-                ra_states = list(ra.apply(state, ia))
-            if not ra_states:
-                continue
-
-            # Marks whether a rule has been overruled
-            overruled = False
-
-            for rb, sa in itertools.product(ALL_RULES, ra_states):
-                ra_rb_states = []
-                for ib in range(len(sa)):
-                    if rb.matches(sa, ib):
-                        ra_rb_states.extend(rb.apply(sa, ib))
-
-                # `rb` can't apply anywhere.
-                if not ra_rb_states:
+                # Ignore redundant applications
+                ra_key = state.make_rule_key(ra, ia)
+                if ra_key in state.history:
                     continue
 
-                # cyclical rules
-                if state in ra_rb_states:
-                    # The stronger rule dominates and should be favored.
-                    if ra.rank > rb.rank:
-                        log.debug('  %s' % ra.name)
-                        return ra_states
-                    # The weaker rule should be totally ignored.
-                    else:
-                        overruled = True
-                        break
+                # Only worthwhile rules
+                ra_states = None
+                if ra.matches(state, ia):
+                    ra_states = list(ra.apply(state, ia))
+                if not ra_states:
+                    # if ra_states is None:
+                    #     if ra.name == '1.2.5':
+                    #         print 'failed match ---'
+                    #         for i in (0, 1):
+                    #             filt = ra.filters[i]
+                    #             cur = state[i]
+                    #             print cur, '<-', filt
+                    #             print '  ', filt(cur, state, i)
+                    #             print '  ', cur.data
+                    #             print '  ', cur.samjna
+                    #             print '  ', cur.lakshana
+                    continue
 
-                else:
-                    log.debug('  %s' % ra.name)
-                    return ra_states
+                # Verify this doesn't undo a prior rule.
+                nullifies_old = False
+                for rb_key in state.history:
+                    rb = self.rule_map[rb_key[0]]
+                    ib = rb_key[1]
+                    if any(rb.yields(s, ib) for s in ra_states):
+                        nullifies_old = True
+                if nullifies_old:
+                    continue
 
-            if not overruled:
+                # Verify this isn't dominated by any other rules
+                # TODO
+
                 log.debug('  %s' % ra.name)
                 return ra_states
-
-        return None
 
     def derive(self, sequence):
         """Yield all possible results.
@@ -112,52 +114,13 @@ class Ashtadhyayi(object):
             # No applicable rules; state is in its final form.
             else:
                 log.debug('yield: %s' % state)
-                yield ''.join(x.asiddha for x in state)
+                return self.sandhi_asiddha(state)
+
+    def sandhi_asiddha(self, state):
+        for s in sandhi.apply(state):
+            yield ''.join(x.asiddha for x in s)
 
 
 class NewAshtadhyayi(Ashtadhyayi):
 
-    def apply_next_rule(self, state):
-        sorted_rules = self.sorted_rules
-        for a, ra in enumerate(sorted_rules):
-            for ia in range(len(state)):
-
-                # Ignore redundant applications
-                ra_key = state.make_rule_key(ra, ia)
-                if ra_key in state.history:
-                    continue
-
-                # Only worthwhile rules
-                ra_states = None
-                if ra.matches(state, ia):
-                    ra_states = list(ra.apply(state, ia))
-                if not ra_states:
-                    # if ra_states is None:
-                    #     if ra.name == '3.4.79' and ia == 1:
-                    #         print 'failed match ---'
-                    #         for i in (0, 1):
-                    #             filt = ra.filters[i]
-                    #             cur = state[i]
-                    #             print cur, '<-', filt
-                    #             print '  ', filt(cur, state, i)
-                    #             print '  ', cur.data
-                    #             print '  ', cur.samjna
-                    #             print '  ', cur.lakshana
-                    continue
-
-                print 'candidate:', ra.name, ra.rank
-                # Verify this doesn't undo a prior rule.
-                nullifies_old = False
-                for rb_key in state.history:
-                    rb = self.rule_map[rb_key[0]]
-                    ib = rb_key[1]
-                    if any(rb.yields(s, ib) for s in ra_states):
-                        nullifies_old = True
-                if nullifies_old:
-                    continue
-
-                # Verify this isn't dominated by any other rules
-                # TODO
-
-                log.debug('  %s' % ra.name)
-                return ra_states
+    pass

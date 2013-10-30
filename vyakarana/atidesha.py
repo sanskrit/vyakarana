@@ -15,16 +15,19 @@ from templates import *
 @atidesha(None, F.samjna('sarvadhatuka') & ~F.samjna('pit'))
 def Nit_atidesha():
     return [
-        ('1.2.3',
+        ('1.2.4',
             None, None,
             'Nit')
     ]
 
 
-@atidesha(None, F.lakshana('li~w') & ~F.samyoga & ~F.samjna('pit'))
+@atidesha('dhatu', F.lakshana('li~w'))
 def kit_atidesha():
     return [
-        ('1.2.4',
-            None, None,
-            'kit')
+        ('1.2.5',
+            None,  ~F.samyoga & ~F.samjna('pit'),
+            'kit'),
+        ('1.2.6',
+            ('YiinDI~\\', 'BU'), None,
+            True)
     ]
