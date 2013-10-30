@@ -58,7 +58,7 @@ def asiddhavat_angasya_ardhadhatuke():
     ]
 
 
-@tasya(None, 'anga', F.adi('ac'), locus='asiddhavat')
+# @tasya(None, 'anga', F.adi('ac'), locus='asiddhavat')
 def asiddhavat_angasya_aci():
     return [
         ('6.4.77',
@@ -284,15 +284,26 @@ def angasya_shiti():
 
 @tasya(None, 'anga', None)
 def angasya_guna():
+
+    @F.unparameterized
+    def puganta_laghupadha(term, *args):
+        # TODO: puganta
+        return term and term.upadha in Sounds('at it ut ft xt')
+
+    sarva_ardha = ('sarvadhatuka', 'ardhadhatuka')
+
     return [
         ('7.3.83',
             None, None, 'jus',
             O.guna),
         ('7.3.84',
-            None, F.al('ik'), ('sarvadhatuka', 'ardhadhatuka'),
+            None, F.al('ik'), sarva_ardha,
             True),
         ('7.3.85',
             None, 'jAgf', ~F.samjna('vi', 'ciR', 'Ral', 'Nit'),
+            True),
+        ('7.3.86',
+            None, puganta_laghupadha, sarva_ardha,
             True),
     ]
 
@@ -339,10 +350,10 @@ def angasya_abhyasasya():
         ('7.4.60',
             None, None, None,
             _60_61),
-        ('7.4.60',
+        ('7.4.61',
             None, None, None,
             True),
-        ('7.4.61',
+        ('7.4.62',
             None, None, None,
             O.al_tasya('ku h', 'cu')),
         ('7.4.66',

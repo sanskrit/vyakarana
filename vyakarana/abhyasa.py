@@ -44,10 +44,10 @@ def dvirvacana():
         ('6.1.9',
             True, ('san', 'yaN'),
         True),
-        ('6.1.9',
+        ('6.1.10',
             True, 'Slu~',
         True),
-        ('6.1.10',
+        ('6.1.11',
             True, 'caN',
         True),
     ]

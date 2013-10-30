@@ -58,12 +58,12 @@ class State(object):
 
     This represents a single step in some derivation."""
 
-    __slots__ = ['items', 'rules']
+    __slots__ = ['items', 'history']
 
-    def __init__(self, items, rules=None):
+    def __init__(self, items, history=None):
         #: A list of :class:`Upadesha`s.
         self.items = items
-        self.rules = rules or []
+        self.history = history or []
 
     def __eq__(self, other):
         if other is None:
@@ -88,12 +88,23 @@ class State(object):
     def __str__(self):
         return repr([x.asiddha for x in self.items])
 
+    def _push_rule(self, rule, index):
+        self.history.append(self.make_rule_key(rule, index))
+
     def copy(self):
-        return State(self.items[:], self.rules[:])
+        return State(self.items[:], self.history[:])
 
     def insert(self, i, item):
         c = self.copy()
         c.items.insert(i, item)
+        return c
+
+    def make_rule_key(self, rule, index):
+        return (rule.name, index)
+
+    def mark_rule(self, rule, index):
+        c = self.copy()
+        c._push_rule(rule, index)
         return c
 
     def remove(self, index):
@@ -106,27 +117,11 @@ class State(object):
         c.items = items
         return c
 
-    def swap(self, i, item):
+    def swap(self, index, item, rule=None):
         c = self.copy()
-        c.items[i] = item
-        return c
-
-    def window(self, i):
-        x, y, z = None, self.items[i], None
-        if i > 0:
-            x = self.items[i - 1]
-        if i + 1 < len(self.items):
-            z = self.items[i + 1]
-        return x, y, z
-
-    def swap_window(self, i, window):
-        c = self.copy()
-        c.items[i] = window[1]
-        if i > 0:
-            c.items[i - 1] = window[0]
-        if i + 1 < len(self.items):
-            c.items[i + 1] = window[-1]
-        c.items = [x for x in c.items if x is not None]
+        c.items[index] = item
+        if rule is not None:
+            c._push_rule(rule, index)
         return c
 
 

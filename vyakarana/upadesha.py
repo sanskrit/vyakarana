@@ -143,13 +143,12 @@ class Upadesha(object):
                         samjna.add('svarita')
 
         clean = re.sub('[\\\\^]', '', raw)
+        keep = [True] * len(clean)
 
         # ir
         if clean.endswith('i~r'):
             it.add('ir')
-            clean = clean[-3:]
-
-        keep = [True] * len(clean)
+            keep[-3:] = [True, True, True]
 
         # 1.3.2 "upadeśe 'janunāsika iṭ"
         for i, L in enumerate(clean):

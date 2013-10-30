@@ -15,11 +15,19 @@
 """
 
 from sounds import Sounds
-from templates import Rule
 
 
 #: Used to cache parameterized filters
 FILTER_CACHE = {}
+
+
+class FilterType(object):
+    UNKNOWN = -1
+    AL = 0
+    SAMJNA = 1
+    LAKSHANA = 2
+    VALUE = 5
+    UPADESHA = 10
 
 
 class Filter(object):
@@ -89,6 +97,7 @@ def parameterized(fn):
     cache = FILTER_CACHE
 
     def wrapped(*names):
+        # Create ``name``
         try:
             if hasattr(names[0], '__call__'):
                 params = ', '.join(f.name for f in names)
@@ -97,11 +106,10 @@ def parameterized(fn):
                 name = "%s(%s)" % (fn.__name__, ', '.join(names))
         except IndexError:
             name = "%s()" % fn.__name__
-
         name = name.replace('_', '')
+
         if name not in cache:
-            body = fn(*names)
-            rank = body.rank
+            body, rank = fn(*names)
             cache[name] = Filter(name=name, body=body, rank=rank)
         return cache[name]
     return wrapped
@@ -114,12 +122,12 @@ def unparameterized(fn):
 
     :param fn: some filter function.
     """
-    return Filter(name=fn.__name__, body=fn, rank=Rule.UNKNOWN)
+    return Filter(name=fn.__name__, body=fn, rank=FilterType.UNKNOWN)
 
 
 # Parameterized filters
 # ~~~~~~~~~~~~~~~~~~~~~
-# Each function accepts arbitrary arguments and returns a filter body.
+# Each function accepts arbitrary arguments and returns a body and rank.
 
 @parameterized
 def adi(*names):
@@ -130,8 +138,8 @@ def adi(*names):
     sounds = Sounds(*names)
     def func(term, state, index):
         return term and term.adi in sounds
-    func.rank = Rule.UTSARGA
-    return func
+
+    return func, FilterType.AL
 
 
 @parameterized
@@ -143,8 +151,8 @@ def al(*names):
     sounds = Sounds(*names)
     def func(term, state, index):
         return term and term.antya in sounds
-    func.rank = Rule.UTSARGA
-    return func
+
+    return func, FilterType.AL
 
 
 @parameterized
@@ -164,8 +172,7 @@ def lakshana(*names):
         except AttributeError:
             return False
 
-    func.rank = Rule.UPADESHA
-    return func
+    return func, FilterType.LAKSHANA
 
 
 @parameterized
@@ -177,8 +184,8 @@ def raw(*names):
     names = frozenset(names)
     def func(term, state, index):
         return term is not None and term.raw in names
-    func.rank = Rule.UPADESHA
-    return func
+
+    return func, FilterType.UPADESHA
 
 
 @parameterized
@@ -189,8 +196,8 @@ def samjna(*names):
     """
     def func(term, state, index):
         return term is not None and any(n in term.samjna for n in names)
-    func.rank = Rule.UTSARGA
-    return func
+
+    return func, FilterType.SAMJNA
 
 
 @parameterized
@@ -204,8 +211,8 @@ def upadha(*names):
     sounds = Sounds(*names)
     def func(term, state, index):
         return term is not None and term.upadha in sounds
-    func.rank = Rule.UTSARGA
-    return func
+
+    return func, FilterType.AL
 
 
 @parameterized
@@ -217,8 +224,8 @@ def value(*names):
     names = frozenset(names)
     def func(term, state, index):
         return term is not None and term.value in names
-    func.rank = Rule.UPADESHA
-    return func
+
+    return func, FilterType.VALUE
 
 
 @parameterized
@@ -229,8 +236,7 @@ def and_(*filters):
     """
     def func(term, state, index):
         return all(f(term, state, index) for f in filters)
-    func.rank = max(x.rank for x in filters)
-    return func
+    return func, max(x.rank for x in filters)
 
 @parameterized
 def or_(*filters):
@@ -240,20 +246,19 @@ def or_(*filters):
     """
     def func(term, state, index):
         return any(f(term, state, index) for f in filters)
-    func.rank = max(x.rank for x in filters)
-    return func
+    return func, min(x.rank for x in filters)
 
 
 @parameterized
-def not_(*filters):
+def not_(filt):
     """Creates a filter that returns ``not any(f(*args) for f in filters)``
 
-    :param filters: a list of :class:`Filter`s.
+    :param filt: a :class:`Filter`.
     """
     def func(term, state, index):
-        return not any(f(term, state, index) for f in filters)
-    func.rank = max(x.rank for x in filters)
-    return func
+        return not filt(term, state, index)
+
+    return func, filt.rank
 
 
 # Unparameterized filters
@@ -292,71 +297,33 @@ def auto(data):
 
     :param data:
     """
+    hal_it = set([L + 'it' for L in 'kKGNYwqRpmS'])
+    ac_it = set([L + 'dit' for L in 'aiufx'])
     samjna_set = set([
-        'kit',
-        'Kit',
-        'Git',
-        'Nit',
-        'Yit',
-        'wit',
-        'qit',
-        'Nit',
-        'pit',
-        'mit',
-        'Sit',
-        'atmanepada',
-        'parasmaipada',
-        'dhatu',
-        'anga',
-        'pada',
-        'pratyaya',
-        'sarvadhatuka',
-        'ardhadhatuka',
-        'abhyasa',
-        'abhyasta',
-        'tin',
-        'sup',
+        'atmanepada', 'parasmaipada',
+        'dhatu', 'anga', 'pada', 'pratyaya',
+        'krt', 'taddhita',
+        'sarvadhatuka', 'ardhadhatuka',
+        'abhyasa', 'abhyasta',
+        'tin', 'sup',
     ])
+    samjna_set |= (hal_it | ac_it)
     sound_set = set([
-        'a',
-        'at',
-        'i',
-        'it',
-        'u',
-        'ut',
-        'f',
-        'ft',
-        'ac',
-        'ec',
-        'ak',
-        'ik',
-        'hal',
-        'Jal',
-        'JaS',
-        'jaS',
+        'a', 'at',
+        'i', 'it',
+        'u', 'ut',
+        'f', 'ft',
+        'ak', 'ik',
+        'ac', 'ec',
+        'hal', 'Jal',
+        'JaS', 'jaS',
         'car',
     ])
     pratyaya_set = set([
-        'luk',
-        'Slu',
-        'lup',
-        'la~w',
-        'li~w',
-        'lu~w',
-        'lf~w',
-        'le~w',
-        'lo~w',
-        'la~N',
-        'li~N',
-        'lu~N',
-        'lf~N',
-        'Sap',
-        'Syan',
-        'Snu',
-        'Sa',
-        'Snam',
-        'u',
-        'SnA',
+        'luk', 'Slu', 'lup',
+        'la~w', 'li~w', 'lu~w', 'lf~w', 'le~w', 'lo~w',
+        'la~N', 'li~N', 'lu~N', 'lf~N',
+        'Sap', 'Syan', 'Snu', 'Sa', 'Snam', 'u', 'SnA',
         'Ric',
     ])
 

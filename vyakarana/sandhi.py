@@ -1,6 +1,20 @@
+import operators as O
+from upadesha import Upadesha
+
 from sounds import Sound, Sounds
 from util import SoundEditor
 
+
+def convert(op):
+    def func(s):
+        print s, op(Upadesha(s + 'a~')).value
+        return op(Upadesha(s + 'a~')).value
+    return func
+
+dirgha = convert(O.dirgha)
+guna = convert(O.guna)
+vrddhi = convert(O.vrddhi)
+iko_yan_aci = convert(O.al_tasya('ik', 'yaR'))
 
 def apply(state):
     editor = SoundEditor(state)
@@ -35,11 +49,11 @@ def ac_sandhi(x, y):
     # 6.1.101 akaH savarNe dIrghaH
     elif Sound(x).savarna(y):
         x = ''
-        y = Term(y).to_dirgha().value
+        y = dirgha(y)
 
     # 6.1.77 iko yaN aci
     elif x in Sounds('ik') and y in Sounds('ac'):
-        x = Term(x).to_yan().value
+        x = iko_yan_aci(x)
 
     # 6.1.78 eco 'yavAyAvaH
     elif x in Sounds('ec') and y in Sounds('ac'):
@@ -51,7 +65,7 @@ def ac_sandhi(x, y):
 
         # 6.1.87 Ad guNaH
         # 6.1.88 vRddhir eci
-        y = Term(y).vrddhi().value if y in Sounds('ec') else Term(y).guna().value
+        y = vrddhi(y) if y in Sounds('ec') else guna(y)
 
     return x, y
 

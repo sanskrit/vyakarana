@@ -175,3 +175,28 @@ def test_or_():
     ]
     verify(cases, lambda names: F.upadha(names) | F.al('hal'),
            term_tester)
+
+def test_not_():
+    cases = [
+        (['al'],
+            '',
+            'indra agni vAyu jAne agnO Bagavat Atman lih dfS',
+        ),
+        (['ac'],
+            'Bagavat Atman lih dfS',
+            'indra agni vAyu jAne agnO',
+        ),
+        (['hal'],
+            'indra agni vAyu jAne agnO',
+            'Bagavat Atman lih dfS',
+        ),
+        (['ec'],
+            'indra agni vAyu Bagavat Atman lih dfS',
+            'jAne agnO',
+        ),
+        (['Sar'],
+            'indra agni vAyu jAne agnO Bagavat Atman lih',
+            'dfS',
+        ),
+    ]
+    verify(cases, lambda x: ~F.al(x), term_tester)

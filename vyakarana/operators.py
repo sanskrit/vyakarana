@@ -145,7 +145,7 @@ def al_tasya(target, result):
         for i, L in enumerate(letters):
             if L in target:
                 letters[i] = Sound(L).closest(result)
-                if L in 'fF':
+                if L in 'fF' and letters[i] in Sounds('aR'):
                     letters[i] += 'r'
                 break
         return cur.set_value(''.join(letters))

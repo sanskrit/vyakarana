@@ -10,6 +10,7 @@
 
 
 import os
+from collections import OrderedDict
 from vyakarana import ashtadhyayi as A
 from vyakarana.upadesha import Dhatu, Vibhakti
 
@@ -31,28 +32,31 @@ def read_data(filename):
             yield line
 
 
-def load_paradigms(filename):
-    """Load verb paradigms from `filename`.
-
-    Paradigms are returned as 2-tuples containing the root string in
-    upadeśa and a list of words associated with the paradigm.
+def load_forms(filename):
+    """Load verb forms from `filename`.
 
     :param filename: the name of some test file.
     """
+    data = OrderedDict()
     for line in read_data(filename):
         items = line.split()
         dhatu = items[0]
-        forms = items[1:]
+        paradigm = items[1:]
 
+        if dhatu in data:
+            for i, items in enumerate(data[dhatu]):
+                items.update([paradigm[i]])
+        else:
+            data[dhatu] = [set(x.split('/')) if x != '_' else set() for x in paradigm]
+
+    for dhatu, paradigm in data.items():
         purusha = ['prathama', 'madhyama', 'uttama']
         vacana = ['ekavacana', 'dvivacana', 'bahuvacana']
 
-        for i, person_number in enumerate(forms):
-            if person_number == '_':
-                continue
-
-            person, number = purusha[i / 3], vacana[i % 3]
-            yield dhatu, set(person_number.split('/')), person, number
+        for i, forms in enumerate(paradigm):
+            if forms:
+                person, number = purusha[i / 3], vacana[i % 3]
+                yield dhatu, forms, person, number
 
 
 def verb_data(filename, la):
@@ -65,10 +69,11 @@ def verb_data(filename, la):
     :param la: the upadeśa name of one of the lakāras.
     """
     test_cases = []
-    for dhatu, expected, person, number in load_paradigms(filename):
+    ash = A.NewAshtadhyayi()
+    for dhatu, expected, person, number in load_forms(filename):
         d = Dhatu(dhatu)
         p = Vibhakti(la).add_samjna(person, number)
-        actual = set(A.derive([d, p]))
+        actual = set(ash.derive([d, p]))
         print actual
 
         test_cases.append((expected, actual))

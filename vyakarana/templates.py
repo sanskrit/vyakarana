@@ -103,14 +103,14 @@ class Rule(object):
                              fillvalue=None)
         return all(f(term, state, index) for f, term in pairs)
 
-    def yields(self, state):
-        for i in range(len(state)):
-            for result in self.apply(state, i):
+    def yields(self, state, index):
+        if self.matches(state, index):
+            for result in self.apply(state, index):
                 return True
         return False
 
     def apply(self, state, i):
-        yield
+        raise NotImplementedError
 
 
 class TasyaRule(Rule):
@@ -152,7 +152,7 @@ class TasyaRule(Rule):
             if self.name in cur.ops:
                 return
             # declined
-            yield state.swap(i, cur.add_op(self.name))
+            yield state.swap(i, cur.add_op(self.name), rule=self)
             # accepted
             result = result.data
 
@@ -169,7 +169,7 @@ class TasyaRule(Rule):
             new_cur = cur.tasya(result)
 
         if new_cur != cur:
-            yield state.swap(i, new_cur)
+            yield state.swap(i, new_cur, rule=self)
 
 
 class TasmatRule(Rule):
@@ -204,7 +204,8 @@ class StateRule(Rule):
         :param state: a :class:`State`
         :param index: the current index
         """
-        return self.operator(state, index)
+        for s in self.operator(state, index):
+            yield s.mark_rule(self, index)
 
 
 # Rule creators
