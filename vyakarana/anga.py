@@ -23,6 +23,13 @@ from sounds import Sounds
 from templates import tasya, state, Va, Vibhasha, Anyatarasyam
 
 
+# asiddhavat (6.4.22 - 6.4.175)
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# The effects of an asiddhavat rule are hidden from all other asiddhavat
+# rules. Asiddhavat rules are identified with the `locus` argument. By
+# convention, functions that define asiddhavat rules start with
+# `asiddhavat`.
+
 @tasya(None, 'anga', None, locus='asiddhavat')
 def asiddhavat_angasya_nalopa():
     return [
