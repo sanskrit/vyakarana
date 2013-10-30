@@ -64,17 +64,6 @@ class Ashtadhyayi(object):
                 if ra.matches(state, ia):
                     ra_states = list(ra.apply(state, ia))
                 if not ra_states:
-                    # if ra_states is None:
-                    #     if ra.name == '1.2.5':
-                    #         print 'failed match ---'
-                    #         for i in (0, 1):
-                    #             filt = ra.filters[i]
-                    #             cur = state[i]
-                    #             print cur, '<-', filt
-                    #             print '  ', filt(cur, state, i)
-                    #             print '  ', cur.data
-                    #             print '  ', cur.samjna
-                    #             print '  ', cur.lakshana
                     continue
 
                 # Verify this doesn't undo a prior rule.
@@ -114,7 +103,8 @@ class Ashtadhyayi(object):
             # No applicable rules; state is in its final form.
             else:
                 log.debug('yield: %s' % state)
-                return self.sandhi_asiddha(state)
+                for x in self.sandhi_asiddha(state):
+                    yield x
 
     def sandhi_asiddha(self, state):
         for s in sandhi.apply(state):

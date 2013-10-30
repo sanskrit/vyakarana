@@ -150,7 +150,7 @@ def tin_adesha():
     """3.4.77 lasya"""
 
     base_p_tin = 'tip tas Ji sip Tas Ta mip vas mas'.split()
-    lit_p_tin = 'Ral atus us Tal atus a Ral va ma'.split()
+    lit_p_tin = 'Ral atus us Tal aTus a Ral va ma'.split()
 
     return [
         ('3.4.79',

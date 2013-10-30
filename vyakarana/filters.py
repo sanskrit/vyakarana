@@ -176,8 +176,6 @@ def lakshana(*names):
     def func(term, state, index):
         if not term:
             return False
-        if term.raw in names:
-            return True
         try:
             return any(n in term.lakshana for n in names)
         except AttributeError:

@@ -51,13 +51,16 @@ def adesha(state):
 def sanadyanta_dhatu():
 
     def k(s):
-        return Krt(s).add_samjna('dhatu')
+        return Krt(s).add_samjna('dhatu').add_samjna('anga')
 
     return [
         ('3.1.28',
             # TODO: vicCi, pani
             ('gupU~', 'DUpa~', 'paRa~\\'), None,
-            k('Aya'))
+            k('Aya')),
+        ('3.1.30',
+            'kamu~\\', None,
+            k('Rin')),
     ]
 
 
