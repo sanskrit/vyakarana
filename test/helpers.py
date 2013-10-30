@@ -72,7 +72,7 @@ def verb_data(filename, la):
     :param la: the upadeśa name of one of the lakāras.
     """
     test_cases = []
-    ash = A.NewAshtadhyayi()
+    ash = A.Ashtadhyayi()
     for dhatu, expected, person, number in load_forms(filename):
         d = Dhatu(dhatu)
         p = Vibhakti(la).add_samjna(person, number)

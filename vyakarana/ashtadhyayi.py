@@ -110,9 +110,5 @@ class Ashtadhyayi(object):
 
     def sandhi_asiddha(self, state):
         for s in sandhi.apply(state):
-            yield ''.join(x.asiddha for x in s)
-
-
-class NewAshtadhyayi(Ashtadhyayi):
-
-    pass
+            for t in siddha.asiddha(s):
+                yield ''.join(x.asiddha for x in t)

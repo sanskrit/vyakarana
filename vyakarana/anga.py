@@ -330,7 +330,7 @@ def angasya_liti():
     return [
         ('7.4.10',
             None, F.samyogadi & F.adi('ft'), None,
-            O.guna),
+            O.force_guna),
         ('7.4.11',
             None, F.raw('f\\') | F.adi('Ft'), None,
             True),

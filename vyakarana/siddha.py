@@ -151,7 +151,6 @@ def asiddhavat(state):
 
 
 def asiddha(state):
-    print 'asiddha:', state
     state_value, result_value = (''.join(x.value for x in state), None)
     for result in asiddha_helper(state):
         result_value = ''.join(x.value for x in result)

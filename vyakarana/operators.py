@@ -190,3 +190,6 @@ def vrddhi(cur, state, index):
 
     return cur.set_value(''.join(letters))
 
+
+def force_guna(state, *args):
+    return guna(state, None, None)
