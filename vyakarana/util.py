@@ -88,6 +88,17 @@ class State(object):
     def __str__(self):
         return repr([x.asiddha for x in self.items])
 
+    def debug_printout(self):
+        data = []
+        append = data.append
+        append(str(self))
+        for item in self.items:
+            append('  %s' % item)
+            append('    %s' % (tuple(item.data),))
+            append('    %s' % sorted(item.samjna))
+        append('')
+        return '\n'.join(data)
+
     def _push_rule(self, rule, index):
         self.history.append(self.make_rule_key(rule, index))
 

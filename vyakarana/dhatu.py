@@ -55,8 +55,7 @@ def sanadyanta_dhatu():
 
     return [
         ('3.1.28',
-            # TODO: vicCi, pani
-            ('gupU~', 'DUpa~', 'paRa~\\'), None,
+            ('gupU~', 'DUpa~', 'vicCa~', 'paRa~\\', 'pana~\\'), None,
             k('Aya')),
         ('3.1.30',
             'kamu~\\', None,
@@ -101,10 +100,10 @@ def vikarana():
             F.gana('tanu~^'), None,
             k('u')),
         ('3.1.81',
-            F.gana('qukrI\Y'), None,
+            F.gana('qukrI\\Y'), None,
             k('SnA')),
         # TODO: ca
-        ('3.1.68',
+        ('3.1.82',
             stambhu_stumbhu, None,
             k('Snu')),
     ]

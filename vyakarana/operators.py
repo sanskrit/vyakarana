@@ -79,7 +79,12 @@ def ti(result):
 @parameterized
 def upadha(L):
     def func(cur, state, index):
-        return cur.upadha(L)
+        try:
+            value = cur.value[:-2] + L + cur.value[-1]
+            return cur.set_value(value)
+        except IndexError:
+            return cur
+
     return func
 
 

@@ -373,3 +373,9 @@ def auto(data):
             base_filter |= matcher
 
     return base_filter
+
+
+# Common filters
+# ~~~~~~~~~~~~~~
+
+knit = samjna('kit', 'Nit')

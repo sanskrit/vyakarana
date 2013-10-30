@@ -79,7 +79,11 @@ class Ashtadhyayi(object):
                 # Verify this isn't dominated by any other rules
                 # TODO
 
-                log.debug('  %s' % ra.name)
+                if ra.name == '6.4.112':
+                    log.debug(ra.debug_printout())
+                    log.debug(state.debug_printout())
+                for s in ra_states:
+                    log.debug('  %s : %s --> %s' % (ra.name, state, s))
                 return ra_states
 
     def derive(self, sequence):
@@ -96,8 +100,6 @@ class Ashtadhyayi(object):
             state = stack.pop()
             new_states = self.apply_next_rule(state)
             if new_states:
-                for s in new_states:
-                    log.debug('    %s --> %s' % (state, s))
                 stack.extend(new_states)
 
             # No applicable rules; state is in its final form.

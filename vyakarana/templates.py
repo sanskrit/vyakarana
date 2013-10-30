@@ -101,6 +101,9 @@ class Rule(object):
         class_name = self.__class__.__name__
         return '<%s(%s)>' % (class_name, self.name)
 
+    def apply(self, state, i):
+        raise NotImplementedError
+
     def matches(self, state, index):
         """
 
@@ -119,8 +122,17 @@ class Rule(object):
                 return True
         return False
 
-    def apply(self, state, i):
-        raise NotImplementedError
+    def debug_printout(self):
+        data = []
+        append = data.append
+        append('Rule %s' % self.name)
+        append('    Filters  :')
+        for f in self.filters:
+            append('           %r' % f)
+        append('    Operator : %r' % self.operator)
+        append('    Rank     : %r' % (self.rank,))
+        append('')
+        return '\n'.join(data)
 
 
 class TasyaRule(Rule):

@@ -25,14 +25,13 @@ from templates import tasya, state, Va, Vibhasha, Anyatarasyam
 
 @tasya(None, 'anga', None, locus='asiddhavat')
 def asiddhavat_angasya_nalopa():
-    return []
     return [
-        ('6.4.23',
-            None, 'Snam', None,
-            shnam_na_lopa),
+        # ('6.4.23',
+        #     None, 'Snam', None,
+        #     shnam_na_lopa),
         ('6.4.24',
-            None, None, ('kit', 'Nit'),
-            na_upadha_lopa)
+            None, ~F.samjna('idit') & F.al('hal') & F.upadha('Yam'), ('kit', 'Nit'),
+            O.upadha(''))
     ]
 
 
@@ -186,7 +185,7 @@ def angasya_pratyaya_adesha():
             'abhyasta', None, None,
             O.replace('J', 'at')),
         ('7.1.5',
-            ~F.al('at'), None, 'atmanepada',
+            ~F.al('at'), 'atmanepada', None,
             True)
     ]
 

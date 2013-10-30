@@ -24,7 +24,7 @@ class DataSpace(_DataSpace):
         for field in self._fields:
             if field in kw:
                 new[field] = prev = kw[field]
-            elif prev:
+            elif prev is not None:
                 new[field] = prev
         return self._replace(**new)
 

@@ -11,6 +11,23 @@
 from vyakarana.upadesha import *
 
 
+def test_dataspace():
+    d = DataSpace('A', 'A', 'A', 'A', 'A')
+    assert d == ('A',) * 5
+
+    db = d.replace(value='B')
+    assert db == ('A', 'A', 'B', 'B', 'B')
+
+    dc = db.replace(asiddhavat='C')
+    assert dc == ('A', 'A', 'B', 'C', 'C')
+
+    d_ = dc.replace(asiddhavat='')
+    assert d_ == ('A', 'A', 'B', '', '')
+
+    dd = d_.replace(asiddha='D')
+    assert dd == ('A', 'A', 'B', '', 'D')
+
+
 def test_upadesha_properties():
     t = Upadesha('gati')
     assert t

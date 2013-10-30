@@ -67,13 +67,15 @@ class Dhatupatha(object):
         with open(filename) as f:
             i = 0
             for line in f:
+                if line.startswith('#') or not line.strip():
+                    continue
                 gana, number, dhatu = line.strip().split(',')
                 self.all_dhatu.append(dhatu)
                 self.index_map[dhatu].append(i)
                 self.gana_map[i] = gana
                 i += 1
 
-    def dhatu_range(self, start, end=None):
+    def dhatu_list(self, start, end=None):
         """Get an inclusive list of of dhatus.
 
         :param start: the first dhatu in the list
@@ -104,7 +106,7 @@ class Dhatupatha(object):
             return self.all_dhatu[start_index:end_index]
 
     def dhatu_set(self, *args):
-        return frozenset(self.dhatu_range(*args))
+        return frozenset(self.dhatu_list(*args))
 
 
 DHATUPATHA = Dhatupatha('data/dhatupatha.csv')
