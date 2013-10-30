@@ -12,10 +12,11 @@
 """
 
 import logging
+from itertools import chain, islice, izip, izip_longest, repeat
 
 import filters as F
 from dhatupatha import DHATUPATHA as DP
-from itertools import chain, islice, izip, izip_longest, repeat
+from upadesha import Upadesha
 
 # New-style rules. Temporary.
 ALL_RULES = []
@@ -95,7 +96,7 @@ class Rule(object):
         self.operator = operator
         #: The relative strength of this rule. The higher the rank, the
         #: more powerful the rule.
-        self.rank = self.RULE_TYPE + max(f.rank for f in filters)
+        self.rank = (self.RULE_TYPE, max(f.rank for f in filters))
 
     def __repr__(self):
         class_name = self.__class__.__name__
@@ -213,7 +214,7 @@ class TasmatRule(Rule):
             inserted = result
 
         if inserted is not None:
-            yield state.insert(index + len(self.filters) - 1, inserted, rule=self)
+            yield state.insert(index + 1, inserted, rule=self)
 
 
 class SamjnaRule(TasyaRule):

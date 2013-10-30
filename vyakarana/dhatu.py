@@ -47,68 +47,53 @@ def adesha(state):
         yield state.swap(i, dhatu)
 
 
-# @tasmat(f.samjna('dhatu'), f.and_(f.samjna('tin'), f.samjna('sarvadhatuka')))
-def vikarana(dhatu, p):
+@tasmat('dhatu', F.samjna('tin') & F.samjna('sarvadhatuka'))
+def vikarana():
     """Vikarana for classes 1 through 10."""
 
-    gana_set = DP.gana_set(dhatu)
+    # 3.1.70 vā bhrāśabhlāśabhramukramuklamutrasitrutilaṣaḥ
+    bhrasha_bhlasha = ('wuBrASf~\\', 'wuBlASf~\\', 'Bramu~', 'kramu~',
+                     'klamu~', 'trasI~', 'truwa~', 'laza~^')
+    # 3.1.82 stambhustumbhuskambhuskumbhuskuñbhyaḥ śnuś ca
+    stambhu_stumbhu = ('sta\mBu~', 'stu\mBu~', 'ska\mBu~', 'sku\mBu~',
+                       'sku\Y')
+
+    def k(s):
+        return Krt(s).add_samjna('anga')
+
+    return [
+        ('3.1.68',
+            None, None,
+            k('Sap')),
+        ('3.1.69',
+            F.gana('divu~', 'gfDu~'), None,
+            k('Syan')),
+        ('3.1.70',
+            bhrasha_bhlasha, None,
+            True),
+        ('3.1.73',
+            F.gana('zu\\Y', 'kzI'), None,
+            k('Snu')),
+        ('3.1.77',
+            F.gana('tu\da~^', 'piSa~'), None,
+            k('Sa')),
+        ('3.1.78',
+            F.gana('ru\Di~^r', 'pfcI~'), None,
+            k('Snam')),
+        ('3.1.79',
+            F.gana('tanu~^', 'qukf\Y'), None,
+            k('u')),
+        ('3.1.81',
+            F.gana('qukrI\Y', 'graha~^'), None,
+            k('SnA')),
+        # TODO: ca
+        ('3.1.68',
+            stambhu_stumbhu, None,
+            k('Snu')),
+    ]
 
     def _yield(s):
         return Krt(s).add_samjna('anga')
-
-    # 3.1.68 kartari śap
-    if '1' in gana_set or '10' in gana_set:
-        yield _yield('Sap')
-
-    # 2.4.75 juhotyādibhyaḥ śluḥ
-    # TODO: move to proper section
-    if '3' in gana_set:
-        yield _yield('Slu~')
-
-    # 3.1.69 divādibhyaḥ śyan
-    if '4' in gana_set:
-        yield _yield('Syan')
-
-    # 3.1.70 vā bhrāśabhlāśabhramukramuklamutrasitrutilaṣaḥ
-    if dhatu.raw in ('wuBrASf~\\', 'wuBlASf~\\', 'Bramu~', 'kramu~',
-                     'klamu~', 'trasI~', 'truwa~', 'laza~^'):
-        yield _yield('Syan')
-
-    # 3.1.71 yaso 'nupasargAt
-
-    # 3.1.72 saMyasaz ca (TODO)
-
-    # 3.1.73 svādibhyaḥ śnuḥ
-    if '5' in gana_set:
-        yield _yield('Snu')
-
-    # 3.1.74 zruvaH zR ca
-
-    # 3.1.75 akSo 'nyatarasyAM
-
-    # 3.1.76 tanUkaraNe takSaH
-
-    # 3.1.77 tudādibhyaḥ śaḥ
-    if '6' in gana_set:
-        yield _yield('Sa')
-
-    # 3.1.78 rudhādhibhyaḥ śnam
-    if '7' in gana_set:
-        yield _yield('Snam')
-
-    # 3.1.79 tanādikṛñbhya uḥ
-    if '8' in gana_set:
-        yield _yield('u')
-
-    # 3.1.80 dhinvikRNvyor a ca
-
-    # 3.1.81 kryādibhyaḥ śnā
-    if '9' in gana_set:
-        yield _yield('SnA')
-
-    # 3.1.82 stambhustumbhuskambhuskumbhuskuñbhyaḥ śnuś ca
-    if dhatu.raw in ('sta\mBu~', 'stu\mBu~', 'ska\mBu~', 'sku\mBu~', 'sku\Y'):
-        yield _yield('Snu')
 
 
 def pada_options(dhatu):

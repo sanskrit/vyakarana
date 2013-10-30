@@ -250,7 +250,7 @@ def angasya_shyani():
     ]
 
 
-# @tasya(None, 'anga', F.Sit_adi)
+@tasya(None, 'anga', F.Sit_adi)
 def angasya_shiti():
     _78_roots = ['pA\\', 'GrA\\', 'DmA\\', 'zWA\\', 'mnA\\', 'dA\R',
                  'df\Si~r', 'f\\', 'sf\\', 'Sa\dx~', 'za\dx~']
@@ -262,7 +262,7 @@ def angasya_shiti():
             None, ('zWivu~', 'klamu~'), None,
             O.dirgha),
         ('7.3.76',
-            None, F.each('kramu~', 'parasmaipada'), None,
+            None, F.raw('kramu~') & F.samjna('parasmaipada'), None,
             True),
         ('7.3.77',
             None, ('izu~', 'ga\mx~', 'ya\ma~'), None,
@@ -305,6 +305,15 @@ def angasya_guna():
         ('7.3.86',
             None, puganta_laghupadha, sarva_ardha,
             True),
+    ]
+
+
+@tasya(None, 'anga', 'sarvadhatuka')
+def angasya_sarvadhatuke():
+    return [
+        ('7.3.101',
+            None, 'at', F.adi('yaY'),
+            O.dirgha)
     ]
 
 

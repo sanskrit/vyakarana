@@ -14,6 +14,7 @@
     :license: MIT and BSD
 """
 
+from dhatupatha import DHATUPATHA as DP
 from sounds import Sounds
 
 
@@ -153,6 +154,17 @@ def al(*names):
         return term and term.antya in sounds
 
     return func, FilterType.AL
+
+
+@parameterized
+def gana(start, end):
+    gana_set = DP.dhatu_set(start, end)
+
+    def func(term, state, index):
+        print term.raw, start, end, len(gana_set), term.raw in gana_set
+        return term.raw in gana_set
+
+    return func, FilterType.UPADESHA
 
 
 @parameterized
@@ -320,9 +332,10 @@ def auto(data):
         'f', 'ft',
         'ak', 'ik',
         'ac', 'ec',
-        'hal', 'Jal',
+        'yaY',
         'JaS', 'jaS',
         'car',
+        'hal', 'Jal',
     ])
     pratyaya_set = set([
         'luk', 'Slu', 'lup',

@@ -37,9 +37,8 @@ class Ashtadhyayi(object):
         dhatu_file = os.path.join(dirname, 'data', 'dhatupatha.csv')
         dhatupatha.DHATUPATHA.init(dhatu_file)
 
-        self.sorted_rules = sorted(ALL_RULES, key = lambda x: -x.rank)
+        self.sorted_rules = sorted(ALL_RULES, cmp = lambda x, y: cmp(y.rank, x.rank))
         self.rule_map = {x.name: x for x in ALL_RULES}
-
 
     def apply_next_rule(self, state):
         """Apply one rule and return a list of new states.
@@ -134,19 +133,19 @@ class NewAshtadhyayi(Ashtadhyayi):
                     ra_states = list(ra.apply(state, ia))
                 if not ra_states:
                     # if ra_states is None:
-                    #     log.debug('  SKIP %s (no match)' % ra)
-                    #     if ra.name == '7.4.11' and ia == 1:
-                    #         print ra.filters
-                    #         print ra.filters[0](state[0], state, 0)
-                    #         print ra.filters[1](state[1], state, 1)
-                    #         print ra.filters[2](state[2], state, 2)
-                    #         print [x.data for x in state]
-                    #         print [x.samjna for x in state]
-                    #         print [x.lakshana for x in state]
-                    # else:
-                    #     log.debug('  SKIP %s (no states)' % ra)
+                    #     if ra.name == '3.4.79' and ia == 1:
+                    #         print 'failed match ---'
+                    #         for i in (0, 1):
+                    #             filt = ra.filters[i]
+                    #             cur = state[i]
+                    #             print cur, '<-', filt
+                    #             print '  ', filt(cur, state, i)
+                    #             print '  ', cur.data
+                    #             print '  ', cur.samjna
+                    #             print '  ', cur.lakshana
                     continue
 
+                print 'candidate:', ra.name, ra.rank
                 # Verify this doesn't undo a prior rule.
                 nullifies_old = False
                 for rb_key in state.history:

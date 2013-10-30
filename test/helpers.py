@@ -39,13 +39,16 @@ def load_forms(filename):
     """
     data = OrderedDict()
     for line in read_data(filename):
-        items = line.split()
-        dhatu = items[0]
-        paradigm = items[1:]
+        tokens = line.split()
+        dhatu = tokens[0]
+        paradigm = tokens[1:]
 
         if dhatu in data:
             for i, items in enumerate(data[dhatu]):
-                items.update([paradigm[i]])
+                try:
+                    items.update([paradigm[i]])
+                except IndexError:
+                    break
         else:
             data[dhatu] = [set(x.split('/')) if x != '_' else set() for x in paradigm]
 
