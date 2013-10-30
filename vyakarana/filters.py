@@ -282,6 +282,11 @@ def allow_all(*args):
     return True
 
 
+@unparameterized
+def samyoga(term, *args):
+    hal = Sounds('hal')
+    return term and term.antya in hal and term.upadha in hal
+
 asavarna = placeholder
 ekac = placeholder
 each = placeholder

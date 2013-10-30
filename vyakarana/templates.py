@@ -70,6 +70,11 @@ class Rule(object):
     #: Rank of a rule that produces a specific form
     NIPATANA = 4
 
+    VIDHI = 0
+    ATIDESHA = 1
+    SAMJNA = 1
+    RULE_TYPE = VIDHI
+
     __slots__ = ('name', 'filters', 'operator', 'rank')
 
     def __init__(self, name, filters, operator):
@@ -85,7 +90,7 @@ class Rule(object):
         self.operator = operator
         #: The relative strength of this rule. The higher the rank, the
         #: more powerful the rule.
-        self.rank = max(f.rank for f in filters)
+        self.rank = self.RULE_TYPE + max(f.rank for f in filters)
 
     def __repr__(self):
         class_name = self.__class__.__name__
@@ -144,13 +149,9 @@ class TasyaRule(Rule):
     def apply(self, state, i):
         cur = state[i]
         result = self.operator
-        if result is None:
-            return
 
         # Optional substitution
         if isinstance(result, Option):
-            if self.name in cur.ops:
-                return
             # declined
             yield state.swap(i, cur.add_op(self.name), rule=self)
             # accepted
@@ -170,6 +171,41 @@ class TasyaRule(Rule):
 
         if new_cur != cur:
             yield state.swap(i, new_cur, rule=self)
+
+
+class SamjnaRule(TasyaRule):
+
+    """A saṃjñā rule.
+
+    For some locus ``(state, index)``, the rule applies filters starting
+    from ``state[index - 1]``. `self.operator` is a string that defines
+    the saṃjñā to add to the term.
+
+    Programmatically, this rule is a :class:`TasyaRule`.
+    """
+
+    RULE_TYPE = Rule.SAMJNA
+
+    def apply(self, state, i):
+        cur = state[i]
+        result = self.operator
+
+        # Optional substitution
+        if isinstance(result, Option):
+            if self.name in cur.ops:
+                return
+            # declined
+            yield state.swap(i, cur.add_op(self.name), rule=self)
+            # accepted
+            result = result.data
+
+        if result not in cur.samjna:
+            yield state.swap(i, cur.add_samjna(result))
+
+
+class AtideshaRule(SamjnaRule):
+
+    RULE_TYPE = Rule.ATIDESHA
 
 
 class TasmatRule(Rule):
@@ -290,6 +326,18 @@ def tasya(*base_filters, **kw):
         rules = fn()
         for name, filters, op in process_tuple_rules(rules, base_filters):
             rule = TasyaRule(name, filters, op)
+            ALL_RULES.append(rule)
+
+    return decorator
+
+
+def atidesha(*base_filters, **kw):
+    base_filters = [F.auto(f) for f in base_filters]
+
+    def decorator(fn):
+        rules = fn()
+        for name, filters, op in process_tuple_rules(rules, base_filters):
+            rule = AtideshaRule(name, filters, op)
             ALL_RULES.append(rule)
 
     return decorator

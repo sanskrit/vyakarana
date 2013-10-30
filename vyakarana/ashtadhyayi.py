@@ -14,8 +14,10 @@ import os
 
 import abhyasa
 import anga
+import atidesha
 import dhatu
 import dhatupatha
+import pratyaya
 import sandhi
 import siddha
 import vibhakti

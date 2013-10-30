@@ -10,8 +10,9 @@
 
 import filters as f
 import gana
-from classes import Upadesha as U, Pratyaya, Sounds
-from decorators import *
+from sounds import Sounds
+from upadesha import Upadesha as U, Pratyaya
+from templates import *
 from util import Rank
 
 TAS = Pratyaya('tAs').add_samjna('ardhadhatuka')
