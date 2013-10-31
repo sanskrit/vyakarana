@@ -179,18 +179,19 @@ class TasyaRule(Rule):
 
         # Operator substitution
         if hasattr(result, '__call__'):
-            new_cur = result(cur, state, index)
+            new_state = result(state, index)
 
-            if isinstance(new_cur, Option):
+            if isinstance(new_state, Option):
                 yield state.mark_rule(self, index)
-                new_cur = new_cur.data
+                new_state = new_state.data
+            new_state = new_state.mark_rule(self, index)
 
         # Other substitution
         else:
-            new_cur = cur.tasya(result)
+            new_state = state.swap(index, cur.tasya(result), rule=self)
 
-        if new_cur != cur:
-            yield state.swap(index, new_cur, rule=self)
+        if new_state != state:
+            yield new_state
 
 
 class SamjnaRule(TasyaRule):
@@ -206,21 +207,20 @@ class SamjnaRule(TasyaRule):
 
     RULE_TYPE = Rule.SAMJNA
 
-    def apply(self, state, i):
-        cur = state[i]
+    def apply(self, state, index):
+        cur = state[index]
         result = self.operator
 
         # Optional substitution
         if isinstance(result, Option):
-            if self.name in cur.ops:
-                return
-            # declined
-            yield state.swap(i, cur.add_op(self.name), rule=self)
-            # accepted
             result = result.data
+            # declined
+            yield state.swap(index, cur.remove_samjna(result), rule=self)
+            # accepted
+            yield state.swap(index, cur.add_samjna(result), rule=self)
 
-        if result not in cur.samjna:
-            yield state.swap(i, cur.add_samjna(result))
+        elif result not in cur.samjna:
+            yield state.swap(index, cur.add_samjna(result), rule=self)
 
 
 class AtideshaRule(SamjnaRule):

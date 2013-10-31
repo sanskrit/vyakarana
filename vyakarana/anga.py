@@ -354,7 +354,8 @@ def angasya_abhyasasya():
     shar = Sounds('Sar')
     khay = Sounds('Kay')
 
-    def _60_61(cur, state, index):
+    def _60_61(state, index):
+        cur = state[index]
         first_hal = first_ac = ''
         for i, L in enumerate(cur.value):
             if i == 1 and cur.value[0] in shar and L in khay:
@@ -365,7 +366,7 @@ def angasya_abhyasasya():
             elif not first_hal:
                 first_hal = L
 
-        return cur.set_value(first_hal + first_ac)
+        return state.swap(index, cur.set_value(first_hal + first_ac))
 
     return [
         ('7.4.59',

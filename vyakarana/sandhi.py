@@ -2,12 +2,12 @@ import operators as O
 from upadesha import Upadesha
 
 from sounds import Sound, Sounds
-from util import SoundEditor
+from util import SoundEditor, State
 
 
 def convert(op):
     def func(s):
-        return op(Upadesha(s + 'a~'), None, None).value
+        return op(State([Upadesha(s + 'a~')]), 0)[0].value
     return func
 
 dirgha = convert(O.dirgha)

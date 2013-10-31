@@ -20,16 +20,17 @@ TAS = Pratyaya('tAs').add_samjna('ardhadhatuka')
 
 @tasya('dhatu', 'pratyaya')
 def it():
-    def it_operator(cur, state, index):
+    def it_operator(state, index):
         dhatu = state[index - 1]
+        cur = state[index]
         status = it_status(dhatu, cur)
 
         if status == 'set':
-            return cur.tasya(U('iw'))
+            return state.swap(index, cur.tasya(U('iw')))
         elif status == 'vet':
-            return Va(cur.tasya(U('iw')))
+            return Va(state.swap(index, cur.tasya(U('iw'))))
         else:
-            return cur
+            return state.swap(index, cur)
 
     return [
         ('7.2.10 - 7.2.78',

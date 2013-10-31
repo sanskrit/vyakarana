@@ -73,6 +73,9 @@ class State(object):
 
         return self.items == other.items
 
+    def __ne__(self, other):
+        return not self == other
+
     def __getitem__(self, index):
         return self.items[index]
 

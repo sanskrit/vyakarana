@@ -53,6 +53,7 @@ class Upadesha(object):
             return True
         return (self.data == other.data and
                 self.samjna == other.samjna and
+                self.lakshana == other.lakshana and
                 self.ops == other.ops)
 
     def __ne__(self, other):

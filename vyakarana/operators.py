@@ -6,7 +6,7 @@
     Excluding paribhāṣā, all rules in the Ashtadhyayi describe a context
     then specify an operation to apply based on that context. Within
     this simulator, operations are defined using *operators*, which
-    take some :class:`Upadesha` and return a new :class:`Upadesha`.
+    take some (state, index) and return a new :class:`State`.
 
     This module defines a variety of parameterized and unparameterized
     operators.
@@ -34,8 +34,10 @@ def parameterized(fn):
 
 @parameterized
 def adi(result):
-    def func(cur, state, index):
-        return cur.tasya(result, adi=True)
+    def func(state, index):
+        cur = state[index]
+        cur = cur.tasya(result, adi=True)
+        return state.swap(index, cur)
     return func
 
 
@@ -43,7 +45,8 @@ def adi(result):
 def al_tasya(target, result):
     target = Sounds(target)
     result = Sounds(result)
-    def func(cur, state, index):
+    def func(state, index):
+        cur = state[index]
         letters = list(cur.value)
         for i, L in enumerate(letters):
             if L in target:
@@ -51,39 +54,46 @@ def al_tasya(target, result):
                 if L in 'fF' and letters[i] in Sounds('aR'):
                     letters[i] += 'r'
                 break
-        return cur.set_value(''.join(letters))
+        cur = cur.set_value(''.join(letters))
+        return state.swap(index, cur)
     return func
 
 
 @parameterized
 def replace(target, result):
-    def func(cur, state, index):
-        return cur.set_value(cur.value.replace(target, result))
+    def func(state, index):
+        cur = state[index]
+        cur = cur.set_value(cur.value.replace(target, result))
+        return state.swap(index, cur)
     return func
 
 
 @parameterized
 def ti(result):
     ac = Sounds('ac')
-    def func(cur, state, index):
+    def func(state, index):
+        cur = state[index]
         for i, L in enumerate(reversed(cur.value)):
             if L in ac:
                 break
 
         value = cur.value[:-(i+1)] + result
-        return cur.set_value(value)
+        cur = cur.set_value(value)
+        return state.swap(index, cur)
 
     return func
 
 
 @parameterized
 def upadha(L):
-    def func(cur, state, index):
+    def func(state, index):
+        cur = state[index]
         try:
             value = cur.value[:-2] + L + cur.value[-1]
-            return cur.set_value(value)
+            cur = cur.set_value(value)
+            return state.swap(index, cur)
         except IndexError:
-            return cur
+            return state
 
     return func
 
@@ -92,8 +102,10 @@ def upadha(L):
 def yathasamkhya(targets, results):
     print 'yathasamkha'
     converter = dict(zip(targets, results))
-    def func(cur, state, index):
-        return cur.set_raw(converter[cur.raw])
+    def func(state, index):
+        cur = state[index]
+        cur = cur.set_raw(converter[cur.raw])
+        return state.swap(index, cur)
     return func
 
 
@@ -101,7 +113,8 @@ def yathasamkhya(targets, results):
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 # Each function defines an operator.
 
-def dirgha(cur, state, index):
+def dirgha(state, index):
+    cur = state[index]
     converter = dict(zip('aiufx', 'AIUFX'))
     letters = list(cur.value)
     for i, L in enumerate(letters):
@@ -109,18 +122,21 @@ def dirgha(cur, state, index):
             letters[i] = converter[L]
             break
 
-    return cur.set_value(''.join(letters))
+    cur = cur.set_value(''.join(letters))
+    return state.swap(index, cur)
 
 
-def guna(cur, state, index):
+def guna(state, index, force=False):
+    cur = state[index]
     try:
         right = state[index + 1]
     except (IndexError, TypeError):
         right = None
 
     # 1.1.5 kGiti ca (na)
-    if right is not None and right.any_samjna('kit', 'Nit'):
-        return cur
+    if not force and right is not None and right.any_samjna('kit', 'Nit'):
+        cur = cur
+        return state.swap(index, cur)
 
     # 1.1.2 adeG guNaH
     # 1.1.3 iko guNavRddhI
@@ -133,10 +149,12 @@ def guna(cur, state, index):
                 letters[i] += 'r'
             break
 
-    return cur.set_value(''.join(letters)).add_samjna('guna')
+    cur = cur.set_value(''.join(letters)).add_samjna('guna')
+    return state.swap(index, cur)
 
 
-def hrasva(cur, state, index):
+def hrasva(state, index):
+    cur = state[index]
     converter = dict(zip('AIUFXeEoO', 'aiufxiiuu'))
     letters = list(cur.value)
     for i, L in enumerate(letters):
@@ -144,10 +162,12 @@ def hrasva(cur, state, index):
             letters[i] = converter[L]
             break
 
-    return cur.set_value(''.join(letters))
+    cur = cur.set_value(''.join(letters))
+    return state.swap(index, cur)
 
 
-def samprasarana(cur, state, index):
+def samprasarana(state, index):
+    cur = state[index]
     rev_letters = list(reversed(cur.value))
     for i, L in enumerate(rev_letters):
         # 1.1.45 ig yaNaH saMprasAraNAm
@@ -164,10 +184,12 @@ def samprasarana(cur, state, index):
     except IndexError:
         pass
 
-    return cur.set_value(''.join(reversed(rev_letters)))
+    cur = cur.set_value(''.join(reversed(rev_letters)))
+    return state.swap(index, cur)
 
 
-def vrddhi(cur, state, index):
+def vrddhi(state, index):
+    cur = state[index]
     try:
         right = state[index + 1]
     except (IndexError, TypeError):
@@ -175,7 +197,8 @@ def vrddhi(cur, state, index):
 
     # 1.1.5 kGiti ca (na)
     if right and right.any_samjna('kit', 'Nit'):
-        return cur
+        cur = cur
+        return state.swap(index, cur)
 
     # 1.1.1 vRddhir Adaic
     # 1.1.3 iko guNavRddhI
@@ -188,8 +211,9 @@ def vrddhi(cur, state, index):
                 letters[i] += 'r'
             break
 
-    return cur.set_value(''.join(letters))
+    cur = cur.set_value(''.join(letters))
+    return state.swap(index, cur)
 
 
-def force_guna(state, *args):
-    return guna(state, None, None)
+def force_guna(state, index):
+    return guna(state, index, force=True)
