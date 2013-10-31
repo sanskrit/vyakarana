@@ -8,7 +8,7 @@
     this simulator, a rule's context is defined using *filters*, which
     return a true or false value for a given term within some state.
 
-    This module defines a variety of parameterized and Filter.unparameterized
+    This module defines a variety of parameterized and unparameterized
     filters, as well as as some basic operators for combining filters.
 
     :license: MIT and BSD
@@ -29,14 +29,11 @@ class FilterType(object):
 
 class Filter(object):
 
-    """
-    A callable class that returns true or false.
+    """A callable class that returns true or false.
 
     The program uses :class:`Filter` objects in order to make use of
     ``&``, ``|``, and ``~``. These operators give us a terse way to
     create more complex conditions, e.g. ``al('hal') & upadha('a')``.
-
-    Additionally, using a class
     """
 
     CACHE = {}
@@ -86,12 +83,10 @@ class Filter(object):
 
     @classmethod
     def parameterized(cls, fn):
-        """Decorator for parameterized filters.
-
-        This creates :class:`Filter` objects automatically.
+        """Decorator constructor for parameterized filters.
 
         :param fn: a function factory. It accepts parameters and returns
-                   a parameterized function.
+                   a parameterized filter function.
         """
 
         cache = cls.CACHE
@@ -114,9 +109,7 @@ class Filter(object):
 
     @classmethod
     def unparameterized(cls, fn):
-        """Decorator for unparameterized filters.
-
-        This creates :class:`Filter` objects automatically.
+        """Decorator constructor for unparameterized filters.
 
         :param fn: some filter function.
         """
@@ -236,7 +229,7 @@ def value(*names):
 
 @Filter.parameterized
 def and_(*filters):
-    """Creates a filter that returns ``all(f(*args) for f in filters)``
+    """Create a filter that returns ``all(f(*args) for f in filters)``
 
     :param filters: a list of :class:`Filter`s.
     """
@@ -247,7 +240,7 @@ def and_(*filters):
 
 @Filter.parameterized
 def or_(*filters):
-    """Creates a filter that returns ``any(f(*args) for f in filters)``
+    """Create a filter that returns ``any(f(*args) for f in filters)``
 
     :param filters: a list of :class:`Filter`s.
     """
@@ -258,7 +251,7 @@ def or_(*filters):
 
 @Filter.parameterized
 def not_(filt):
-    """Creates a filter that returns ``not any(f(*args) for f in filters)``
+    """Create a filter that returns ``not any(f(*args) for f in filters)``
 
     :param filt: a :class:`Filter`.
     """
@@ -305,7 +298,7 @@ samyogapurva = placeholder
 # ~~~~~~~~~~~~~~~~
 
 def auto(data):
-    """Creates a filter to match the context specified by `data`.
+    """Create a filter to match the context specified by `data`.
 
     :param data:
     """

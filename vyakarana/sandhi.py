@@ -12,9 +12,9 @@ def convert(op):
     return func
 
 dirgha = O.dirgha.body
+iko_yan_aci = O.al_tasya('ik', 'yaR').body
 guna = convert(O.guna)
 vrddhi = convert(O.vrddhi)
-iko_yan_aci = convert(O.al_tasya('ik', 'yaR'))
 
 def apply(state):
     editor = SoundEditor(state)

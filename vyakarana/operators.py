@@ -6,7 +6,7 @@
     Excluding paribhāṣā, all rules in the Ashtadhyayi describe a context
     then specify an operation to apply based on that context. Within
     this simulator, operations are defined using *operators*, which
-    take some (state, index) and return a new :class:`State`.
+    take some (state, index) pair and return a new :class:`State`.
 
     This module defines a variety of parameterized and unparameterized
     operators.
@@ -35,8 +35,12 @@ class Operator(object):
 
     @classmethod
     def parameterized(cls, fn):
+        """Decorator constructor for parameterized operators.
+
+        :param fn: a function factory. It accepts parameters and returns
+                   a parameterized operator function.
+        """
         def wrapped(*args):
-            print args
             try:
                 name = '%s(%s)' % (fn.__name__, ', '.join(args))
             except TypeError:
@@ -47,6 +51,10 @@ class Operator(object):
 
     @classmethod
     def unparameterized(cls, fn):
+        """Decorator constructor for unparameterized operators.
+
+        :param fn: some operator function
+        """
         return cls(fn.__name__, fn)
 
 
@@ -54,7 +62,7 @@ class DataOperator(Operator):
 
     """An operator whose `body` modifies a term's data.
 
-    `body` accept a single string and returns a single string.
+    `body` accepts a single string and returns a single string.
     """
 
     def __call__(self, state, index, locus='value'):
@@ -76,59 +84,63 @@ def adi(result):
     return func
 
 
-@Operator.parameterized
+@DataOperator.parameterized
 def al_tasya(target, result):
     target = Sounds(target)
     result = Sounds(result)
-    def func(state, index):
-        cur = state[index]
-        letters = list(cur.value)
+    def func(value):
+        letters = list(value)
         for i, L in enumerate(letters):
             if L in target:
                 letters[i] = Sound(L).closest(result)
+                # 1.1.51 ur aṇ raparaḥ
                 if L in 'fF' and letters[i] in Sounds('aR'):
                     letters[i] += 'r'
                 break
-        cur = cur.set_value(''.join(letters))
-        return state.swap(index, cur)
+        return ''.join(letters)
     return func
 
 
-@Operator.parameterized
+@DataOperator.parameterized
 def replace(target, result):
-    def func(state, index):
-        cur = state[index]
-        cur = cur.set_value(cur.value.replace(target, result))
-        return state.swap(index, cur)
+    def func(value):
+        return value.replace(target, result)
     return func
 
 
-@Operator.parameterized
+@DataOperator.parameterized
 def ti(result):
+    """Create an operator that replaces the *ṭi* of some value.
+
+        1.1.64 aco 'ntyādi ṭi
+        The portion starting with the last vowel is called *ṭi*.
+
+    :param result: the replacement
+    """
     ac = Sounds('ac')
-    def func(state, index):
-        cur = state[index]
-        for i, L in enumerate(reversed(cur.value)):
+    def func(value):
+        for i, L in enumerate(reversed(value)):
             if L in ac:
                 break
-
-        value = cur.value[:-(i+1)] + result
-        cur = cur.set_value(value)
-        return state.swap(index, cur)
+        return value[:-(i+1)] + result
 
     return func
 
 
-@Operator.parameterized
-def upadha(L):
-    def func(state, index):
-        cur = state[index]
+@DataOperator.parameterized
+def upadha(result):
+    """Create an operator that replaces the *upadhā* of some value.
+
+        1.1.65 alo 'ntyāt pūrva upadhā
+        The letter before the last is called *upadhā*.
+
+    :param result: the replacement
+    """
+    def func(value):
         try:
-            value = cur.value[:-2] + L + cur.value[-1]
-            cur = cur.set_value(value)
-            return state.swap(index, cur)
+            return value[:-2] + result + value[-1]
         except IndexError:
-            return state
+            return value
 
     return func
 
