@@ -6,11 +6,12 @@ from util import SoundEditor, State
 
 
 def convert(op):
+    """A temporary fix to a deeper problem."""
     def func(s):
         return op(State([Upadesha(s + 'a~')]), 0)[0].value
     return func
 
-dirgha = convert(O.dirgha)
+dirgha = O.dirgha.body
 guna = convert(O.guna)
 vrddhi = convert(O.vrddhi)
 iko_yan_aci = convert(O.al_tasya('ik', 'yaR'))
