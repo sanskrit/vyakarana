@@ -1,11 +1,13 @@
 from vyakarana.upadesha import *
 import vyakarana.operators as o
+from vyakarana.util import State
 
 
 def verify(cases, operator):
     for original, expected in cases:
         term = Upadesha('a~').set_value(original)
-        assert operator(term, None, None).value == expected
+        state = State([term])
+        assert operator(state, 0)[0].value == expected
 
 
 def test_dirgha():
