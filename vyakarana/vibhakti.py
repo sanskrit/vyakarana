@@ -10,12 +10,12 @@
 
 import itertools
 
-import filters as f
-import operators as o
+import filters as F
+import operators as O
 import dhatu as D
 import util
 from upadesha import Vibhakti as V
-from templates import *
+from templates import state, tasya
 
 
 PADA = ['parasmaipada', 'atmanepada']
@@ -79,7 +79,7 @@ def label_by_group(terms, labels):
 
 def f_lakara(p, *a):
     return p is not None and 'vibhakti' in p.samjna and p.raw[0] == 'l'
-f_lakara = f.Filter(name='f_lakara', body=f_lakara, rank=Rule.UPADESHA)
+f_lakara = F.Filter(name='f_lakara', body=f_lakara, rank=F.FilterType.UPADESHA)
 
 def tin_key(samjna, pada=None):
     if pada:
@@ -154,15 +154,15 @@ def tin_adesha():
 
     return [
         ('3.4.79',
-            None, f.samjna('atmanepada') & f.samjna('wit'),
-            o.ti('e')),
+            None, F.samjna('atmanepada') & F.samjna('wit'),
+            O.ti('e')),
         ('3.4.80',
-            None, f.samjna('atmanepada') & f.samjna('wit') & f.raw('TAs'),
+            None, F.samjna('atmanepada') & F.samjna('wit') & F.raw('TAs'),
             'se'),
         ('3.4.81',
-            None, f.samjna('atmanepada') & f.raw('ta', 'Ja') & f.auto('li~w'),
-            o.yathasamkhya(['ta', 'Ja'], ['eS', 'irec'])),
+            None, F.samjna('atmanepada') & F.raw('ta', 'Ja') & F.auto('li~w'),
+            O.yathasamkhya(['ta', 'Ja'], ['eS', 'irec'])),
         ('3.4.82',
-            None, f.raw(*base_p_tin) & f.auto('parasmaipada') & f.auto('li~w'),
-            o.yathasamkhya(base_p_tin, lit_p_tin)),
+            None, F.raw(*base_p_tin) & F.auto('parasmaipada') & F.auto('li~w'),
+            O.yathasamkhya(base_p_tin, lit_p_tin)),
     ]
