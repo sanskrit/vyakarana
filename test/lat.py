@@ -12,6 +12,6 @@ import pytest
 from helpers import verb_data
 
 
-@pytest.mark.parametrize(('form', 'result_set'), verb_data('lat.csv', 'la~w'))
-def test_all(form, result_set):
-    assert form == result_set, '%s != %s' % (form, list(result_set))
+@pytest.mark.parametrize(('expected', 'actual'), verb_data('lat.csv', 'la~w'))
+def test_all(expected, actual):
+    assert expected == actual, '%s != %s' % (list(expected), list(actual))

@@ -293,7 +293,7 @@ def angasya_shiti():
             O.hrasva),
         ('7.3.82',
             None, 'YimidA~', None,
-            O.guna),
+            O.force_guna),
     ]
 
 
