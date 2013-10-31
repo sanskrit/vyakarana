@@ -47,6 +47,18 @@ def adesha(state):
         yield state.swap(i, dhatu)
 
 
+@tasya(None, F.raw('Sap'))
+def sap_lopa():
+    return [
+        ('2.4.71',
+            F.gana('a\da~'), None,
+            'lu~k'),
+        ('2.4.74',
+            F.gana('hu\\'), None,
+            'Slu~')
+    ]
+
+
 @tasmat('dhatu', 'tin')
 def sanadyanta_dhatu():
 

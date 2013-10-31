@@ -77,6 +77,7 @@ class Rule(object):
     #: Rank of an extension rule. This simulation treats these the same
     #: way as designation rules.
     ATIDESHA = 1
+    PARIBHASHA = 1
     #: The current rule type, which is used to create the rule rank.
     RULE_TYPE = VIDHI
 
@@ -192,6 +193,41 @@ class TasyaRule(Rule):
             yield state.swap(index, new_cur, rule=self)
 
 
+class SamjnaRule(TasyaRule):
+
+    """A saṃjñā rule.
+
+    For some locus ``(state, index)``, the rule applies filters starting
+    from ``state[index - 1]``. `self.operator` is a string that defines
+    the saṃjñā to add to the term.
+
+    Programmatically, this rule is a :class:`TasyaRule`.
+    """
+
+    RULE_TYPE = Rule.SAMJNA
+
+    def apply(self, state, i):
+        cur = state[i]
+        result = self.operator
+
+        # Optional substitution
+        if isinstance(result, Option):
+            if self.name in cur.ops:
+                return
+            # declined
+            yield state.swap(i, cur.add_op(self.name), rule=self)
+            # accepted
+            result = result.data
+
+        if result not in cur.samjna:
+            yield state.swap(i, cur.add_samjna(result))
+
+
+class AtideshaRule(SamjnaRule):
+
+    RULE_TYPE = Rule.ATIDESHA
+
+
 class TasmatRule(Rule):
 
     """An insertion rule.
@@ -228,40 +264,6 @@ class TasmatRule(Rule):
             yield state.insert(index + 1, inserted, rule=self)
 
 
-class SamjnaRule(TasyaRule):
-
-    """A saṃjñā rule.
-
-    For some locus ``(state, index)``, the rule applies filters starting
-    from ``state[index - 1]``. `self.operator` is a string that defines
-    the saṃjñā to add to the term.
-
-    Programmatically, this rule is a :class:`TasyaRule`.
-    """
-
-    RULE_TYPE = Rule.SAMJNA
-
-    def apply(self, state, i):
-        cur = state[i]
-        result = self.operator
-
-        # Optional substitution
-        if isinstance(result, Option):
-            if self.name in cur.ops:
-                return
-            # declined
-            yield state.swap(i, cur.add_op(self.name), rule=self)
-            # accepted
-            result = result.data
-
-        if result not in cur.samjna:
-            yield state.swap(i, cur.add_samjna(result))
-
-
-class AtideshaRule(SamjnaRule):
-
-    RULE_TYPE = Rule.ATIDESHA
-
 
 class StateRule(Rule):
 
@@ -282,6 +284,11 @@ class StateRule(Rule):
         """
         for s in self.operator(state, index):
             yield s.mark_rule(self, index)
+
+
+class ParibhashaRule(StateRule):
+
+    RULE_TYPE = Rule.PARIBHASHA
 
 
 # Rule creators
@@ -336,6 +343,21 @@ def process_tuple_rules(rules, base_filters):
         prev_name, prev_filters, prev_result = name, filters, result
 
 
+# Rule decorators
+# ~~~~~~~~~~~~~~~
+
+def make_rule_decorator(cls, *base_filters, **kw):
+    base_filters = [F.auto(f) for f in base_filters]
+
+    def decorator(fn):
+        rules = fn()
+        for name, filters, op in process_tuple_rules(rules, base_filters):
+            rule = cls(name, filters, op)
+            ALL_RULES.append(rule)
+
+    return decorator
+
+
 def tasya(*base_filters, **kw):
     """Decorator for a function that returns a list of tuple rules. Each
     tuple defines a substitution.
@@ -360,42 +382,22 @@ def tasya(*base_filters, **kw):
     :param base_filters: a list of objects, each of which is sent to
                          `filters.auto`.
     """
-    base_filters = [F.auto(f) for f in base_filters]
-
-    def decorator(fn):
-        rules = fn()
-        for name, filters, op in process_tuple_rules(rules, base_filters):
-            rule = TasyaRule(name, filters, op)
-            ALL_RULES.append(rule)
-
-    return decorator
+    return make_rule_decorator(TasyaRule, *base_filters, **kw)
 
 
 def atidesha(*base_filters, **kw):
-    base_filters = [F.auto(f) for f in base_filters]
-
-    def decorator(fn):
-        rules = fn()
-        for name, filters, op in process_tuple_rules(rules, base_filters):
-            rule = AtideshaRule(name, filters, op)
-            ALL_RULES.append(rule)
-
-    return decorator
+    return make_rule_decorator(AtideshaRule, *base_filters, **kw)
 
 
 def tasmat(*base_filters, **kw):
-    base_filters = [F.auto(f) for f in base_filters]
-
-    def decorator(fn):
-        rules = fn()
-        for name, filters, op in process_tuple_rules(rules, base_filters):
-            rule = TasmatRule(name, filters, op)
-            ALL_RULES.append(rule)
-
-    return decorator
+    return make_rule_decorator(TasmatRule, *base_filters, **kw)
 
 
-def state(*filters):
+def paribhasha(*base_filters, **kw):
+    return make_rule_decorator(ParibhashaRule, *base_filters, **kw)
+
+
+def state(*base_filters, **kw):
     """Decorator for a function that returns a list of tuple rules. Each
     tuple defines a state transformation.
 
@@ -417,12 +419,4 @@ def state(*filters):
     :param base_filters: a list of objects, each of which is sent to
                          `filters.auto`.
     """
-    base_filters = [F.auto(f) for f in filters]
-
-    def decorator(fn):
-        rules = fn()
-        for name, filters, op in process_tuple_rules(rules, base_filters):
-            rule = StateRule(name, filters, op)
-            ALL_RULES.append(rule)
-
-    return decorator
+    return make_rule_decorator(StateRule, *base_filters, **kw)

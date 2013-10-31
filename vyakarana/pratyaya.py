@@ -186,7 +186,7 @@ def it_status(anga, p):
 
     # thal (anit, vet)
     # ----------------
-    if p.value == 'Ta':
+    if p.raw == 'Tal':
         # 7.2.61 - 7.2.63 is a confusing set of rules. As far as I can
         # tell, this is the correct interpretation:
 

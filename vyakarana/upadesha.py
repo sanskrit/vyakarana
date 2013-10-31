@@ -212,6 +212,11 @@ class Upadesha(object):
         samjna = samjna.union([x + 'it' for x in it])
         return clean, samjna
 
+    def add_lakshana(self, *names):
+        return self.copy(
+            lakshana=self.lakshana.union(names)
+        )
+
     def add_samjna(self, *names):
         return self.copy(
             samjna=self.samjna.union(names)
@@ -219,6 +224,11 @@ class Upadesha(object):
 
     def any_samjna(self, *args):
         return any(a in self.samjna for a in args)
+
+    def remove_samjna(self, *names):
+        return self.copy(
+            samjna=self.samjna.difference(names)
+        )
 
     def set_raw(self, raw):
         clean, it_samjna = self._parse_it(raw)
@@ -271,8 +281,12 @@ class Upadesha(object):
 
         # 1.1.47 mid aco 'ntyAt paraH
         if 'mit' in other.samjna:
-            ti = self.ti().value
-            c = self.ti(ti[0] + other.value + ti[1:])
+            ac = Sounds('ac')
+            for i, L in enumerate(reversed(value)):
+                if L in ac:
+                    break
+            value = value[:-i] + other.value + value[-i:]
+            return self.set_value(value).remove_samjna('dhatu')
 
         # 1.1.46 Adyantau Takitau
         elif 'kit' in other.samjna:
@@ -287,12 +301,10 @@ class Upadesha(object):
         # 1.1.53 Gic ca
         elif len(other.value) == 1 or 'Nit' in other.samjna:
             c.value = self.value[:-1] + other.value
-            c.parts.append(other)
 
         # 1.1.55 anekAlSit sarvasya
         elif 'S' in other.it or len(other.value) > 1:
             c.value = other.value
-            c.parts = [other]
 
         else:
             raise NotImplementedError
@@ -346,7 +358,7 @@ class Pratyaya(Upadesha):
 
         # 1.1.__ pratyayasya lukzlulupaH
         if self.value in ('lu~k', 'Slu~', 'lu~p'):
-            self.value = ''
+            self.data = self.data.replace(raw=self.value, clean='')
 
     def _parse_it(self, value):
         return Upadesha._parse_it(self, value, pratyaya=True)

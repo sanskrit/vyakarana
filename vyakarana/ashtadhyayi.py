@@ -17,6 +17,7 @@ import anga
 import atidesha
 import dhatu
 import dhatupatha
+import paribhasha
 import pratyaya
 import sandhi
 import siddha
@@ -79,9 +80,6 @@ class Ashtadhyayi(object):
                 # Verify this isn't dominated by any other rules
                 # TODO
 
-                if ra.name == '6.4.112':
-                    log.debug(ra.debug_printout())
-                    log.debug(state.debug_printout())
                 for s in ra_states:
                     log.debug('  %s : %s --> %s' % (ra.name, state, s))
                 return ra_states

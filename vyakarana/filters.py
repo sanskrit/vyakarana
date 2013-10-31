@@ -161,7 +161,7 @@ def gana(start, end=None):
     gana_set = DP.dhatu_set(start, end)
 
     def func(term, state, index):
-        return term.raw in gana_set
+        return term and term.raw in gana_set
 
     return func, FilterType.UPADESHA
 

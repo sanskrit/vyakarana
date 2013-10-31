@@ -18,7 +18,6 @@
 
 import filters as F
 import operators as O
-from sounds import Sounds
 from templates import state
 from upadesha import Upadesha
 
@@ -40,14 +39,14 @@ def dvirvacana():
         # TODO: why stated as abhyasa?
         ('6.1.8',
             ~F.samjna('abhyasta'), 'li~w',
-        do_dvirvacana),
+            do_dvirvacana),
         ('6.1.9',
             True, ('san', 'yaN'),
-        True),
+            True),
         ('6.1.10',
-            True, 'Slu~',
-        True),
+            True, F.lakshana('Slu~'),
+            True),
         ('6.1.11',
             True, 'caN',
-        True),
+            True),
     ]

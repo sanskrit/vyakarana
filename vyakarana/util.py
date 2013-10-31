@@ -96,6 +96,7 @@ class State(object):
             append('  %s' % item)
             append('    %s' % (tuple(item.data),))
             append('    %s' % sorted(item.samjna))
+            append('    %s' % sorted(item.lakshana))
         append('')
         return '\n'.join(data)
 

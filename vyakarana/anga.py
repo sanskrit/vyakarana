@@ -318,7 +318,7 @@ def angasya_guna():
             None, 'jAgf', ~F.samjna('vi', 'ciR', 'Ral', 'Nit'),
             True),
         ('7.3.86',
-            None, puganta_laghupadha, sarva_ardha,
+            None, puganta_laghupadha & F.upadha('ik'), sarva_ardha,
             True),
     ]
 
