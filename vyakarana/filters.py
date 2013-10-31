@@ -8,7 +8,7 @@
     this simulator, a rule's context is defined using *filters*, which
     return a true or false value for a given term within some state.
 
-    This module defines a variety of parameterized and unparameterized
+    This module defines a variety of parameterized and Filter.unparameterized
     filters, as well as as some basic operators for combining filters.
 
     :license: MIT and BSD
@@ -16,10 +16,6 @@
 
 from dhatupatha import DHATUPATHA as DP
 from sounds import Sounds
-
-
-#: Used to cache parameterized filters
-FILTER_CACHE = {}
 
 
 class FilterType(object):
@@ -42,6 +38,8 @@ class Filter(object):
 
     Additionally, using a class
     """
+
+    CACHE = {}
 
     def __init__(self, name, body, rank):
         #: A unique name for this filter
@@ -86,130 +84,129 @@ class Filter(object):
         """
         return or_(self, other)
 
+    @classmethod
+    def parameterized(cls, fn):
+        """Decorator for parameterized filters.
 
-def parameterized(fn):
-    """
-    Decorator for parameterized filters. This creates :class:`Filter`
-    objects automatically.
+        This creates :class:`Filter` objects automatically.
 
-    :param fn: the function factory. It accepts parameters and returns
-               a parameterized function.
-    """
-    cache = FILTER_CACHE
+        :param fn: a function factory. It accepts parameters and returns
+                   a parameterized function.
+        """
 
-    def wrapped(*names):
-        # Create ``name``
-        try:
-            if hasattr(names[0], '__call__'):
-                params = ', '.join(f.name for f in names)
-                name = "%s(%s)" % (fn.__name__, params)
-            else:
-                name = "%s(%s)" % (fn.__name__, ', '.join(names))
-        except IndexError:
-            name = "%s()" % fn.__name__
-        name = name.replace('_', '')
+        cache = cls.CACHE
+        def wrapped(*params):
+            try:
+                if hasattr(params[0], '__call__'):
+                    param_str = ', '.join(f.name for f in params)
+                    name = "%s(%s)" % (fn.__name__, param_str)
+                else:
+                    name = "%s(%s)" % (fn.__name__, ', '.join(params))
+            except IndexError:
+                name = "%s()" % fn.__name__
+            name = name.replace('_', '')
 
-        if name not in cache:
-            body, rank = fn(*names)
-            cache[name] = Filter(name=name, body=body, rank=rank)
-        return cache[name]
-    return wrapped
+            if name not in cache:
+                body, rank = fn(*params)
+                cache[name] = cls(name=name, body=body, rank=rank)
+            return cache[name]
+        return wrapped
+
+    @classmethod
+    def unparameterized(cls, fn):
+        """Decorator for unparameterized filters.
+
+        This creates :class:`Filter` objects automatically.
+
+        :param fn: some filter function.
+        """
+        return cls(name=fn.__name__, body=fn, rank=FilterType.UNKNOWN)
 
 
-def unparameterized(fn):
-    """
-    Decorator for unparameterized filters. This creates :class:`Filter`
-    objects automatically.
+class TermFilter(Filter):
 
-    :param fn: some filter function.
-    """
-    return Filter(name=fn.__name__, body=fn, rank=FilterType.UNKNOWN)
+    def __call__(self, term, state, index):
+        return term and self.body(term)
 
 
 # Parameterized filters
 # ~~~~~~~~~~~~~~~~~~~~~
 # Each function accepts arbitrary arguments and returns a body and rank.
 
-@parameterized
+@TermFilter.parameterized
 def adi(*names):
     """Filter on the sounds at the beginning of the term.
 
     :param names: a list of sounds
     """
     sounds = Sounds(*names)
-    def func(term, state, index):
-        return term and term.adi in sounds
+    def func(term):
+        return term.adi in sounds
 
     return func, FilterType.AL
 
 
-@parameterized
+@TermFilter.parameterized
 def al(*names):
     """Filter on the sounds at the end of the term.
 
     :param names: a list of sounds
     """
     sounds = Sounds(*names)
-    def func(term, state, index):
-        return term and term.antya in sounds
+    def func(term):
+        return term.antya in sounds
 
     return func, FilterType.AL
 
 
-@parameterized
+@TermFilter.parameterized
 def gana(start, end=None):
     gana_set = DP.dhatu_set(start, end)
-
-    def func(term, state, index):
-        return term and term.raw in gana_set
+    def func(term):
+        return term.raw in gana_set
 
     return func, FilterType.UPADESHA
 
 
-@parameterized
+@TermFilter.parameterized
 def lakshana(*names):
     """Filter on the ``raw`` property of the term, as well as `lakshana`.
 
     :param names: a list of raw values
     """
     names = frozenset(names)
-    def func(term, state, index):
-        if not term:
-            return False
-        try:
-            return any(n in term.lakshana for n in names)
-        except AttributeError:
-            return False
+    def func(term):
+        return any(n in term.lakshana for n in names)
 
     return func, FilterType.LAKSHANA
 
 
-@parameterized
+@TermFilter.parameterized
 def raw(*names):
     """Filter on the ``raw`` property of the term.
 
     :param names: a list of raw values
     """
     names = frozenset(names)
-    def func(term, state, index):
-        return term is not None and term.raw in names
+    def func(term):
+        return term.raw in names
 
     return func, FilterType.UPADESHA
 
 
-@parameterized
+@TermFilter.parameterized
 def samjna(*names):
     """Filter on the ``samjna`` property of the term.
 
     :param names: a list of samjnas
     """
-    def func(term, state, index):
-        return term is not None and any(n in term.samjna for n in names)
+    def func(term):
+        return any(n in term.samjna for n in names)
 
     return func, FilterType.SAMJNA
 
 
-@parameterized
+@TermFilter.parameterized
 def upadha(*names):
     """Filter on the penultimate letter of the term.
 
@@ -218,26 +215,26 @@ def upadha(*names):
     :param names:
     """
     sounds = Sounds(*names)
-    def func(term, state, index):
-        return term is not None and term.upadha in sounds
+    def func(term):
+        return term.upadha in sounds
 
     return func, FilterType.AL
 
 
-@parameterized
+@TermFilter.parameterized
 def value(*names):
     """Filter on the ``value`` property of the term.
 
     :param names: a list of values
     """
     names = frozenset(names)
-    def func(term, state, index):
-        return term is not None and term.value in names
+    def func(term):
+        return term.value in names
 
     return func, FilterType.VALUE
 
 
-@parameterized
+@Filter.parameterized
 def and_(*filters):
     """Creates a filter that returns ``all(f(*args) for f in filters)``
 
@@ -247,7 +244,8 @@ def and_(*filters):
         return all(f(term, state, index) for f in filters)
     return func, max(x.rank for x in filters)
 
-@parameterized
+
+@Filter.parameterized
 def or_(*filters):
     """Creates a filter that returns ``any(f(*args) for f in filters)``
 
@@ -258,7 +256,7 @@ def or_(*filters):
     return func, min(x.rank for x in filters)
 
 
-@parameterized
+@Filter.parameterized
 def not_(filt):
     """Creates a filter that returns ``not any(f(*args) for f in filters)``
 
@@ -274,24 +272,24 @@ def not_(filt):
 # ~~~~~~~~~~~~~~~~~~~~~~~
 # Each function defines a filter body.
 
-@unparameterized
+@Filter.unparameterized
 def Sit_adi(term, *args):
     return term is not None and term.raw and term.raw[0] == 'S'
 
 
-@unparameterized
+@Filter.unparameterized
 def placeholder(*args):
     """Matches nothing."""
     return False
 
 
-@unparameterized
+@Filter.unparameterized
 def allow_all(*args):
     """Matches everything."""
     return True
 
 
-@unparameterized
+@Filter.unparameterized
 def samyoga(term, *args):
     hal = Sounds('hal')
     return term and term.antya in hal and term.upadha in hal

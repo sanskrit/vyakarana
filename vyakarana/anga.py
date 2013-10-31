@@ -300,10 +300,10 @@ def angasya_shiti():
 @tasya(None, 'anga', None)
 def angasya_guna():
 
-    @F.unparameterized
-    def puganta_laghupadha(term, *args):
+    @F.TermFilter.unparameterized
+    def puganta_laghupadha(term):
         # TODO: puganta
-        return term and term.upadha in Sounds('at it ut ft xt')
+        return term.upadha in Sounds('at it ut ft xt')
 
     sarva_ardha = ('sarvadhatuka', 'ardhadhatuka')
 
