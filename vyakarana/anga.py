@@ -339,7 +339,7 @@ def angasya_liti():
             None, F.samyogadi & F.adi('ft'), None,
             O.force_guna),
         ('7.4.11',
-            None, F.raw('f\\') | F.adi('Ft'), None,
+            None, F.raw('f\\') | F.al('Ft'), None,
             True),
         # TODO: va,
         ('7.4.12',

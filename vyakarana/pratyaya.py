@@ -93,7 +93,7 @@ def it_status(anga, p):
     # When followed by liT, only the roots above are aniT. Therefore,
     # any other root is denied 'aniT' status.
     if 'li~w' in p.lakshana:
-        if anga.value in gana.KRADI:
+        if anga.clean in gana.KRADI:
             status = 'anit'
             rank = Rank.UPADESHA
         elif status == 'anit':
