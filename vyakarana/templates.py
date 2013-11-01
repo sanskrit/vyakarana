@@ -36,6 +36,7 @@ class Option(object):
     def __repr__(self):
         return '<%s(%s)>' % self.__class__.__name__, repr(self.data)
 
+
 class Anyatarasyam(Option):
     """Wrapper for a returned result that is indifferently accepted."""
 
@@ -191,7 +192,8 @@ class TasyaRule(Rule):
 
         # Other substitution
         else:
-            new_state = state.swap(index, cur.tasya(result), rule=self)
+            new_state = state.swap(index, cur.tasya(result, locus=self.locus),
+                                   rule=self)
 
         if new_state != state:
             yield new_state

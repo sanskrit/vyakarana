@@ -70,7 +70,7 @@ class DataOperator(Operator):
         _input = cur.value
         output = self.body(_input)
         if output != _input:
-            return state.swap(index, cur.set_value(output))
+            return state.swap(index, cur.set_at(locus, output))
         else:
             return state
 

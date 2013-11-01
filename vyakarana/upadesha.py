@@ -273,7 +273,7 @@ class Upadesha(object):
                 value = other.value + value[1:]
             except AttributeError:
                 value = other + value[1:]
-            return self.set_value(value)
+            return self.set_at(locus, value)
 
         if isinstance(other, basestring):
             # 1.1.52 alo 'ntyasya
@@ -282,13 +282,13 @@ class Upadesha(object):
                 value = value[:-1] + other
             else:
                 value = other
-            return self.set_value(value)
+            return self.set_at(locus, value)
 
         if not hasattr(other, 'value'):
             # 1.1.50 sthAne 'ntaratamaH
             last = Sound(self.antya).closest(other)
             value = value[:-1] + last
-            return self.set_value(value)
+            return self.set_at(locus, value)
 
         # 1.1.47 mid aco 'ntyAt paraH
         if 'mit' in other.samjna:
@@ -297,16 +297,16 @@ class Upadesha(object):
                 if L in ac:
                     break
             value = value[:-i] + other.value + value[-i:]
-            return self.set_value(value).remove_samjna('dhatu')
+            return self.set_at(locus, value)
 
         # 1.1.46 Adyantau Takitau
         elif 'kit' in other.samjna:
             value += other.value
-            return self.set_value(value)
+            return self.set_at(locus, value)
 
         elif 'wit' in other.samjna:
             value = other.value + value
-            return self.set_value(value)
+            return self.set_at(locus, value)
 
         # 1.1.52 alo 'ntyasya
         # 1.1.53 Gic ca
