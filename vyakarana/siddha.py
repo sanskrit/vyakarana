@@ -151,9 +151,9 @@ def asiddhavat(state):
 
 
 def asiddha(state):
-    state_value, result_value = (''.join(x.value for x in state), None)
+    state_value, result_value = (''.join(x.asiddha for x in state), None)
     for result in asiddha_helper(state):
-        result_value = ''.join(x.value for x in result)
+        result_value = ''.join(x.asiddha for x in result)
         if result_value == state_value:
             yield state
             return

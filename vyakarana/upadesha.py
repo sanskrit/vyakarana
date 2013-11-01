@@ -235,6 +235,8 @@ class Upadesha(object):
             return self.set_value(value)
         elif locus == 'asiddhavat':
             return self.set_asiddhavat(value)
+        elif locus == 'asiddha':
+            return self.set_asiddha(value)
         else:
             raise NotImplementedError
 

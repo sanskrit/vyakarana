@@ -144,8 +144,9 @@ class State(object):
 
 class SoundEditor(object):
 
-    def __init__(self, state):
+    def __init__(self, state, locus='asiddha'):
         self.state = state
+        self.locus = locus
         self.data = [list(term.asiddha) for term in state]
 
         self.indices = []
@@ -166,7 +167,7 @@ class SoundEditor(object):
         new_terms = []
         for i, term in enumerate(state):
             new_value = ''.join(L for L in self.data[i])
-            new_term = self.state[i].set_value(new_value)
+            new_term = self.state[i].set_at(self.locus, new_value)
             new_terms.append(new_term)
 
         return state.replace_all(new_terms)
