@@ -75,6 +75,8 @@ def asiddhavat_angasya_aci():
         else:
             return state.swap(index, cur.tasya(Upadesha('uva~N'), locus=locus))
 
+    gama_hana = ('ga\\mx~', 'ha\\na~', 'janI~\\', 'Kanu~^', 'Gasx~')
+
     return [
         ('6.4.77',
             None, F.auto(('Snu', 'dhatu', 'BrU')) & F.al('i u'), None,
@@ -108,6 +110,9 @@ def asiddhavat_angasya_aci():
         ('6.4.89',
             None, 'goh', None,
             O.upadha('Ut')),
+        ('6.4.98',
+            None, gama_hana, F.knit & ~F.raw('aN'),
+            O.upadha(''))
     ]
 
 
