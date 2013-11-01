@@ -231,6 +231,17 @@ class Upadesha(object):
             samjna=self.samjna.difference(names)
         )
 
+    def set_at(self, locus, value):
+        if locus == 'raw':
+            return self.set_raw(value)
+        elif locus == 'value':
+            return self.set_value(value)
+        elif locus == 'asiddhavat':
+            return self.set_asiddhavat(value)
+        else:
+            raise NotImplementedError
+
+
     def set_raw(self, raw):
         clean, it_samjna = self._parse_it(raw)
         samjna = self.samjna | it_samjna
@@ -249,7 +260,7 @@ class Upadesha(object):
     def set_asiddha(self, asiddha):
         return self.copy(data=self.data.replace(asiddha=asiddha))
 
-    def tasya(self, other, adi=False):
+    def tasya(self, other, locus='value', adi=False):
         """
         Perform a substitution according to the normal rules.
 
@@ -301,7 +312,8 @@ class Upadesha(object):
         # 1.1.52 alo 'ntyasya
         # 1.1.53 Gic ca
         elif len(other.value) == 1 or 'Nit' in other.samjna:
-            c.value = self.value[:-1] + other.value
+            value = value[:-1] + other.value
+            return self.set_at(locus, value)
 
         # 1.1.55 anekAlSit sarvasya
         elif 'S' in other.it or len(other.value) > 1:

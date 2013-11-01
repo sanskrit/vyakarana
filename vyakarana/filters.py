@@ -265,9 +265,9 @@ def not_(filt):
 # ~~~~~~~~~~~~~~~~~~~~~~~
 # Each function defines a filter body.
 
-@Filter.unparameterized
-def Sit_adi(term, *args):
-    return term is not None and term.raw and term.raw[0] == 'S'
+@TermFilter.unparameterized
+def Sit_adi(term):
+    return term.raw and term.raw[0] == 'S'
 
 
 @Filter.unparameterized
@@ -282,16 +282,35 @@ def allow_all(*args):
     return True
 
 
-@Filter.unparameterized
-def samyoga(term, *args):
+@TermFilter.unparameterized
+def samyoga(term):
     hal = Sounds('hal')
-    return term and term.antya in hal and term.upadha in hal
+    return term.antya in hal and term.upadha in hal
+
+
+@TermFilter.unparameterized
+def samyogadi(term):
+    value = term.value
+    hal = Sounds('hal')
+    try:
+        return value[0] in hal and value[1] in hal
+    except IndexError:
+        return False
+
+
+@TermFilter.unparameterized
+def samyogapurva(term):
+    value = term.value
+    hal = Sounds('hal')
+    try:
+        return value[-2] in hal and value[-1] in hal
+    except IndexError:
+        return False
+
 
 asavarna = placeholder
 ekac = placeholder
 each = placeholder
-samyogadi = placeholder
-samyogapurva = placeholder
 
 
 # Automatic filter

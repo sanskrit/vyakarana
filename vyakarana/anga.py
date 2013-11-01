@@ -20,6 +20,7 @@
 import filters as F
 import operators as O
 from sounds import Sounds
+from upadesha import Upadesha
 from templates import tasya, state, Va, Vibhasha, Anyatarasyam
 
 
@@ -63,14 +64,21 @@ def asiddhavat_angasya_ardhadhatuke():
     ]
 
 
-# @tasya(None, 'anga', F.adi('ac'), locus='asiddhavat')
+@tasya(None, 'anga', F.adi('ac'), locus='asiddhavat')
 def asiddhavat_angasya_aci():
+
+    @O.Operator.unparameterized
+    def _6_4_77(state, index, locus):
+        cur = state[index]
+        if cur.antya in 'iI':
+            return state.swap(index, cur.tasya(Upadesha('iya~N'), locus=locus))
+        else:
+            return state.swap(index, cur.tasya(Upadesha('uva~N'), locus=locus))
+
     return [
         ('6.4.77',
-            None, ('Snu', 'dhatu', 'BrU'), None,
-            'y'),
-            # TODO
-            #O.replace(Sounds('i u'), ('iyaN', 'uvaN'))),
+            None, F.auto(('Snu', 'dhatu', 'BrU')) & F.al('i u'), None,
+            _6_4_77),
         ('6.4.78',
             None, 'abhyasa', F.asavarna,
             True),
