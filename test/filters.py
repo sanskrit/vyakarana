@@ -24,15 +24,15 @@ def verify(cases, filter_creator, tester):
 
 def term_tester(filt, data):
     term =  Upadesha('a~').set_value(data)
-    return filt(term, None, None)
+    return filt([term], 0)
 
 
 def pratyaya_tester(filt, data):
-    return filt(Pratyaya(data), None, None)
+    return filt([Pratyaya(data)], 0)
 
 
 def dhatu_tester(filt, data):
-    return filt(Dhatu(data), None, None)
+    return filt([Dhatu(data)], 0)
 
 
 
@@ -143,9 +143,9 @@ def test_samjna():
     for pattern, yes, no in cases:
         f = F.samjna(*pattern)
         for y in yes.split():
-            assert f(Anga(y), None, None)
+            assert f([Anga(y)], 0)
         for n in no.split():
-            assert not f(Pratyaya(n), None, None)
+            assert not f([Pratyaya(n)], 0)
 
 
 def test_upadha():

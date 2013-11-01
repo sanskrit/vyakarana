@@ -47,8 +47,8 @@ class Filter(object):
         #: have higher rank.
         self.rank = rank
 
-    def __call__(self, term, state, index):
-        return self.body(term, state, index)
+    def __call__(self, state, index):
+        return self.body(state, index)
 
     def __repr__(self):
         return '<f(%s)>' % self.name
@@ -140,8 +140,12 @@ class Filter(object):
 
 class TermFilter(Filter):
 
-    def __call__(self, term, state, index):
-        return term and self.body(term)
+    def __call__(self, state, index):
+        try:
+            term = state[index]
+            return term and self.body(term)
+        except IndexError:
+            return False
 
 
 # Parameterized filters
@@ -255,8 +259,8 @@ def and_(*filters):
 
     :param filters: a list of :class:`Filter`s.
     """
-    def func(term, state, index):
-        return all(f(term, state, index) for f in filters)
+    def func(state, index):
+        return all(f(state, index) for f in filters)
 
     func.members = filters
     return func, max(x.rank for x in filters)
@@ -268,8 +272,8 @@ def or_(*filters):
 
     :param filters: a list of :class:`Filter`s.
     """
-    def func(term, state, index):
-        return any(f(term, state, index) for f in filters)
+    def func(state, index):
+        return any(f(state, index) for f in filters)
 
     return func, min(x.rank for x in filters)
 
@@ -280,8 +284,8 @@ def not_(filt):
 
     :param filt: a :class:`Filter`.
     """
-    def func(term, state, index):
-        return not filt(term, state, index)
+    def func(state, index):
+        return not filt(state, index)
 
     return func, filt.rank
 
@@ -333,9 +337,14 @@ def samyogapurva(term):
         return False
 
 
-asavarna = placeholder
-ekac = placeholder
-each = placeholder
+@TermFilter.unparameterized
+def term_placeholder(term):
+    return False
+
+
+asavarna = term_placeholder
+ekac = term_placeholder
+each = term_placeholder
 
 
 # Automatic filter

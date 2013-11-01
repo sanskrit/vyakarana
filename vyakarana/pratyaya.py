@@ -75,7 +75,7 @@ def it_status(anga, p):
     # upadesha (various)
     # ------------------
     # 7.2.10 ekAca upadeze 'nudAttAt
-    if F.ekac(anga, None, None) and 'anudatta' in anga.samjna:
+    if F.ekac.body(anga) and 'anudatta' in anga.samjna:
         status = 'anit'
         rank = Rank.APAVADA
 
@@ -204,7 +204,7 @@ def it_status(anga, p):
         # the table above.)
 
         # 7.2.61 acas tAsvat thaly aniTo nityam
-        _61 = F.al('ac')(anga, None, None)
+        _61 = F.al('ac').body(anga)
 
         # 7.2.62 upadeze 'tvataH
         _62 = 'a' in anga.value

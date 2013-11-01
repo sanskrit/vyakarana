@@ -111,9 +111,10 @@ class Rule(object):
         :param state: the current :class:`State`
         :param index: an index into the state
         """
-        pairs = izip_longest(self.filters, islice(state, index, None),
-                             fillvalue=None)
-        return all(f(term, state, index) for f, term in pairs if f)
+        for i, filt in enumerate(self.filters):
+            if not filt(state, index + i):
+                return False
+        return True
 
     def features(self):
         feature_set = set()
@@ -160,13 +161,10 @@ class TasyaRule(Rule):
         :param state: the current :class:`State`
         :param index: an index into the state
         """
-        if index:
-            term_slice = padslice(state, index - 1)
-        else:
-            term_slice = chain([None], padslice(state, index))
-
-        pairs = izip(self.filters, term_slice)
-        return all(f(term, state, index) for f, term in pairs)
+        for i, filt in enumerate(self.filters):
+            if not filt(state, index + i - 1):
+                return False
+        return True
 
     def apply(self, state, index):
         cur = state[index]

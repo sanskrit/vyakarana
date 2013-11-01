@@ -107,7 +107,7 @@ class RuleTree(object):
                 continue
 
             try:
-                if filt(state[j], state, j):
+                if filt(state, j):
                     selection.update(tree.select(state, index))
             except IndexError:
                 pass
