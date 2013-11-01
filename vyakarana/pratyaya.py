@@ -20,7 +20,7 @@ TAS = Pratyaya('tAs').add_samjna('ardhadhatuka')
 
 @tasya('dhatu', 'pratyaya')
 def it():
-    def it_operator(state, index):
+    def it_operator(state, index, locus=None):
         dhatu = state[index - 1]
         cur = state[index]
         status = it_status(dhatu, cur)

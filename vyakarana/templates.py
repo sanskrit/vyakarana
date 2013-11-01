@@ -59,31 +59,22 @@ class Rule(object):
     transformational rules ("vidhi") explicitly.
     """
 
-    #: Rank of an unknown rule
-    UNKNOWN = 0
-    #: Rank of a general rule
-    UTSARGA = 1
-    #: Rank of a specific rule
-    APAVADA = 2
-    #: Rank of a rule that acts on a specific upadesha
-    UPADESHA = 3
-    #: Rank of a rule that produces a specific form
-    NIPATANA = 4
-
     #: Rank of an ordinary rule
     VIDHI = 0
-    #: Rank of a designation.
+    #: Rank of a meta-rule.
     SAMJNA = 1
-    #: Rank of an extension rule. This simulation treats these the same
-    #: way as designation rules.
     ATIDESHA = 1
     PARIBHASHA = 1
     #: The current rule type, which is used to create the rule rank.
     RULE_TYPE = VIDHI
 
-    __slots__ = ('name', 'filters', 'operator', 'rank')
+    # Rank of an ordinary locus
+    NORMAL_LOCUS = 1
+    ASIDDHAVAT = 0
 
-    def __init__(self, name, filters, operator):
+    __slots__ = ('name', 'filters', 'operator', 'locus', 'rank')
+
+    def __init__(self, name, filters, operator, **kw):
         #: A unique ID for this rule, e.g. "6.4.1"
         self.name = name
         #: A list of filter functions to apply to some subsequence in
@@ -94,9 +85,15 @@ class Rule(object):
         #:  of the state. This object can be arbitrary, but subclasses
         #: of :class:`Rule` can make stronger guarantees.
         self.operator = operator
+        #:
+        self.locus = kw.pop('locus', 'value')
         #: The relative strength of this rule. The higher the rank, the
         #: more powerful the rule.
-        self.rank = (self.RULE_TYPE, max(f.rank for f in filters))
+        if self.locus == 'asiddhavat':
+            prefix = (self.RULE_TYPE, self.ASIDDHAVAT)
+        else:
+            prefix = (self.RULE_TYPE, self.NORMAL_LOCUS)
+        self.rank = prefix + (max(f.rank for f in filters), )
 
     def __repr__(self):
         class_name = self.__class__.__name__
@@ -179,7 +176,7 @@ class TasyaRule(Rule):
 
         # Operator substitution
         if hasattr(result, '__call__'):
-            new_state = result(state, index)
+            new_state = result(state, index, self.locus)
 
             if isinstance(new_state, Option):
                 yield state.mark_rule(self, index)
@@ -282,7 +279,7 @@ class StateRule(Rule):
         :param state: a :class:`State`
         :param index: the current index
         """
-        for s in self.operator(state, index):
+        for s in self.operator(state, index, self.locus):
             yield s.mark_rule(self, index)
 
 
@@ -352,7 +349,7 @@ def make_rule_decorator(cls, *base_filters, **kw):
     def decorator(fn):
         rules = fn()
         for name, filters, op in process_tuple_rules(rules, base_filters):
-            rule = cls(name, filters, op)
+            rule = cls(name, filters, op, **kw)
             ALL_RULES.append(rule)
 
     return decorator

@@ -146,12 +146,12 @@ class SoundEditor(object):
 
     def __init__(self, state):
         self.state = state
-        self.data = [list(term.value) for term in state]
+        self.data = [list(term.asiddha) for term in state]
 
         self.indices = []
         abs_index = 0
         for i, term in enumerate(state):
-            for j, sound in enumerate(term.value):
+            for j, sound in enumerate(term.asiddha):
                 sound_index = SoundIndex(value=sound, term=term, state_index=i,
                     term_index=j, absolute_index=abs_index, editor=self)
                 self.indices.append(sound_index)

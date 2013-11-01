@@ -346,7 +346,8 @@ class Dhatu(Anga):
         elif value.startswith('R'):
             value = 'n' + value[1:]
 
-        self.data = self.data.replace(value=value)
+        if value != self.value:
+            self.data = self.data.replace(value=value)
 
 
 class Pratyaya(Upadesha):

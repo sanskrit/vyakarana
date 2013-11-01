@@ -118,7 +118,7 @@ def lasya():
 
     key2index = {tin_key(x): i for i, x in enumerate(base_samjna)}
 
-    def tin_adesha(state, index):
+    def tin_adesha(state, index, locus=None):
         dhatu = state[index]
         la = state[index + 1]
         la_type = la.raw

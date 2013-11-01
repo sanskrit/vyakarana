@@ -103,25 +103,45 @@ def asiddhavat_angasya_aci():
     ]
 
 
-@state('abhyasa', 'anga', ('li~w', 'kit'))
+@state('abhyasa', 'anga', 'li~w', locus='asiddhavat')
 def asiddhavat_angasya_abhyasa_lopa_liti():
-    def _120(state, i):
-        abhyasa = state[i]
-        anga = state[i + 1]
 
-    def et_abhyasa_lopa(state, i):
-        pass
+    @F.TermFilter.unparameterized
+    def at_ekahalmadhya_anadeshadi(term):
+        try:
+            a, b, c = term.value
+            hal = Sounds('hal')
+            eka_hal_madhya = a in hal and b == 'a' and c in hal
+            anadeshadi = True
+            return eka_hal_madhya and anadeshadi
+        except ValueError:
+            return False
+
+    @O.Operator.unparameterized
+    def et_abhyasa_lopa(state, i, locus):
+        abhyasa = state[i].set_asiddhavat('')
+        ed_adesha = O.replace('a', 'e')
+
+        abhyasta = state[i + 1]
+        abhyasta_value = ed_adesha.body(abhyasta.value)
+        abhyasta = abhyasta.set_asiddhavat(abhyasta_value)
+        yield state.swap(i, abhyasa).swap(i + 1, abhyasta)
 
     return [
-        # ('6.4.120',
-        #     None, _120, None
-        #     et_abhyasa_lopa),
-        # ('6.4.121',
-        #     ),
-        # ('6.4.122',
-        #     ),
-        # ('6.4.123',
-        #     ),
+        ('6.4.120',
+            None, at_ekahalmadhya_anadeshadi, F.samjna('kit'),
+            et_abhyasa_lopa),
+        # TODO: ca
+        ('6.4.121',
+            None, at_ekahalmadhya_anadeshadi, F.value('iTa'),
+            True),
+        ('6.4.122',
+            None, ('tF', 'YiPalA~', 'Ba\ja~\\', 'trapU~\z'), True,
+            True),
+        # TODO: va
+        ('6.4.123',
+            None, F.value('rAD'), True,
+            et_abhyasa_lopa),
         # # TODO: va
         # ('6.4.124',
         #     ),
@@ -133,35 +153,10 @@ def asiddhavat_angasya_abhyasa_lopa_liti():
         #     ),
     ]
 
-    # liti = 'li~w' in p.lakshana
-    # # e.g. 'pac', 'man', 'ram', but not 'syand', 'grah'
-    # at_ekahal_madhya = (anga.upadha().value == 'a' and len(anga.value) == 3)
-    # # e.g. 'pac' (pa-pac), 'ram' (ra-ram), but not 'gam' (ja-gam)
-    # anadesha_adi = (abhyasa.value[0] == anga.value[0])
-
-    # if liti:
-    #     # 'kGiti' is inherited from 6.4.98.
-    #     kniti = 'kit' in p.it or 'Nit' in p.it
-
-    #     # 6.4.121 thali ca seTi
-    #     thali_seti = p.value == 'iTa'
-
-    #     # This substitution is valid only in these two conditions.
-    #     if not (kniti or thali_seti):
-    #         return
-
-    #     # 6.4.120 ata ekahalmadhye 'nAdezAder liTi
-    #     if at_ekahal_madhya and anadesha_adi:
-    #         status = True
-
     #     # 6.4.126 na zasadadavAdiguNAnAm
     #     vadi = anga.adi == 'v'
     #     if anga.raw in ('Sasu~', 'dada~\\') or vadi or 'guna' in anga.samjna:
     #         status = False
-
-    #     # 6.4.122 tRRphalabhajatrapaz ca
-    #     if anga.raw in ('tF', 'YiPalA~', 'Ba\ja~\\', 'trapU~\z'):
-    #         status = True
 
     #     # 6.4.123 rAdho hiMsAyAm
     #     elif anga.value == 'rAD':
@@ -174,12 +169,6 @@ def asiddhavat_angasya_abhyasa_lopa_liti():
     #     # 6.4.125 phaNAM ca saptAnAm
     #     elif anga.raw in DP.dhatu_set('PaRa~', 'svana~'):
     #         status = 'optional'
-
-    # if status in (True, 'optional'):
-    #     yield state.swap(i, abhyasa.lopa()).swap(j, anga.al_tasya('a', 'et'))
-
-    # if status in (False, 'optional'):
-    #     yield state
 
 
 @tasya('anga', None, None)
@@ -354,7 +343,7 @@ def angasya_abhyasasya():
     shar = Sounds('Sar')
     khay = Sounds('Kay')
 
-    def _60_61(state, index):
+    def _60_61(state, index, locus=None):
         cur = state[index]
         first_hal = first_ac = ''
         for i, L in enumerate(cur.value):

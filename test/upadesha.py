@@ -28,6 +28,20 @@ def test_dataspace():
     assert dd == ('A', 'A', 'B', '', 'D')
 
 
+def test_upadesha_dataspace():
+    dhatu = Upadesha('Pala~')
+    assert dhatu.data == ('Pala~', 'Pal', 'Pal', 'Pal', 'Pal')
+
+    abhyasa = dhatu.set_value('pa')
+    assert abhyasa.data == ('Pala~', 'Pal', 'pa', 'pa', 'pa')
+
+    abhyasa = abhyasa.set_asiddhavat('')
+    assert abhyasa.data == ('Pala~', 'Pal', 'pa', '', '')
+
+    abhyasta = dhatu.set_asiddhavat('Pel')
+    assert abhyasta.data == ('Pala~', 'Pal', 'Pal', 'Pel', 'Pel')
+
+
 def test_upadesha_properties():
     t = Upadesha('gati')
     assert t

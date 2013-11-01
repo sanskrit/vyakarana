@@ -28,7 +28,7 @@ class Operator(object):
         self.body = body
 
     def __call__(self, state, index, locus='value'):
-        return self.body(state, index)
+        return self.body(state, index, locus)
 
     def __repr__(self):
         return '<op(%s)>' % self.name
@@ -67,8 +67,12 @@ class DataOperator(Operator):
 
     def __call__(self, state, index, locus='value'):
         cur = state[index]
-        output = self.body(cur.value)
-        return state.swap(index, cur.set_value(output))
+        _input = cur.value
+        output = self.body(_input)
+        if output != _input:
+            return state.swap(index, cur.set_value(output))
+        else:
+            return state
 
 
 # Parameterized operators
@@ -77,7 +81,7 @@ class DataOperator(Operator):
 
 @Operator.parameterized
 def adi(result):
-    def func(state, index):
+    def func(state, index, locus):
         cur = state[index]
         cur = cur.tasya(result, adi=True)
         return state.swap(index, cur)
@@ -148,7 +152,7 @@ def upadha(result):
 @Operator.parameterized
 def yathasamkhya(targets, results):
     converter = dict(zip(targets, results))
-    def func(state, index):
+    def func(state, index, locus):
         cur = state[index]
         cur = cur.set_raw(converter[cur.raw])
         return state.swap(index, cur)
@@ -171,7 +175,7 @@ def dirgha(value):
     return ''.join(letters)
 
 
-def guna(state, index, force=False):
+def guna(state, index, locus=None, force=False):
     cur = state[index]
     try:
         right = state[index + 1]
@@ -231,7 +235,7 @@ def samprasarana(value):
     return ''.join(reversed(rev_letters))
 
 
-def vrddhi(state, index):
+def vrddhi(state, index, locus=None):
     cur = state[index]
     try:
         right = state[index + 1]
@@ -258,5 +262,5 @@ def vrddhi(state, index):
     return state.swap(index, cur)
 
 
-def force_guna(state, index):
+def force_guna(state, index, locus=None):
     return guna(state, index, force=True)

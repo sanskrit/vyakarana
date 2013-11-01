@@ -24,7 +24,7 @@ from upadesha import Upadesha
 
 @state('dhatu', None)
 def dvirvacana():
-    def do_dvirvacana(state, i):
+    def do_dvirvacana(state, i, locus=None):
         # 6.1.1 ekAco dve prathamasya
         # 6.1.2 ajAder dvitIyasya
         # 6.1.3 na ndrAH saMyogAdayaH

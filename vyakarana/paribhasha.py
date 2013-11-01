@@ -14,7 +14,7 @@ from templates import *
 
 @paribhasha(('lu~k', 'Slu~', 'lu~p'), None)
 def pratyaya_lopa():
-    def do_lopa(state, index):
+    def do_lopa(state, index, locus=None):
         lopa = state[index]
         raw = lopa.raw
         pratyaya = state[index + 1].add_lakshana(raw)
@@ -41,7 +41,7 @@ def mit_aco_ntyat_parah():
     rule has no time to act. This function allows 1.1.47 to act even
     when a 'mit' term is introduced by a "tasmāt" rule.
     """
-    def move_mit(state, index):
+    def move_mit(state, index, locus=None):
         base = state[index]
         mit = state[index + 1]
         yield state.remove(index + 1).swap(index, base.tasya(mit))

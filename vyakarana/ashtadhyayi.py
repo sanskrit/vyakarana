@@ -74,7 +74,8 @@ class Ashtadhyayi(object):
                     ib = rb_key[1]
                     if any(rb.yields(s, ib) for s in ra_states):
                         nullifies_old = True
-                if nullifies_old:
+                        break
+                if nullifies_old and ra.locus != 'asiddhavat':
                     continue
 
                 # Verify this isn't dominated by any other rules
