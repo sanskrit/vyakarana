@@ -227,9 +227,12 @@ def angasya_vrddhi():
         ('7.2.115',
             None, 'ac', ('Yit', 'Rit'),
             True),
+
+        # This should really apply `O.vrddhi`, but by 1.1.3 it's tricky.
+        # Since this is a one-off, apply a fuction with the same effect:
         ('7.2.116',
             None, F.upadha('at'), True,
-            True),
+            O.upadha('A')),
     ]
 
 
@@ -258,7 +261,7 @@ def angasya_ku():
     ]
 
 
-@tasya(None, 'anga', 'Syan')
+@tasya(None, 'anga', F.raw('Syan'))
 def angasya_shyani():
     return [
         ('7.3.74',

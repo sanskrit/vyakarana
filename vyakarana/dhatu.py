@@ -144,7 +144,7 @@ def pada_options(dhatu):
         has_para, has_atma = (True, True)
 
     # 1.3.78 zeSAt kartari parasmaipadam
-    else:
+    if has_para == has_atma == False:
         has_para, has_atma = (True, False)
 
     return (has_para, has_atma)

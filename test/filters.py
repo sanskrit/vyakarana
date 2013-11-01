@@ -152,7 +152,11 @@ def test_upadha():
     cases = [
         (['Yam'],
             'banD granT stamB pAna',
-            'granTa nara nayati',
+            'granTa nara narAn',
+        ),
+        (['at'],
+            'vac svap yaj',
+            'granT nI paca',
         )
     ]
     verify(cases, F.upadha, term_tester)

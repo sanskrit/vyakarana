@@ -217,12 +217,17 @@ def hrasva(value):
 @DataOperator.unparameterized
 def samprasarana(value):
     rev_letters = list(reversed(value))
+    found = False
     for i, L in enumerate(rev_letters):
         # 1.1.45 ig yaNaH saMprasAraNAm
         # TODO: enforce short vowels automatically
         if L in Sounds('yaR'):
             rev_letters[i] = Sound(L).closest('ifxu')
+            found = True
             break
+
+    if not found:
+        return value
 
     # 6.4.108 saMprasAraNAc ca
     try:
