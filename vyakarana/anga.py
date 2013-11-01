@@ -371,14 +371,18 @@ def angasya_abhyasasya():
             elif not first_hal:
                 first_hal = L
 
-        return state.swap(index, cur.set_value(first_hal + first_ac))
+        new_value = first_hal + first_ac
+        if new_value != cur.value:
+            return state.swap(index, cur.set_value(new_value))
+        else:
+            return state
 
     return [
         ('7.4.59',
             None, None, None,
             O.hrasva),
         ('7.4.60',
-            None, None, None,
+            None, F.adi('Sar'), None,
             _60_61),
         ('7.4.61',
             None, None, None,

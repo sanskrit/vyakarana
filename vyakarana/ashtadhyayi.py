@@ -166,7 +166,15 @@ class Ashtadhyayi(object):
             for rb_key in state.history:
                 rb = self.rule_map[rb_key[0]]
                 ib = rb_key[1]
-                if any(rb.yields(s, ib) for s in ra_states):
+
+                # We skip if both of these statements hold:
+                # 1. (rb, ib) does not apply to `state`
+                # 2. (rb, ib) applies to one of `ra_states`
+                #
+                # We need (1) because `rb` could be a rule that always
+                # has the option of applying, e.g. an optional vowel
+                # change on a root.
+                if not rb.yields(state, ib) and any(rb.yields(s, ib) for s in ra_states):
                     nullifies_old = True
                     break
             if nullifies_old and ra.locus != 'asiddhavat':
