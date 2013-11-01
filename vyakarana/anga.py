@@ -119,13 +119,23 @@ def asiddhavat_angasya_aci():
 @state('abhyasa', 'anga', 'li~w', locus='asiddhavat')
 def asiddhavat_angasya_abhyasa_lopa_liti():
 
-    @F.TermFilter.unparameterized
-    def at_ekahalmadhya_anadeshadi(term):
+    @F.Filter.unparameterized
+    def at_ekahalmadhya_anadeshadi(state, index):
+        abhyasa = state[index - 1]
+        anga = state[index]
         try:
-            a, b, c = term.value
+            a, b, c = anga.value
             hal = Sounds('hal')
+            # Anga has the pattern CVC, where C is a consonant and V
+            # is a vowel.
             eka_hal_madhya = a in hal and b == 'a' and c in hal
-            anadeshadi = True
+            # Abhyasa and anga have the same initial letter. I'm not
+            # sure how to account for 8.4.54 in the normal way, so as
+            # a hack, I check for the consonants that 8.4.54 would
+            # modify.
+            _8_4_54 = anga.adi not in Sounds('Jaz')
+            anadeshadi = abhyasa.adi == anga.adi and _8_4_54
+
             return eka_hal_madhya and anadeshadi
         except ValueError:
             return False
@@ -148,13 +158,15 @@ def asiddhavat_angasya_abhyasa_lopa_liti():
         ('6.4.121',
             None, at_ekahalmadhya_anadeshadi, F.value('iTa'),
             True),
+        # TODO: ca
         ('6.4.122',
-            None, ('tF', 'YiPalA~', 'Ba\ja~\\', 'trapU~\z'), True,
+            None, ('tF', 'YiPalA~', 'Ba\ja~^', 'trapU~\z'),
+                F.samjna('kit') | F.value('iTa'),
             True),
         # TODO: va
         ('6.4.123',
             None, F.value('rAD'), True,
-            et_abhyasa_lopa),
+            True),
         # # TODO: va
         # ('6.4.124',
         #     ),
