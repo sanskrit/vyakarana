@@ -158,7 +158,7 @@ class TasyaRule(Rule):
         else:
             term_slice = chain([None], padslice(state, index))
 
-        pairs = zip(self.filters, term_slice)
+        pairs = izip(self.filters, term_slice)
         return all(f(term, state, index) for f, term in pairs)
 
     def apply(self, state, index):
