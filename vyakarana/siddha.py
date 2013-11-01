@@ -123,7 +123,7 @@ def asiddha_helper(state):
                 x = Sound(x_).closest(Sounds('jaS'))
 
             # 8.4.54 abhyAse car ca
-            if c.term.any_samjna('abhyasa') and c.first:
+            if 'abhyasa' in c.term.samjna and c.first:
                 x = Sound(x_).closest(Sounds('car jaS'))
 
             # 8.4.55 khari ca

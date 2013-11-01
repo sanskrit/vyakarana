@@ -11,6 +11,7 @@
 import itertools
 import logging
 import os
+from collections import OrderedDict, defaultdict
 
 import abhyasa
 import anga
@@ -22,11 +23,95 @@ import pratyaya
 import sandhi
 import siddha
 import vibhakti
+import filters as F
+import templates as T
 
 from templates import ALL_RULES
 from util import State
 
 log = logging.getLogger(__name__)
+
+
+class RuleTree(object):
+
+    """A hierarchical arrangment of rules.
+
+    There are roughly 4000 rules in the Ashtadhyayi, almost all of which
+    define operations on some input sequence. Since any of these rules
+    could apply at any given moment, we must check all R rules against
+    each state. And since a rule could apply to any of the T terms within
+    a state, we must check against all terms as well. This leaves us with
+    RT candidates for each state.
+
+    By arranging rules hierarchically, we greatly reduce the number of
+    comparisons we have to make. Rule selection becomes roughly log(RT).
+    """
+
+    def __init__(self, rules, used_features=None):
+        #: A list of rules that could not be subdivided any further.
+        #: This is usually because the rule is unspecified in some way.
+        self.rules = []
+        #: Maps from features to :class:`RuleTree` subtrees.
+        self.features = {}
+        used_features = used_features or frozenset()
+
+        # Maps a feature tuple to a list of rules
+        feature_map = defaultdict(list)
+        for rule in rules:
+            appended = False
+            for feat in rule.features():
+                if feat not in used_features:
+                    feature_map[feat].append(rule)
+                    appended = True
+
+            # No special features: just append to our rule list.
+            if not appended:
+                self.rules.append(rule)
+
+        # Sort from most general to most specific.
+        buckets = sorted(feature_map.iteritems(), key=lambda p: -len(p[1]))
+
+        seen = set()
+        depth = len(used_features)
+        for feat, rule_list in buckets:
+            unseen = [r for r in rule_list if r not in seen]
+            if not unseen:
+                continue
+            self.features[feat] = RuleTree(unseen, used_features | set([feat]))
+            seen.update(rule_list)
+
+    def __len__(self):
+        """The number of rules in the tree."""
+        self_len = len(self.rules)
+        return self_len + sum(len(v) for k, v in self.features.iteritems())
+
+    def pprint(self, depth=0):
+        """Pretty-print the tree."""
+        print '    ' * depth, '[%s] bare rules' % len(self.rules)
+        for feature, tree in self.features.iteritems():
+            print '    ' * depth, '[%s]' % len(tree), feature
+            tree.pprint(depth + 1)
+
+    def select(self, state, index):
+        """Return a set of rules that might be applicable.
+
+        :param state: the current :class:`State`
+        :param index: the current index
+        """
+        selection = set(self.rules)
+
+        for feature, tree in self.features.iteritems():
+            filt, i = feature
+            j = index + i
+            if j < 0:
+                continue
+
+            try:
+                if filt(state[j], state, j):
+                    selection.update(tree.select(state, index))
+            except IndexError:
+                pass
+        return selection
 
 
 class Ashtadhyayi(object):
@@ -42,6 +127,16 @@ class Ashtadhyayi(object):
         self.sorted_rules = sorted(ALL_RULES, cmp = lambda x, y: cmp(y.rank, x.rank))
         #: Maps a rule's name to a :class:`Rule` instance.
         self.rule_map = {x.name: x for x in ALL_RULES}
+        self.rule_tree = RuleTree(self.sorted_rules)
+
+    def fast_rule_pairs(self, state):
+        state_indices = range(len(state))
+        candidates = [self.rule_tree.select(state, i) for i in state_indices]
+
+        for i, ra in enumerate(self.sorted_rules):
+            for ia in state_indices:
+                if ra in candidates[ia]:
+                    yield ra, ia
 
     def apply_next_rule(self, state):
         """Apply one rule and return a list of new states.
@@ -51,39 +146,38 @@ class Ashtadhyayi(object):
 
         :param state: the current :class:`State`
         """
+
         sorted_rules = self.sorted_rules
-        for a, ra in enumerate(sorted_rules):
-            for ia in range(len(state)):
+        for ra, ia in self.fast_rule_pairs(state):
+            # Ignore redundant applications
+            ra_key = state.make_rule_key(ra, ia)
+            if ra_key in state.history:
+                continue
 
-                # Ignore redundant applications
-                ra_key = state.make_rule_key(ra, ia)
-                if ra_key in state.history:
-                    continue
+            # Only worthwhile rules
+            ra_states = None
+            if ra.matches(state, ia):
+                ra_states = list(ra.apply(state, ia))
+            if not ra_states:
+                continue
 
-                # Only worthwhile rules
-                ra_states = None
-                if ra.matches(state, ia):
-                    ra_states = list(ra.apply(state, ia))
-                if not ra_states:
-                    continue
+            # Verify this doesn't undo a prior rule.
+            nullifies_old = False
+            for rb_key in state.history:
+                rb = self.rule_map[rb_key[0]]
+                ib = rb_key[1]
+                if any(rb.yields(s, ib) for s in ra_states):
+                    nullifies_old = True
+                    break
+            if nullifies_old and ra.locus != 'asiddhavat':
+                continue
 
-                # Verify this doesn't undo a prior rule.
-                nullifies_old = False
-                for rb_key in state.history:
-                    rb = self.rule_map[rb_key[0]]
-                    ib = rb_key[1]
-                    if any(rb.yields(s, ib) for s in ra_states):
-                        nullifies_old = True
-                        break
-                if nullifies_old and ra.locus != 'asiddhavat':
-                    continue
+            # Verify this isn't dominated by any other rules
+            # TODO
 
-                # Verify this isn't dominated by any other rules
-                # TODO
-
-                for s in ra_states:
-                    log.debug('  %s : %s --> %s' % (ra.name, state, s))
-                return ra_states
+            for s in ra_states:
+                log.debug('  %s : %s --> %s' % (ra.name, state, s))
+            return ra_states
 
     def derive(self, sequence):
         """Yield all possible results.

@@ -115,6 +115,28 @@ class Filter(object):
         """
         return cls(name=fn.__name__, body=fn, rank=FilterType.UNKNOWN)
 
+    def subset_of(self, filt):
+        if self.name == filt.name:
+            return True
+        try:
+            return any(x.subset_of(filt) for x in self.body.members)
+        except AttributeError:
+            return False
+
+    def required(self):
+        returned = set()
+        try:
+            for m in self.body.members:
+                returned |= m.required()
+        except AttributeError:
+            name = self.name
+            or_not = any(name.startswith(x) for x in ('or', 'not'))
+            allow_all = name == 'allow_all'
+            if not (or_not or allow_all):
+                returned.add(self)
+
+        return returned
+
 
 class TermFilter(Filter):
 
@@ -235,6 +257,8 @@ def and_(*filters):
     """
     def func(term, state, index):
         return all(f(term, state, index) for f in filters)
+
+    func.members = filters
     return func, max(x.rank for x in filters)
 
 
@@ -246,6 +270,7 @@ def or_(*filters):
     """
     def func(term, state, index):
         return any(f(term, state, index) for f in filters)
+
     return func, min(x.rank for x in filters)
 
 

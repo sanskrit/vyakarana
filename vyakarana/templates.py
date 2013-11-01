@@ -114,6 +114,12 @@ class Rule(object):
                              fillvalue=None)
         return all(f(term, state, index) for f, term in pairs if f)
 
+    def features(self):
+        feature_set = set()
+        for i, filt in enumerate(self.filters):
+            feature_set.update((f, i) for f in filt.required())
+        return feature_set
+
     def yields(self, state, index):
         if self.matches(state, index):
             for result in self.apply(state, index):
@@ -189,6 +195,12 @@ class TasyaRule(Rule):
 
         if new_state != state:
             yield new_state
+
+    def features(self):
+        feature_set = set()
+        for i, filt in enumerate(self.filters):
+            feature_set.update((f, i - 1) for f in filt.required())
+        return feature_set
 
 
 class SamjnaRule(TasyaRule):

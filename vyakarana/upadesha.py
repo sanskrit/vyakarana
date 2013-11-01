@@ -59,9 +59,6 @@ class Upadesha(object):
     def __ne__(self, other):
         return not self == other
 
-    def __nonzero__(self):
-        return True
-
     def __repr__(self):
         return "<%s('%s')>" % (self.__class__.__name__, self.value)
 
@@ -317,12 +314,11 @@ class Upadesha(object):
 
         # 1.1.55 anekAlSit sarvasya
         elif 'S' in other.it or len(other.value) > 1:
-            c.value = other.value
+            value = other.value
+            return self.set_at(locus, value)
 
         else:
             raise NotImplementedError
-
-        return c
 
 
 class Anga(Upadesha):
