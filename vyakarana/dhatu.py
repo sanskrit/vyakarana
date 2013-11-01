@@ -71,7 +71,7 @@ def sanadyanta_dhatu():
             k('Aya')),
         ('3.1.30',
             'kamu~\\', None,
-            k('Rin')),
+            k('RiN')),
     ]
 
 

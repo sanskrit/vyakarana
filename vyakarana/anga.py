@@ -205,7 +205,7 @@ def angasya_pratyaya_adesha():
         ('7.1.5',
             'abhyasta', None, None,
             O.replace('J', 'at')),
-        ('7.1.5',
+        ('7.1.6',
             ~F.al('at'), 'atmanepada', None,
             True)
     ]

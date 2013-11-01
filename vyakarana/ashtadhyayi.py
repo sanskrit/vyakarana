@@ -87,7 +87,9 @@ class RuleTree(object):
 
     def pprint(self, depth=0):
         """Pretty-print the tree."""
-        print '    ' * depth, '[%s] bare rules' % len(self.rules)
+        if self.rules:
+            rule_token = [x.name for x in self.rules]
+            print '    ' * depth, '[%s] %s' % (len(self.rules), rule_token)
         for feature, tree in self.features.iteritems():
             print '    ' * depth, '[%s]' % len(tree), feature
             tree.pprint(depth + 1)
@@ -129,7 +131,7 @@ class Ashtadhyayi(object):
         self.rule_map = {x.name: x for x in ALL_RULES}
         self.rule_tree = RuleTree(self.sorted_rules)
 
-    def fast_rule_pairs(self, state):
+    def matching_rules(self, state):
         state_indices = range(len(state))
         candidates = [self.rule_tree.select(state, i) for i in state_indices]
 
@@ -148,16 +150,14 @@ class Ashtadhyayi(object):
         """
 
         sorted_rules = self.sorted_rules
-        for ra, ia in self.fast_rule_pairs(state):
+        for ra, ia in self.matching_rules(state):
             # Ignore redundant applications
             ra_key = state.make_rule_key(ra, ia)
             if ra_key in state.history:
                 continue
 
             # Only worthwhile rules
-            ra_states = None
-            if ra.matches(state, ia):
-                ra_states = list(ra.apply(state, ia))
+            ra_states = list(ra.apply(state, ia))
             if not ra_states:
                 continue
 

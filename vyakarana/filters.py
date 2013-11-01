@@ -14,6 +14,8 @@
     :license: MIT and BSD
 """
 
+from collections import defaultdict
+
 from dhatupatha import DHATUPATHA as DP
 from sounds import Sounds
 
@@ -130,9 +132,7 @@ class Filter(object):
                 returned |= m.required()
         except AttributeError:
             name = self.name
-            or_not = any(name.startswith(x) for x in ('or', 'not'))
-            allow_all = name == 'allow_all'
-            if not (or_not or allow_all):
+            if name != 'allow_all':
                 returned.add(self)
 
         return returned
@@ -389,33 +389,54 @@ def auto(data):
     if data is None:
         return allow_all
 
+    if hasattr(data, '__call__'):
+        return data
+
     # Make `data` iterable
-    if isinstance(data, basestring) or hasattr(data, '__call__'):
+    if isinstance(data, basestring):
         data = [data]
 
-    base_filter = None
+    parsed = defaultdict(list)
     for datum in data:
         matcher = None
         # String selector: value, samjna, or sound
         if isinstance(datum, basestring):
             if datum in samjna_set:
-                matcher = samjna(datum)
+                parsed['samjna'].append(datum)
             elif datum in sound_set:
-                matcher = al(datum)
+                parsed['al'].append(datum)
             elif datum in pratyaya_set:
-                matcher = lakshana(datum)
+                parsed['lakshana'].append(datum)
             else:
-                matcher = raw(datum)
+                parsed['raw'].append(datum)
 
         # Function
+        elif hasattr(datum, '__call__'):
+            parsed['functions'].append(datum)
         else:
-            matcher = datum
+            raise NotImplementedError(datum)
 
-        if base_filter is None:
-            base_filter = matcher
-        else:
-            base_filter |= matcher
 
+    # Create filter
+    base_filter = None
+    d = {
+        'raw': raw,
+        'lakshana': lakshana,
+        'samjna': samjna,
+        'al': al
+    }
+    for key in ['raw', 'lakshana', 'samjna', 'al']:
+        values = parsed[key]
+        if values:
+            matcher = d[key](*values)
+            if base_filter is None:
+                base_filter = matcher
+            else:
+                base_filter |= matcher
+
+    if parsed['functions']:
+        print base_filter, 'OR', parsed['functions']
+        base_filter = or_(base_filter, *parsed['functions'])
     return base_filter
 
 
