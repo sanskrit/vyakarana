@@ -108,8 +108,8 @@ def asiddhavat_angasya_aci():
             None, 'BU', ('luN', 'liw'),
             'vuk'),
         ('6.4.89',
-            None, 'goh', None,
-            O.upadha('Ut')),
+            None, F.value('goh'), None,
+            O.upadha('U')),
         ('6.4.98',
             None, gama_hana, F.knit & ~F.raw('aN'),
             O.upadha(''))

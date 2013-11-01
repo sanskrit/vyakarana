@@ -100,10 +100,10 @@ class Dhatupatha(object):
                     return returned
                 end_index += 1
 
-        # From start to first instance of `end`
+        # From start to last instance of `end` (inclusive)
         else:
             end_index = self.index_map[end][-1]
-            return self.all_dhatu[start_index:end_index]
+            return self.all_dhatu[start_index:end_index + 1]
 
     def dhatu_set(self, *args):
         return frozenset(self.dhatu_list(*args))
