@@ -29,11 +29,11 @@ def test_iter_pairwise():
 
 
 def test_rank():
-    r1 = Rank.UNKNOWN
-    r2 = Rank.UTSARGA
-    r3 = Rank.APAVADA
-    r4 = Rank.UPADESHA
-    r5 = Rank.NIPATANA
+    r1 = OldRank.UNKNOWN
+    r2 = OldRank.UTSARGA
+    r3 = OldRank.APAVADA
+    r4 = OldRank.UPADESHA
+    r5 = OldRank.NIPATANA
 
     assert r1 < r2 < r3 < r4 < r5
 

@@ -13,7 +13,7 @@ import gana
 from sounds import Sounds
 from upadesha import Upadesha as U, Pratyaya
 from templates import *
-from util import Rank
+from util import OldRank as Rank
 
 TAS = Pratyaya('tAs').add_samjna('ardhadhatuka')
 

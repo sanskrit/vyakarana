@@ -80,7 +80,7 @@ def label_by_group(terms, labels):
 @F.TermFilter.unparameterized
 def f_lakara(term):
     return 'vibhakti' in term.samjna and term.raw[0] == 'l'
-f_lakara.rank = F.FilterType.UPADESHA
+f_lakara.rank = util.Rank(upadesha=1, samjna=1)
 
 def tin_key(samjna, pada=None):
     if pada:

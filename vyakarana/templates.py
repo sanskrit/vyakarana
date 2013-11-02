@@ -16,6 +16,7 @@ from itertools import chain, islice, izip, izip_longest, repeat
 
 import filters as F
 from dhatupatha import DHATUPATHA as DP
+from util import Rank
 
 # New-style rules. Temporary.
 ALL_RULES = []
@@ -91,10 +92,13 @@ class Rule(object):
         #: The relative strength of this rule. The higher the rank, the
         #: more powerful the rule.
         if self.locus == 'asiddhavat':
-            prefix = (self.RULE_TYPE, self.ASIDDHAVAT)
+            rank_locus = self.ASIDDHAVAT
         else:
-            prefix = (self.RULE_TYPE, self.NORMAL_LOCUS)
-        self.rank = prefix + (max(f.rank for f in filters), )
+            rank_locus = self.NORMAL_LOCUS
+
+        rank = Rank.and_(f.rank for f in filters)
+        rank = rank.replace(category=self.RULE_TYPE, locus=rank_locus)
+        self.rank = rank
 
     def __repr__(self):
         class_name = self.__class__.__name__

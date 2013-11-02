@@ -18,15 +18,7 @@ from collections import defaultdict
 
 from dhatupatha import DHATUPATHA as DP
 from sounds import Sounds
-
-
-class FilterType(object):
-    UNKNOWN = -1
-    AL = 0
-    SAMJNA = 1
-    LAKSHANA = 2
-    VALUE = 5
-    UPADESHA = 10
+from util import Rank
 
 
 class Filter(object):
@@ -115,7 +107,7 @@ class Filter(object):
 
         :param fn: some filter function.
         """
-        return cls(name=fn.__name__, body=fn, rank=FilterType.UNKNOWN)
+        return cls(name=fn.__name__, body=fn, rank=Rank())
 
     def subset_of(self, filt):
         if self.name == filt.name:
@@ -162,7 +154,7 @@ def adi(*names):
     def func(term):
         return term.adi in sounds
 
-    return func, FilterType.AL
+    return func, Rank.with_al(sounds)
 
 
 @TermFilter.parameterized
@@ -175,7 +167,7 @@ def al(*names):
     def func(term):
         return term.antya in sounds
 
-    return func, FilterType.AL
+    return func, Rank.with_al(sounds)
 
 
 @TermFilter.parameterized
@@ -184,7 +176,7 @@ def gana(start, end=None):
     def func(term):
         return term.raw in gana_set
 
-    return func, FilterType.UPADESHA
+    return func, Rank.with_upadesha(gana_set)
 
 
 @TermFilter.parameterized
@@ -197,7 +189,7 @@ def lakshana(*names):
     def func(term):
         return any(n in term.lakshana for n in names)
 
-    return func, FilterType.LAKSHANA
+    return func, Rank.with_upadesha(names)
 
 
 @TermFilter.parameterized
@@ -210,7 +202,7 @@ def raw(*names):
     def func(term):
         return term.raw in names
 
-    return func, FilterType.UPADESHA
+    return func, Rank.with_upadesha(names)
 
 
 @TermFilter.parameterized
@@ -222,7 +214,7 @@ def samjna(*names):
     def func(term):
         return any(n in term.samjna for n in names)
 
-    return func, FilterType.SAMJNA
+    return func, Rank.with_samjna(names)
 
 
 @TermFilter.parameterized
@@ -237,7 +229,7 @@ def upadha(*names):
     def func(term):
         return term.upadha in sounds
 
-    return func, FilterType.AL
+    return func, Rank.with_al(sounds)
 
 
 @TermFilter.parameterized
@@ -250,7 +242,7 @@ def value(*names):
     def func(term):
         return term.value in names
 
-    return func, FilterType.VALUE
+    return func, Rank.with_upadesha(names)
 
 
 @Filter.parameterized
@@ -263,7 +255,7 @@ def and_(*filters):
         return all(f(state, index) for f in filters)
 
     func.members = filters
-    return func, max(x.rank for x in filters)
+    return func, Rank.and_(f.rank for f in filters)
 
 
 @Filter.parameterized
@@ -275,7 +267,7 @@ def or_(*filters):
     def func(state, index):
         return any(f(state, index) for f in filters)
 
-    return func, min(x.rank for x in filters)
+    return func, Rank.or_(f.rank for f in filters)
 
 
 @Filter.parameterized
