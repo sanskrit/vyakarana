@@ -196,17 +196,17 @@ def asiddhavat_angasya_abhyasa_lopa_liti():
     #         status = 'optional'
 
 
-@tasya('anga', None, None)
+@tasya('anga', 'pratyaya')
 def angasya_pratyaya_adesha():
     return [
         ('7.1.3',
-            None, None, None,
+            None, None,
             O.replace('J', 'ant')),
         ('7.1.4',
-            'abhyasta', None, None,
+            'abhyasta', None,
             O.replace('J', 'at')),
         ('7.1.5',
-            ~F.al('at'), 'atmanepada', None,
+            ~F.al('at'), 'atmanepada',
             True)
     ]
 

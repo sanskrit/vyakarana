@@ -30,13 +30,23 @@ class Filter(object):
     create more complex conditions, e.g. ``al('hal') & upadha('a')``.
     """
 
+    #: An internal cache to avoid creating redundant filter objects.
+    #: When a filter is declared, the constructor creates a `name` for
+    #: the filter and checks it against the cache. If `name` is found
+    #: in the cache, the cached result is returned instead.
     CACHE = {}
 
     def __init__(self, name, body, rank):
-        #: A unique name for this filter
+        #: A unique name for the filter. This is used as a key to the
+        #: filter cache.
         self.name = name
-        #: The function that corresponds to this filter
+
+        #: The function that corresponds to this filter. The input and
+        #: output of the function depend on the filter class. For
+        #: a general :class:`Filter`, this function accepts a state and
+        #: index and returns a new state.
         self.body = body
+
         #: The relative rank of this filter. More specific filters
         #: have higher rank.
         self.rank = rank
@@ -55,7 +65,7 @@ class Filter(object):
 
         :param other: the other :class:`Filter`.
         """
-        return and_(self, other)
+        return Filter.and_(self, other)
 
     def __invert__(self):
         """Bitwise "not" (``~``).
@@ -63,7 +73,7 @@ class Filter(object):
         The result is a function that matches the "not" of the current
         filter.
         """
-        return not_(self)
+        return Filter.not_(self)
 
     def __or__(self, other):
         """Bitwise "or" (``|``).
@@ -73,7 +83,89 @@ class Filter(object):
 
         :param other: the other :class:`Filter`.
         """
-        return or_(self, other)
+        return Filter.or_(self, other)
+
+    @staticmethod
+    def and_(*filters):
+        """Return the logical "AND" over all filters."""
+        cls = Filter._common_ancestor(filters)
+        name = 'and(%s)' % ', '.join(f.name for f in filters)
+        body = cls._make_and_body(filters)
+        rank = Rank.and_(f.rank for f in filters)
+        return cls(name, body, rank)
+
+    @staticmethod
+    def or_(*filters):
+        """Return the logical "OR" over all filters."""
+        cls = Filter._common_ancestor(filters)
+        name = 'or(%s)' % ', '.join(f.name for f in filters)
+        body = cls._make_or_body(filters)
+        rank = Rank.or_(f.rank for f in filters)
+        return cls(name, body, rank)
+
+    @staticmethod
+    def not_(filt):
+        """Return the logical "NOT" of the filter.
+
+        :param filt: some :class:`Filter`
+        """
+        cls = filt.__class__
+        name = 'not(%s)' % filt.name
+        body = cls._make_not_body(filt)
+        rank = filt.rank
+        return cls(name, body, rank)
+
+    @staticmethod
+    def _common_ancestor(filters):
+        """Return the lowest common ancestor of the given filters.
+
+        :param filters: a list of filters
+        """
+        candidate = filters[0].__class__
+        for f in filters:
+            if not isinstance(f, candidate):
+                candidate = f.__class__
+        return candidate
+
+    @classmethod
+    def _make_and_body(cls, filters):
+        """Make a body function for the "and" filter.
+
+        This routine is in its own method so that other classes can
+        override it.
+
+        :param filters:
+        """
+        def func(state, index):
+            return all(f(state, index) for f in filters)
+        func.members = filters
+        return func
+
+    @classmethod
+    def _make_or_body(cls, filters):
+        """Make a body function for the "or" filter.
+
+        This routine is in its own method so that other classes can
+        override it.
+
+        :param filters:
+        """
+        def func(state, index):
+            return any(f(state, index) for f in filters)
+        return func
+
+    @classmethod
+    def _make_not_body(cls, filt):
+        """Make a body function for the "not" filter.
+
+        This routine is in its own method so that other classes can
+        override it.
+
+        :param filt: a filter
+        """
+        def func(state, index):
+            return not filt.body(state, index)
+        return func
 
     @classmethod
     def parameterized(cls, fn):
@@ -93,7 +185,6 @@ class Filter(object):
                     name = "%s(%s)" % (fn.__name__, ', '.join(params))
             except IndexError:
                 name = "%s()" % fn.__name__
-            name = name.replace('_', '')
 
             if name not in cache:
                 body, rank = fn(*params)
@@ -132,12 +223,47 @@ class Filter(object):
 
 class TermFilter(Filter):
 
+    """A :class:`Filter` whose body takes an :class:`Upadesha` as input.
+
+    Term filters are used for the following reasons.
+
+    1. Convenience. Most filters apply to just a single term.
+    2. Performance. Since we can guarantee that the output of a term
+       filter will change only if its term changes, we can cache results
+       for an unchanged term and avoid redundant calls.
+    """
+
     def __call__(self, state, index):
         try:
             term = state[index]
-            return term and self.body(term)
+            name = self.name
+            cache = term._filter_cache
+            if name not in cache:
+                cache[name] = term and self.body(term)
+            return cache[name]
         except IndexError:
             return False
+
+    @classmethod
+    def _make_and_body(cls, filters):
+        bodies = [f.body for f in filters]
+        def func(term):
+            return all(b(term) for b in bodies)
+        func.members = filters
+        return func
+
+    @classmethod
+    def _make_or_body(cls, filters):
+        bodies = [f.body for f in filters]
+        def func(term):
+            return any(b(term) for b in bodies)
+        return func
+
+    @classmethod
+    def _make_not_body(cls, filt):
+        def func(term):
+            return not filt.body(term)
+        return func
 
 
 # Parameterized filters
@@ -172,6 +298,10 @@ def al(*names):
 
 @TermFilter.parameterized
 def gana(start, end=None):
+    """Filter on the `raw`.
+
+    :param names: a list of sounds
+    """
     gana_set = DP.dhatu_set(start, end)
     def func(term):
         return term.raw in gana_set
@@ -245,42 +375,6 @@ def value(*names):
     return func, Rank.with_upadesha(names)
 
 
-@Filter.parameterized
-def and_(*filters):
-    """Create a filter that returns ``all(f(*args) for f in filters)``
-
-    :param filters: a list of :class:`Filter`s.
-    """
-    def func(state, index):
-        return all(f(state, index) for f in filters)
-
-    func.members = filters
-    return func, Rank.and_(f.rank for f in filters)
-
-
-@Filter.parameterized
-def or_(*filters):
-    """Create a filter that returns ``any(f(*args) for f in filters)``
-
-    :param filters: a list of :class:`Filter`s.
-    """
-    def func(state, index):
-        return any(f(state, index) for f in filters)
-
-    return func, Rank.or_(f.rank for f in filters)
-
-
-@Filter.parameterized
-def not_(filt):
-    """Create a filter that returns ``not any(f(*args) for f in filters)``
-
-    :param filt: a :class:`Filter`.
-    """
-    def func(state, index):
-        return not filt(state, index)
-
-    return func, filt.rank
-
 
 # Unparameterized filters
 # ~~~~~~~~~~~~~~~~~~~~~~~
@@ -288,6 +382,8 @@ def not_(filt):
 
 @TermFilter.unparameterized
 def Sit_adi(term):
+    """Filter on whether the term starts with ś nn upadeśa.
+    """
     return term.raw and term.raw[0] == 'S'
 
 
@@ -427,8 +523,7 @@ def auto(data):
                 base_filter |= matcher
 
     if parsed['functions']:
-        print base_filter, 'OR', parsed['functions']
-        base_filter = or_(base_filter, *parsed['functions'])
+        base_filter = Filter.or_(base_filter, *parsed['functions'])
     return base_filter
 
 

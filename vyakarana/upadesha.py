@@ -33,7 +33,7 @@ class Upadesha(object):
 
     """A Term with indicatory letters."""
 
-    __slots__ = ['data', 'samjna', 'lakshana', 'ops']
+    __slots__ = ['data', 'samjna', 'lakshana', 'ops', '_filter_cache']
     nasal_re = re.compile('([aAiIuUfFxeEoO])~')
 
     def __init__(self, raw=None, data=None, samjna=None, lakshana=None, ops=None, **kw):
@@ -45,6 +45,7 @@ class Upadesha(object):
         self.samjna = samjna
         self.lakshana = lakshana or frozenset()
         self.ops = ops or frozenset()
+        self._filter_cache = {}
 
     def __eq__(self, other):
         if other is None:
