@@ -36,7 +36,7 @@ class Filter(object):
     #: in the cache, the cached result is returned instead.
     CACHE = {}
 
-    def __init__(self, name, body, rank):
+    def __init__(self, name, body, rank=None, domain=None):
         #: A unique name for the filter. This is used as a key to the
         #: filter cache.
         self.name = name
@@ -47,9 +47,10 @@ class Filter(object):
         #: index and returns a new state.
         self.body = body
 
-        #: The relative rank of this filter. More specific filters
-        #: have higher rank.
-        self.rank = rank
+        if rank is None:
+            self.rank = self.new_rank(domain)
+        else:
+            self.rank = rank
 
     def __call__(self, state, index):
         return self.body(state, index)
@@ -187,8 +188,9 @@ class Filter(object):
                 name = "%s()" % fn.__name__
 
             if name not in cache:
-                body, rank = fn(*params)
-                cache[name] = cls(name=name, body=body, rank=rank)
+                body, domain = fn(*params)
+                result = cls(name=name, body=body, domain=domain)
+                cache[name] = result
             return cache[name]
         return wrapped
 
@@ -198,7 +200,10 @@ class Filter(object):
 
         :param fn: some filter function.
         """
-        return cls(name=fn.__name__, body=fn, rank=Rank())
+        return cls(name=fn.__name__, body=fn, domain=None)
+
+    def new_rank(self, domain):
+        return Rank()
 
     def subset_of(self, filt):
         if self.name == filt.name:
@@ -266,11 +271,28 @@ class TermFilter(Filter):
         return func
 
 
+class AlFilter(TermFilter):
+    def new_rank(self, domain):
+        if domain is None:
+            return Rank()
+        return Rank.with_al(domain)
+
+
+class SamjnaFilter(TermFilter):
+    def new_rank(self, domain):
+        return Rank.with_samjna(domain)
+
+
+class UpadeshaFilter(TermFilter):
+    def new_rank(self, domain):
+        return Rank.with_upadesha(domain)
+
+
 # Parameterized filters
 # ~~~~~~~~~~~~~~~~~~~~~
 # Each function accepts arbitrary arguments and returns a body and rank.
 
-@TermFilter.parameterized
+@AlFilter.parameterized
 def adi(*names):
     """Filter on the sounds at the beginning of the term.
 
@@ -280,36 +302,36 @@ def adi(*names):
     def func(term):
         return term.adi in sounds
 
-    return func, Rank.with_al(sounds)
+    return func, sounds
 
 
-@TermFilter.parameterized
+@AlFilter.parameterized
 def al(*names):
     """Filter on the sounds at the end of the term.
 
     :param names: a list of sounds
     """
-    sounds = Sounds(*names)
+    names = Sounds(*names)
     def func(term):
-        return term.antya in sounds
+        return term.antya in names
 
-    return func, Rank.with_al(sounds)
+    return func, names
 
 
-@TermFilter.parameterized
+@UpadeshaFilter.parameterized
 def gana(start, end=None):
     """Filter on the `raw`.
 
     :param names: a list of sounds
     """
-    gana_set = DP.dhatu_set(start, end)
+    names = DP.dhatu_set(start, end)
     def func(term):
-        return term.raw in gana_set
+        return term.raw in names
 
-    return func, Rank.with_upadesha(gana_set)
+    return func, names
 
 
-@TermFilter.parameterized
+@UpadeshaFilter.parameterized
 def lakshana(*names):
     """Filter on the ``raw`` property of the term, as well as `lakshana`.
 
@@ -319,10 +341,10 @@ def lakshana(*names):
     def func(term):
         return any(n in term.lakshana for n in names)
 
-    return func, Rank.with_upadesha(names)
+    return func, names
 
 
-@TermFilter.parameterized
+@UpadeshaFilter.parameterized
 def raw(*names):
     """Filter on the ``raw`` property of the term.
 
@@ -332,10 +354,10 @@ def raw(*names):
     def func(term):
         return term.raw in names
 
-    return func, Rank.with_upadesha(names)
+    return func, names
 
 
-@TermFilter.parameterized
+@SamjnaFilter.parameterized
 def samjna(*names):
     """Filter on the ``samjna`` property of the term.
 
@@ -344,10 +366,10 @@ def samjna(*names):
     def func(term):
         return any(n in term.samjna for n in names)
 
-    return func, Rank.with_samjna(names)
+    return func, names
 
 
-@TermFilter.parameterized
+@AlFilter.parameterized
 def upadha(*names):
     """Filter on the penultimate letter of the term.
 
@@ -355,14 +377,14 @@ def upadha(*names):
 
     :param names:
     """
-    sounds = Sounds(*names)
+    names = Sounds(*names)
     def func(term):
-        return term.upadha in sounds
+        return term.upadha in names
 
-    return func, Rank.with_al(sounds)
+    return func, names
 
 
-@TermFilter.parameterized
+@UpadeshaFilter.parameterized
 def value(*names):
     """Filter on the ``value`` property of the term.
 
@@ -372,7 +394,7 @@ def value(*names):
     def func(term):
         return term.value in names
 
-    return func, Rank.with_upadesha(names)
+    return func, names
 
 
 
@@ -380,7 +402,7 @@ def value(*names):
 # ~~~~~~~~~~~~~~~~~~~~~~~
 # Each function defines a filter body.
 
-@TermFilter.unparameterized
+@AlFilter.unparameterized
 def Sit_adi(term):
     """Filter on whether the term starts with ś nn upadeśa.
     """
@@ -399,13 +421,13 @@ def allow_all(*args):
     return True
 
 
-@TermFilter.unparameterized
+@AlFilter.unparameterized
 def samyoga(term):
     hal = Sounds('hal')
     return term.antya in hal and term.upadha in hal
 
 
-@TermFilter.unparameterized
+@AlFilter.unparameterized
 def samyogadi(term):
     value = term.value
     hal = Sounds('hal')
