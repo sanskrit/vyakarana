@@ -25,7 +25,7 @@ def Nit_atidesha():
 def kit_atidesha():
     return [
         ('1.2.5',
-            None,  ~F.samyoga & ~F.samjna('pit'),
+            ~F.samyoga, ~F.samjna('pit'),
             'kit'),
         ('1.2.6',
             ('YiinDI~\\', 'BU'), None,
