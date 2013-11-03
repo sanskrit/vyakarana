@@ -147,8 +147,7 @@ class Ashtadhyayi(object):
         sorted_rules = self.sorted_rules
         for ra, ia in self.matching_rules(state):
             # Ignore redundant applications
-            ra_key = state.make_rule_key(ra, ia)
-            if ra_key in state.history:
+            if ra.name in state[ia].ops:
                 continue
 
             # Only worthwhile rules
@@ -158,9 +157,7 @@ class Ashtadhyayi(object):
 
             # Verify this doesn't undo a prior rule.
             nullifies_old = False
-            for rb_key in state.history:
-                rb = self.rule_map[rb_key[0]]
-                ib = rb_key[1]
+            for rb, ib in state.history:
 
                 # We skip if both of these statements hold:
                 # 1. (rb, ib) does not apply to `state`
@@ -171,6 +168,7 @@ class Ashtadhyayi(object):
                 # change on a root.
                 if not rb.yields(state, ib) and any(rb.yields(s, ib) for s in ra_states):
                     nullifies_old = True
+                    log.debug('-- %s nullifies %s' % (ra.name, rb.name))
                     break
             if nullifies_old and ra.locus != 'asiddhavat':
                 continue
@@ -180,6 +178,7 @@ class Ashtadhyayi(object):
 
             for s in ra_states:
                 log.debug('  %s : %s --> %s' % (ra.name, state, s))
+                # print s.pprint()
             return ra_states
 
     def derive(self, sequence):

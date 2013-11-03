@@ -131,37 +131,32 @@ class State(object):
     def __str__(self):
         return repr([x.asiddha for x in self.items])
 
-    def debug_printout(self):
+    def pprint(self):
         data = []
         append = data.append
+        append('---------------------')
         append(str(self))
         for item in self.items:
             append('  %s' % item)
-            append('    %s' % (tuple(item.data),))
-            append('    %s' % sorted(item.samjna))
-            append('    %s' % sorted(item.lakshana))
-        append('')
-        return '\n'.join(data)
-
-    def _push_rule(self, rule, index):
-        self.history.append(self.make_rule_key(rule, index))
+            append('    data    : %s' % (tuple(item.data),))
+            append('    samjna  : %s' % sorted(item.samjna))
+            append('    lakshana: %s' % sorted(item.lakshana))
+            append('    ops     : %s' % sorted(item.ops))
+        append('---------------------')
+        print '\n'.join(data)
 
     def copy(self):
         return State(self.items[:], self.history[:])
 
-    def insert(self, index, item, rule=None):
+    def insert(self, index, term):
         c = self.copy()
-        c.items.insert(index, item)
-        if rule is not None:
-            c._push_rule(rule, index)
+        c.items.insert(index, term)
         return c
-
-    def make_rule_key(self, rule, index):
-        return (rule.name, index)
 
     def mark_rule(self, rule, index):
         c = self.copy()
-        c._push_rule(rule, index)
+        c.history.append((rule, index))
+        c.items[index] = c.items[index].add_op(rule.name)
         return c
 
     def remove(self, index):
@@ -174,11 +169,9 @@ class State(object):
         c.items = items
         return c
 
-    def swap(self, index, item, rule=None):
+    def swap(self, index, term):
         c = self.copy()
-        c.items[index] = item
-        if rule is not None:
-            c._push_rule(rule, index)
+        c.items[index] = term
         return c
 
 

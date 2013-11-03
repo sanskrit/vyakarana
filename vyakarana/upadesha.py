@@ -216,6 +216,12 @@ class Upadesha(object):
             lakshana=self.lakshana.union(names)
         )
 
+    def add_op(self, *names):
+        return self.copy(
+            ops=self.ops.union(names)
+        )
+
+
     def add_samjna(self, *names):
         return self.copy(
             samjna=self.samjna.union(names)

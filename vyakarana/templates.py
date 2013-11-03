@@ -127,7 +127,7 @@ class Rule(object):
         return feature_set
 
     def yields(self, state, index):
-        if self.matches(state, index):
+        if self.matches(state, index) and self.name not in state[index].ops:
             for result in self.apply(state, index):
                 return True
         return False
@@ -190,15 +190,13 @@ class TasyaRule(Rule):
             if isinstance(new_state, Option):
                 yield state.mark_rule(self, index)
                 new_state = new_state.data
-            new_state = new_state.mark_rule(self, index)
 
         # Other substitution
         else:
-            new_state = state.swap(index, cur.tasya(result, locus=self.locus),
-                                   rule=self)
+            new_state = state.swap(index, cur.tasya(result, locus=self.locus))
 
         if new_state != state:
-            yield new_state
+            yield new_state.mark_rule(self, index)
 
     def features(self):
         feature_set = set()
@@ -228,12 +226,12 @@ class SamjnaRule(TasyaRule):
         if isinstance(result, Option):
             result = result.data
             # declined
-            yield state.swap(index, cur.remove_samjna(result), rule=self)
+            yield state.swap(index, cur.remove_samjna(result)).mark_rule(self, index)
             # accepted
-            yield state.swap(index, cur.add_samjna(result), rule=self)
+            yield state.swap(index, cur.add_samjna(result)).mark_rule(self, index)
 
         elif result not in cur.samjna:
-            yield state.swap(index, cur.add_samjna(result), rule=self)
+            yield state.swap(index, cur.add_samjna(result)).mark_rule(self, index)
 
 
 class AtideshaRule(SamjnaRule):
@@ -253,6 +251,7 @@ class TasmatRule(Rule):
     __slots__ = ()
 
     def apply(self, state, index):
+        state = state.mark_rule(self, index)
         result = self.operator
 
         # Optional insertion
@@ -274,7 +273,7 @@ class TasmatRule(Rule):
             inserted = result
 
         if inserted is not None:
-            yield state.insert(index + 1, inserted, rule=self)
+            yield state.insert(index + 1, inserted)
 
 
 
@@ -295,6 +294,7 @@ class StateRule(Rule):
         :param state: a :class:`State`
         :param index: the current index
         """
+        state = state.mark_rule(self, index)
         for s in self.operator(state, index, self.locus):
             yield s.mark_rule(self, index)
 
