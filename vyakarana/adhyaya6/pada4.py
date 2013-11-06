@@ -33,7 +33,7 @@ f = F.auto
 # `asiddhavat`.
 
 @inherit(None, 'anga', None, locus='asiddhavat')
-def asiddhavat_angasya_nalopa():
+def nalopa():
     @O.DataOperator.unparameterized
     def shnam_na_lopa(value):
         ac = Sounds('ac')
@@ -56,7 +56,7 @@ def asiddhavat_angasya_nalopa():
 
 
 @inherit(None, 'anga', 'ardhadhatuka', locus='asiddhavat')
-def asiddhavat_angasya_ardhadhatuke():
+def ardhadhatuke():
     return []
     return [
         Anyatarasyam('6.4.47', None, 'Bra\sja~^', None, _47),
@@ -67,7 +67,7 @@ def asiddhavat_angasya_ardhadhatuke():
 
 
 @inherit(None, 'anga', F.adi('ac'), locus='asiddhavat')
-def asiddhavat_angasya_aci():
+def aci():
 
     @O.Operator.unparameterized
     def _6_4_77(state, index, locus):
@@ -97,7 +97,7 @@ def asiddhavat_angasya_aci():
 
 
 @inherit(None, 'anga', F.knit & f('sarvadhatuka'), locus='asiddhavat')
-def asiddhavat_angasya_kniti_sarvadhatuke():
+def kniti_sarvadhatuke():
 
     @O.DataOperator.unparameterized
     def allopa(value):
@@ -117,7 +117,7 @@ def asiddhavat_angasya_kniti_sarvadhatuke():
 
 
 @inherit('abhyasa', 'anga', 'li~w', locus='asiddhavat')
-def asiddhavat_angasya_abhyasa_lopa_liti():
+def abhyasa_lopa_liti():
 
     @F.Filter.unparameterized
     def at_ekahalmadhya_anadeshadi(state, index):

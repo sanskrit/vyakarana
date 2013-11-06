@@ -23,10 +23,10 @@ SAMJNA = set([
 ])
 
 SOUNDS = set([
-    'a', 'at',
-    'i', 'it',
-    'u', 'ut',
-    'f', 'ft',
+    'a', 'at', 'At',
+    'i', 'it', 'It',
+    'u', 'ut', 'Ut',
+    'f', 'ft', 'Ft',
     'ak', 'ik',
     'ac', 'ec',
     'yaY',
