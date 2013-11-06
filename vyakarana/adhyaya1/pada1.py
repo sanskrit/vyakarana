@@ -39,7 +39,7 @@ def mit_aco_ntyat_parah():
     ]
 
 
-@inherit(None, ('lu~k', 'Slu~', 'lu~p'), None, category='paribhasha')
+@inherit(None, f('lu~k', 'Slu~', 'lu~p'), None, category='paribhasha')
 def pratyaya_lopa():
     @O.Operator.unparameterized
     def do_lopa(state, index, locus=None):

@@ -514,24 +514,18 @@ each = term_placeholder
 # Automatic filter
 # ~~~~~~~~~~~~~~~~
 
-def auto(data):
+def auto(*data):
     """Create a filter to match the context specified by `data`.
 
     :param data:
     """
 
-    if data is None:
-        return allow_all
-
-    if hasattr(data, '__call__'):
-        return data
-
-    # Make `data` iterable
-    if isinstance(data, basestring):
-        data = [data]
-
     parsed = defaultdict(list)
     for datum in data:
+
+        if datum is None:
+            return allow_all
+
         matcher = None
         # String selector: value, samjna, or sound
         if isinstance(datum, basestring):
@@ -570,8 +564,11 @@ def auto(data):
             else:
                 base_filter |= matcher
 
-    if parsed['functions']:
-        base_filter = Filter.or_(base_filter, *parsed['functions'])
+    if base_filter:
+        if parsed['functions']:
+            base_filter = Filter.or_(base_filter, *parsed['functions'])
+    else:
+        base_filter = parsed['functions'][0]
     return base_filter
 
 

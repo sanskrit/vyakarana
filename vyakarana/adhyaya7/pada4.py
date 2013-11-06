@@ -18,7 +18,7 @@ def angasya_liti():
     return [
         ('7.4.10', None, F.samyogadi & F.adi('ft'), None, O.force_guna),
         ('7.4.11', None, F.raw('f\\') | F.al('Ft'), None, True),
-        Va('7.4.12', None, ('SF', 'dF', 'pF'), None, O.hrasva)
+        Va('7.4.12', None, f('SF', 'dF', 'pF'), None, O.hrasva)
     ]
 
 

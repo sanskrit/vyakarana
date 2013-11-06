@@ -34,7 +34,7 @@ def dvirvacana():
     return [
         # TODO: why stated as abhyasa?
         ('6.1.8', None, ~f('abhyasta'), 'li~w', do_dvirvacana),
-        ('6.1.9', None, True, ('san', 'yaN'), True),
+        ('6.1.9', None, True, f('san', 'yaN'), True),
         ('6.1.10', None, True, F.lakshana('Slu~'), True),
         ('6.1.11', None, True, 'caN', True),
     ]
@@ -43,21 +43,16 @@ def dvirvacana():
 @inherit(None, None, None)
 def do_samprasarana():
     # 6.1.15 vaci-svapi-yajādīnāṃ kiti
-    vaci_svapi = ['va\ca~', 'Yizva\pa~'] + DP.dhatu_list('ya\\ja~^')
+    vaci_svapi = f(*['va\ca~', 'Yizva\pa~'] + DP.dhatu_list('ya\\ja~^'))
 
     # 6.1.16 grahi-jyā-vayi-vyadhi-vaṣṭi-vicati-vṛścati-pṛcchati-bhṛjjatīnāṃ
     #        ṅiti ca
-    grahi_jya = ['graha~^', 'jyA\\', 'vaya~\\', 'vya\Da~', 'vaSa~',
-                 'vyaca~', 'o~vraScU~', 'pra\cCa~', 'Bra\sja~^']
+    grahi_jya = f(*['graha~^', 'jyA\\', 'vaya~\\', 'vya\Da~', 'vaSa~',
+                 'vyaca~', 'o~vraScU~', 'pra\cCa~', 'Bra\sja~^'])
 
     return [
-        ('6.1.15',
-            None, vaci_svapi, 'kit',
-            O.samprasarana),
-        # TODO: ca
-        ('6.1.16',
-            None, grahi_jya, F.knit,
-            True),
+        ('6.1.15', None, vaci_svapi, 'kit', O.samprasarana),
+        Ca('6.1.16', None, grahi_jya, F.knit, True),
         # ('6.1.17',
         #     None, 'abhyasa', [vaci_svapi + grahi_jya, F.knit],
         #     True),

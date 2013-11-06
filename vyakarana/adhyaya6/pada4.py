@@ -51,7 +51,7 @@ def nalopa():
         ('6.4.23',
             None, F.part('Snam'), None,
             shnam_na_lopa),
-        ('6.4.24', None, ~F.samjna('idit') & F.al('hal') & F.upadha('Yam'), ('kit', 'Nit'), O.upadha(''))
+        ('6.4.24', None, ~F.samjna('idit') & F.al('hal') & F.upadha('Yam'), f('kit', 'Nit'), O.upadha(''))
     ]
 
 
@@ -77,20 +77,20 @@ def aci():
         else:
             return state.swap(index, cur.tasya(Upadesha('uva~N'), locus=locus))
 
-    gama_hana = ('ga\\mx~', 'ha\\na~', 'janI~\\', 'Kanu~^', 'Gasx~')
+    gama_hana = f('ga\\mx~', 'ha\\na~', 'janI~\\', 'Kanu~^', 'Gasx~')
 
-    snu_dhatu_yvor = f(('Snu', 'dhatu', 'BrU')) & F.al('i u')
+    snu_dhatu_yvor = f('Snu', 'dhatu', 'BrU') & F.al('i u')
 
     return [
         ('6.4.77', None, snu_dhatu_yvor, None, _6_4_77),
         ('6.4.78', None, 'abhyasa', F.asavarna, True),
         ('6.4.79', None, 'strI', None, True),
-        Va('6.4.80', None, True, ('am', 'Sas'), True),
+        Va('6.4.80', None, True, f('am', 'Sas'), True),
         ('6.4.81', None, 'i\R', None, Sounds('yaR')),
         ('6.4.82', None, F.al('i') & ~F.ekac & ~F.samyogapurva, None, True),
         ('6.4.83', None, F.al('u') & ~F.ekac & ~F.samyogapurva, 'sup', True),
         ('6.4.87', None, 'hu\\', 'sarvadhatuka', True),
-        ('6.4.88', None, 'BU', ('luN', 'liw'), 'vuk'),
+        ('6.4.88', None, 'BU', f('luN', 'liw'), 'vuk'),
         ('6.4.89', None, F.value('goh'), None, O.upadha('U')),
         ('6.4.98', None, gama_hana, F.knit & ~F.raw('aN'), O.upadha(''))
     ]
@@ -153,7 +153,7 @@ def abhyasa_lopa_liti():
     return [
         ('6.4.120', None, at_ekahalmadhya_anadeshadi, 'kit', et_abhyasa_lopa),
         Ca('6.4.121', None, True, F.value('iTa'), True),
-        Ca('6.4.122', None, ('tF', 'YiPalA~', 'Ba\ja~^', 'trapU~\z'), f('kit') | F.value('iTa'), True),
+        Ca('6.4.122', None, f('tF', 'YiPalA~', 'Ba\ja~^', 'trapU~\z'), f('kit') | F.value('iTa'), True),
         Artha('6.4.123', None, F.value('rAD'), True, True),
         # # TODO: va
         # ('6.4.124',

@@ -15,8 +15,8 @@ f = F.auto
 @inherit('anga', None, None)
 def it():
 
-    titutra = ('ti', 'tu', 'tra', 'ta', 'Ta', 'si', 'su', 'sara', 'ka', 'sa')
-    kr_sr_bhr = ('kf', 'sf', 'Bf', 'vf', 'zwu', 'dru', 'sru', 'Sru')
+    titutra = f('ti', 'tu', 'tra', 'ta', 'Ta', 'si', 'su', 'sara', 'ka', 'sa')
+    kr_sr_bhr = f('kf', 'sf', 'Bf', 'vf', 'zwu', 'dru', 'sru', 'Sru')
 
     return [
         Na('7.2.13', kr_sr_bhr, f('li~w'), None, U('iw')),
@@ -36,7 +36,7 @@ def angasya_sarvadhatuke_at():
 def angasya_vrddhi():
     return [
         ('7.2.114', None, 'mfjU~', None, O.vrddhi),
-        ('7.2.115', None, 'ac', ('Yit', 'Rit'), True),
+        ('7.2.115', None, 'ac', f('Yit', 'Rit'), True),
 
         # This should really apply `O.vrddhi`, but by 1.1.3 it's tricky.
         # Since this is a one-off, apply a fuction with the same effect:

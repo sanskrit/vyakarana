@@ -18,5 +18,5 @@ def pada2():
     return [
         ('1.2.4', None, f('sarvadhatuka') & ~f('pit'), None, 'Nit'),
         ('1.2.5', ~F.samyoga, ~f('pit') & f('li~w'), None, 'kit'),
-        Ca('1.2.6', ('YiinDI~\\', 'BU'), f('li~w'), None, True),
+        Ca('1.2.6', f('YiinDI~\\', 'BU'), f('li~w'), None, True),
     ]

@@ -23,8 +23,8 @@ def pada3():
     """
 
     return [
-        ('1.3.12', ('anudattet', 'Nit'), None, None, 'atmanepada'),
-        Artha('1.3.72', ('svaritet', 'Yit'), None, None, True),
+        ('1.3.12', f('anudattet', 'Nit'), None, None, 'atmanepada'),
+        Artha('1.3.72', f('svaritet', 'Yit'), None, None, True),
         ('1.3.76', 'jYA\\', None, None, True),
         ('1.3.78', None, None, None, 'parasmaipada'),
     ]

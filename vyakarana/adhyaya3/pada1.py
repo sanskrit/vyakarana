@@ -19,7 +19,7 @@ def sanadyanta_dhatu():
     def k(s):
         return Krt(s).add_samjna('anga')
 
-    gupu_dhupa = ('gupU~', 'DUpa~', 'vicCa~', 'paRa~\\', 'pana~\\')
+    gupu_dhupa = f('gupU~', 'DUpa~', 'vicCa~', 'paRa~\\', 'pana~\\')
 
     return [
         ('3.1.28', gupu_dhupa, None, 'tin', k('Aya')),
@@ -34,10 +34,10 @@ def vikarana():
         return Krt(s).add_samjna('anga')
 
     # 3.1.70 vā bhrāśabhlāśabhramukramuklamutrasitrutilaṣaḥ
-    bhrasha_bhlasha = ('wuBrASf~\\', 'wuBlASf~\\', 'Bramu~', 'kramu~',
+    bhrasha_bhlasha = f('wuBrASf~\\', 'wuBlASf~\\', 'Bramu~', 'kramu~',
                      'klamu~', 'trasI~', 'truwa~', 'laza~^')
     # 3.1.82 stambhustumbhuskambhuskumbhuskuñbhyaḥ śnuś ca
-    stambhu_stumbhu = ('sta\mBu~', 'stu\mBu~', 'ska\mBu~', 'sku\mBu~',
+    stambhu_stumbhu = f('sta\mBu~', 'stu\mBu~', 'ska\mBu~', 'sku\mBu~',
                        'sku\Y')
 
     return [

@@ -1,5 +1,5 @@
 IT = (set([L + 'it' for L in 'kKGNYwqRpmS'])
-      | set([L + 'dit' for L in 'aiufx'])
+      | set([L + 'dit' for L in 'aiuUfx'])
       | set(['svaritet', 'anudattet', 'svarita', 'anudatta']))
 
 LA = set([
