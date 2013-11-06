@@ -110,9 +110,9 @@ def kniti_sarvadhatuke():
         return ''.join(reversed(letters))
 
     return [
-        ('6.4.111',
-            None, F.part('Snam'), None,
-            allopa),
+        ('6.4.111', None, F.part('Snam'), None, allopa),
+        ('6.4.112', None, f('SnA') & F.al('At'), None, ''),
+        ('6.4.113', None, True, F.adi('hal'), 'I'),
     ]
 
 
@@ -153,7 +153,7 @@ def abhyasa_lopa_liti():
     return [
         ('6.4.120', None, at_ekahalmadhya_anadeshadi, 'kit', et_abhyasa_lopa),
         Ca('6.4.121', None, True, F.value('iTa'), True),
-        Ca('6.4.122', None, ('tF', 'YiPalA~', 'Ba\ja~^', 'trapU~\z'), F.samjna('kit') | F.value('iTa'), True),
+        Ca('6.4.122', None, ('tF', 'YiPalA~', 'Ba\ja~^', 'trapU~\z'), f('kit') | F.value('iTa'), True),
         Artha('6.4.123', None, F.value('rAD'), True, True),
         # # TODO: va
         # ('6.4.124',
