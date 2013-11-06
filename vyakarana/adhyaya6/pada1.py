@@ -1,28 +1,20 @@
 # -*- coding: utf-8 -*-
 """
-    vyakarana.abhyasa
-    ~~~~~~~~~~~~~~~~~
+    vyakarana.adhyaya6.pada1
+    ~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Rules that apply specifically to an abhyāsa. These rules fall into
-    two groups. The first is at the beginning of 6.1:
-
-        6.1.1 ekAco dve prathamasya
-
-    The second is from 7.4.58 to the end of book 7:
-
-        7.4.58 atra lopo 'bhyAsasya
+    Ashtadhyayi 6.1.
 
     :license: MIT and BSD
 """
 
-
-import filters as F
-import operators as O
-from dhatupatha import DHATUPATHA as DP
-from templates import *
-from upadesha import Upadesha
+from .. import filters as F, operators as O
+from ..dhatupatha import DHATUPATHA as DP
+from ..templates import *
+from ..upadesha import Upadesha
 
 f = F.auto
+
 
 @inherit(None, 'dhatu', None)
 def dvirvacana():
@@ -70,3 +62,4 @@ def do_samprasarana():
         #     None, 'abhyasa', [vaci_svapi + grahi_jya, F.knit],
         #     True),
     ]
+

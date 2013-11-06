@@ -1,31 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-    vyakarana.dhatu
-    ~~~~~~~~~~~~~~~
-
-    Rules that apply specifically to a dhātu. Almost all such rules are
-    within the domain of 3.1.91:
-
-        3.1.91 dhātoḥ
-
-    which holds until the end of 3.4.
+    vyakarana.adhyaya3.pada1
+    ~~~~~~~~~~~~~~~~~~~~~~~~
 
     :license: MIT and BSD
 """
 
-import filters as F
-from templates import *
-from upadesha import Dhatu, Krt
+from .. import filters as F, operators as O
+from ..templates import *
+from ..upadesha import Krt
 
 f = F.auto
-
-
-@inherit(None, F.raw('Sap'), None)
-def sap_lopa():
-    return [
-        ('2.4.71', F.gana('a\da~'), None, None, 'lu~k'),
-        ('2.4.74', F.gana('hu\\'), None, None, 'Slu~')
-    ]
 
 
 @inherit('dhatu', None, 'tin')

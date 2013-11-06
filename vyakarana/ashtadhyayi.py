@@ -13,12 +13,18 @@ import logging
 import os
 from collections import OrderedDict, defaultdict
 
-import abhyasa
-import adhyaya1
-import adhyaya7
-import anga
-import atidesha
-import dhatu
+import adhyaya1.pada1
+import adhyaya1.pada2
+import adhyaya1.pada3
+import adhyaya2.pada4
+import adhyaya3.pada1
+import adhyaya3.pada4
+import adhyaya6.pada1
+import adhyaya6.pada4
+import adhyaya7.pada1
+import adhyaya7.pada2
+import adhyaya7.pada3
+import adhyaya7.pada4
 import dhatupatha
 import sandhi
 import siddha
