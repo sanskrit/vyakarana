@@ -10,6 +10,7 @@
 
 import re
 from collections import namedtuple
+
 from sounds import Sound, Sounds
 
 
@@ -33,10 +34,10 @@ class Upadesha(object):
 
     """A Term with indicatory letters."""
 
-    __slots__ = ['data', 'samjna', 'lakshana', 'ops', '_filter_cache']
+    __slots__ = ['data', 'samjna', 'lakshana', 'ops', 'parts', '_filter_cache']
     nasal_re = re.compile('([aAiIuUfFxeEoO])~')
 
-    def __init__(self, raw=None, data=None, samjna=None, lakshana=None, ops=None, **kw):
+    def __init__(self, raw=None, data=None, samjna=None, lakshana=None, ops=None, parts=None, **kw):
         if raw is not None:
             clean, it_samjna = self._parse_it(raw, **kw)
             data = DataSpace(raw, clean, clean, clean, clean)
@@ -45,6 +46,7 @@ class Upadesha(object):
         self.samjna = samjna
         self.lakshana = lakshana or frozenset()
         self.ops = ops or frozenset()
+        self.parts = parts or frozenset()
         self._filter_cache = {}
 
     def __eq__(self, other):
@@ -55,7 +57,8 @@ class Upadesha(object):
         return (self.data == other.data and
                 self.samjna == other.samjna and
                 self.lakshana == other.lakshana and
-                self.ops == other.ops)
+                self.ops == other.ops and
+                self.parts == other.parts)
 
     def __ne__(self, other):
         return not self == other
@@ -63,12 +66,13 @@ class Upadesha(object):
     def __repr__(self):
         return "<%s('%s')>" % (self.__class__.__name__, self.value)
 
-    def copy(self, data=None, samjna=None, lakshana=None, ops=None):
+    def copy(self, data=None, samjna=None, lakshana=None, ops=None, parts=None):
         return self.__class__(
             data=data or self.data,
             samjna=samjna or self.samjna,
             lakshana=lakshana or self.lakshana,
-            ops=ops or self.ops
+            ops=ops or self.ops,
+            parts=parts or self.parts
             )
 
     @property
@@ -221,6 +225,10 @@ class Upadesha(object):
             ops=self.ops.union(names)
         )
 
+    def add_part(self, *names):
+        return self.copy(
+            parts=self.parts.union(names)
+        )
 
     def add_samjna(self, *names):
         return self.copy(
@@ -247,7 +255,6 @@ class Upadesha(object):
         else:
             raise NotImplementedError
 
-
     def set_raw(self, raw):
         clean, it_samjna = self._parse_it(raw)
         samjna = self.samjna | it_samjna
@@ -266,68 +273,64 @@ class Upadesha(object):
     def set_asiddha(self, asiddha):
         return self.copy(data=self.data.replace(asiddha=asiddha))
 
-    def tasya(self, other, locus='value', adi=False):
-        """
-        Perform a substitution according to the normal rules.
-
-        :param other: the term to insert
-        """
-        value = self.value
+    def tasya(self, sthani, adi=False, locus='value'):
+        term_value = self.value
+        value = None
+        add_part = False
 
         # 1.1.54 AdeH parasya
         if adi:
             try:
-                value = other.value + value[1:]
+                value = sthani.value + term_value[1:]
             except AttributeError:
-                value = other + value[1:]
-            return self.set_at(locus, value)
+                value = sthani + term_value[1:]
 
-        if isinstance(other, basestring):
+        elif isinstance(sthani, basestring):
             # 1.1.52 alo 'ntyasya
             # 1.1.55 anekAlSit sarvasya
-            if len(other) <= 1:
-                value = value[:-1] + other
+            if len(sthani) <= 1:
+                value = term_value[:-1] + sthani
             else:
-                value = other
-            return self.set_at(locus, value)
+                value = sthani
 
-        if not hasattr(other, 'value'):
+        elif not hasattr(sthani, 'value'):
             # 1.1.50 sthAne 'ntaratamaH
-            last = Sound(self.antya).closest(other)
-            value = value[:-1] + last
-            return self.set_at(locus, value)
+            last = Sound(self.antya).closest(sthani)
+            value = term_value[:-1] + last
 
         # 1.1.47 mid aco 'ntyAt paraH
-        if 'mit' in other.samjna:
+        elif 'mit' in sthani.samjna:
             ac = Sounds('ac')
-            for i, L in enumerate(reversed(value)):
+            for i, L in enumerate(reversed(term_value)):
                 if L in ac:
                     break
-            value = value[:-i] + other.value + value[-i:]
-            return self.set_at(locus, value)
+            value = term_value[:-i] + sthani.value + term_value[-i:]
+            add_part = True
 
         # 1.1.46 Adyantau Takitau
-        elif 'kit' in other.samjna:
-            value += other.value
-            return self.set_at(locus, value)
-
-        elif 'wit' in other.samjna:
-            value = other.value + value
-            return self.set_at(locus, value)
+        elif 'kit' in sthani.samjna:
+            value = term_value + sthani.value
+            add_part = True
+        elif 'wit' in sthani.samjna:
+            value = sthani.value + term_value
+            add_part = True
 
         # 1.1.52 alo 'ntyasya
         # 1.1.53 Gic ca
-        elif len(other.value) == 1 or 'Nit' in other.samjna:
-            value = value[:-1] + other.value
-            return self.set_at(locus, value)
+        elif len(sthani.value) == 1 or 'Nit' in sthani.samjna:
+            value = term_value[:-1] + sthani.value
 
         # 1.1.55 anekAlSit sarvasya
-        elif 'S' in other.it or len(other.value) > 1:
-            value = other.value
-            return self.set_at(locus, value)
+        elif 'S' in sthani.it or len(sthani.value) > 1:
+            value = sthani.value
 
-        else:
-            raise NotImplementedError
+        if value:
+            returned = self.set_at(locus, value)
+            if add_part:
+                returned = returned.add_part(sthani.raw)
+            return returned
+
+        raise NotImplementedError
 
 
 class Anga(Upadesha):

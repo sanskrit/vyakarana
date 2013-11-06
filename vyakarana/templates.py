@@ -11,43 +11,101 @@
     :license: MIT and BSD
 """
 
-import logging
-from itertools import chain, islice, izip, izip_longest, repeat
-
 import filters as F
-from dhatupatha import DHATUPATHA as DP
+import lists
+import operators as O
 from util import Rank
 
 # New-style rules. Temporary.
 ALL_RULES = []
 
 
-def padslice(state, i):
-    return chain(islice(state, i, None), repeat(None))
-
-
 # Rule conditions
 # ~~~~~~~~~~~~~~~
 
-class Option(object):
-    """Wrapper for a returned result that can be accepted optionally."""
-    def __init__(self, data):
-        self.data = data
+class TupleWrapper(object):
+
+    """Wrapper for tuple rules.
+
+    The Ashtadhyayi uses a variety of terms to control when and how a
+    rule applies. For example, 'anyatarasyām' denotes that a rule
+    specifies an optional operation that can be accepted or rejected.
+
+    In this system, these terms are marked by wrapping a rule in this
+    class or one of its subclasses.
+    """
+
+    def __init__(self, *args):
+        self.data = args
 
     def __repr__(self):
         return '<%s(%s)>' % self.__class__.__name__, repr(self.data)
 
 
+class Ca(TupleWrapper):
+    """Wrapper for a rule that contains the word "ca".
+
+    "ca" has a variety of functions, but generally it preserves parts
+    of the previous rule in the current rule.
+    """
+
+
+class Na(TupleWrapper):
+    """Wrapper for a rule that just blocks other rules."""
+
+
+class Nityam(TupleWrapper):
+    """Wrapper for a rule that cannot be rejected.
+
+    This is used to cancel earlier conditions.
+    """
+
+
+class Option(TupleWrapper):
+    """Wrapper for a rule that can be accepted optionally.
+
+    This is a superclass for a variety of optional conditions.
+    """
+
+
 class Anyatarasyam(Option):
-    """Wrapper for a returned result that is indifferently accepted."""
+    """Wrapper for a rule that is indifferently accepted.
+
+    Modern scholarship rejects the traditional definition of anyatarasyām,
+    but this system treats it as just a regular option.
+    """
 
 
 class Va(Option):
-    """Wrapper for a returned result that is preferably accepted."""
+    """Wrapper for a rule that is preferably accepted.
+
+    Modern scholarship rejects the traditional definiton of vā, but
+    this system treats it as just a regular option.
+    """
 
 
 class Vibhasha(Option):
-    """Wrapper for a returned result that is preferably not accepted."""
+    """Wrapper for a rule that is preferably not accepted.
+
+    Modern scholarship rejects the traditional definiton of vibhāṣā,
+    but this system treats it as just a regular option.
+    """
+
+
+class Artha(Option):
+    """Wrapper for a rule that applies only in some semantic condition.
+
+    Since the semantic condition can be declined, this is essentially
+    an optional provision.
+    """
+
+
+class Opinion(Option):
+    """Wrapper for a rule that is accepted by prior opinion.
+
+    Since the opinion can be declined, this is essentially the same as
+    an optional provision.
+    """
 
 
 # Rule classes
@@ -74,38 +132,146 @@ class Rule(object):
     NORMAL_LOCUS = 1
     ASIDDHAVAT = 0
 
-    __slots__ = ('name', 'filters', 'operator', 'locus', 'rank')
-
     def __init__(self, name, filters, operator, **kw):
         #: A unique ID for this rule, e.g. "6.4.1"
         self.name = name
+
         #: A list of filter functions to apply to some subsequence in
         #: a state. If the subsequence matches, then we can apply the
         #: rule to the subsequence.
         self.filters = filters
-        #: Some object that describes a transformation on all or part
-        #:  of the state. This object can be arbitrary, but subclasses
-        #: of :class:`Rule` can make stronger guarantees.
-        self.operator = operator
+
+        #:
+        self.operator = self._make_operator(operator)
+
         #:
         self.locus = kw.pop('locus', 'value')
+
         #: The relative strength of this rule. The higher the rank, the
         #: more powerful the rule.
-        if self.locus == 'asiddhavat':
-            rank_locus = self.ASIDDHAVAT
-        else:
-            rank_locus = self.NORMAL_LOCUS
+        self.rank = self._make_rank(self.locus, filters)
 
-        rank = Rank.and_(f.rank for f in filters)
-        rank = rank.replace(category=self.RULE_TYPE, locus=rank_locus)
-        self.rank = rank
+        #:
+        self.option = kw.pop('option', None)
+
+        #: A list of rules. These rules are all blocked if the current
+        #: rule can apply.
+        self.utsarga = []
 
     def __repr__(self):
         class_name = self.__class__.__name__
         return '<%s(%s)>' % (class_name, self.name)
 
-    def apply(self, state, i):
-        raise NotImplementedError
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def new(self, name, left, center, right, result, **kw):
+        if center[0] is F.allow_all and result not in lists.SAMJNA:
+            returned = TasmatRule(name, left + right, result, **kw)
+        else:
+            if kw.get('category') == 'paribhasha':
+                cls = ParibhashaRule
+            elif result in lists.SAMJNA:
+                cls = SamjnaRule
+            elif result in lists.IT:
+                cls = SamjnaRule
+            else:
+                cls = TasyaRule
+
+            if left and left[0] == F.allow_all:
+                left = []
+            if right and right[0] == F.allow_all:
+                right = []
+
+            returned = cls(name, left + center + right, result, **kw)
+
+        returned.offset = len(left)
+        return returned
+
+    def _make_operator(self, op):
+        """Create and return an :class:`~operators.Operator`.
+
+        :param op: an arbitrary object
+        """
+        return op
+
+    def _make_rank(self, locus, filters):
+
+        if locus == 'asiddhavat':
+            rank_locus = Rule.ASIDDHAVAT
+        else:
+            rank_locus = Rule.NORMAL_LOCUS
+
+        rank = Rank.and_(f.rank for f in filters)
+        rank = rank.replace(category=self.RULE_TYPE, locus=rank_locus)
+        return rank
+
+    def apply(self, state, index):
+        """Apply this rule and yield the results.
+
+        :param state: a state
+        :param index: the index where the first filter is applied.
+        """
+        if self.option:
+            # Option declined. Mark the state but leave the rest alone.
+            yield state.mark_rule(self, index)
+
+        # Mandatory, or option accepted. Apply the operator and yield.
+        # Also, block all utsarga rules.
+        #
+        # We yield only if the state is different; otherwise the system
+        # will loop.
+        new = self.operator(state, index + self.offset, self.locus)
+        if new != state:
+            new = new.mark_rule(self, index)
+            new = new.swap(index, new[index].add_op(*self.utsarga))
+            yield new
+
+    def features(self):
+        feature_set = set()
+        for i, filt in enumerate(self.filters):
+            feature_set.update((f, i) for f in filt.supersets)
+        return feature_set
+
+    def has_apavada(self, other):
+        """Return whether the other rule is an apavada to this one.
+
+        Rule B is an apavada to rule A if and only if:
+        1. A != B
+        2. If A matches some position, then B matches too.
+        3. A and B have the same locus
+        4. The operations performed by A and B are in conflict
+
+        For details on what (4) means specifically, see the comments on
+        :meth:`operators.Operator.conflicts_with`.
+
+        :param other: a rule
+        """
+
+        # Condition 1
+        if self.name == other.name:
+            return False
+
+        # Condition 2
+        filter_pairs = zip(self.filters, other.filters)
+        if not all(f2.subset_of(f1) for f1, f2 in filter_pairs):
+            return False
+
+        # Condition 3
+        if self.locus != other.locus:
+            return False
+
+        # Condition 4
+        return self.operator.conflicts_with(other.operator)
+
+    def has_utsarga(self, other):
+        """Return whether the other rule is an utsarga to this one.
+
+        :param other: a rule
+        """
+        # A is an utsarga to B iff B is an apavada to A.
+        return other.has_apavada(self)
 
     def matches(self, state, index):
         """
@@ -120,19 +286,13 @@ class Rule(object):
                 return False
         return True
 
-    def features(self):
-        feature_set = set()
-        for i, filt in enumerate(self.filters):
-            feature_set.update((f, i) for f in filt.required())
-        return feature_set
-
     def yields(self, state, index):
         if self.matches(state, index) and self.name not in state[index].ops:
             for result in self.apply(state, index):
                 return True
         return False
 
-    def debug_printout(self):
+    def pprint(self):
         data = []
         append = data.append
         append('Rule %s' % self.name)
@@ -142,7 +302,7 @@ class Rule(object):
         append('    Operator : %r' % self.operator)
         append('    Rank     : %r' % (self.rank,))
         append('')
-        return '\n'.join(data)
+        print '\n'.join(data)
 
 
 class TasyaRule(Rule):
@@ -155,54 +315,11 @@ class TasyaRule(Rule):
     :class:`Upadesha`, which is saved at ``state[index]``.
     """
 
-    __slots__ = ()
-
-    def matches(self, state, index):
-        """
-
-        This applies filters sequentially from ``state[index - 1]``.
-
-        :param state: the current :class:`State`
-        :param index: an index into the state
-        """
-        for i, filt in enumerate(self.filters):
-            if not filt(state, index + i - 1):
-                return False
-        return True
-
-    def apply(self, state, index):
-        cur = state[index]
-        result = self.operator
-
-        # Optional substitution
-        if isinstance(result, Option):
-            if self.name in cur.ops:
-                return
-            # declined
-            yield state.mark_rule(self, index)
-            # accepted
-            result = result.data
-
-        # Operator substitution
-        if hasattr(result, '__call__'):
-            new_state = result(state, index, self.locus)
-
-            if isinstance(new_state, Option):
-                yield state.mark_rule(self, index)
-                new_state = new_state.data
-
-        # Other substitution
+    def _make_operator(self, op):
+        if hasattr(op, '__call__'):
+            return op
         else:
-            new_state = state.swap(index, cur.tasya(result, locus=self.locus))
-
-        if new_state != state:
-            yield new_state.mark_rule(self, index)
-
-    def features(self):
-        feature_set = set()
-        for i, filt in enumerate(self.filters):
-            feature_set.update((f, i - 1) for f in filt.required())
-        return feature_set
+            return O.tasya(op)
 
 
 class SamjnaRule(TasyaRule):
@@ -218,20 +335,9 @@ class SamjnaRule(TasyaRule):
 
     RULE_TYPE = Rule.SAMJNA
 
-    def apply(self, state, index):
-        cur = state[index]
-        result = self.operator
-
-        # Optional substitution
-        if isinstance(result, Option):
-            result = result.data
-            # declined
-            yield state.swap(index, cur.remove_samjna(result)).mark_rule(self, index)
-            # accepted
-            yield state.swap(index, cur.add_samjna(result)).mark_rule(self, index)
-
-        elif result not in cur.samjna:
-            yield state.swap(index, cur.add_samjna(result)).mark_rule(self, index)
+    def _make_operator(self, op):
+        self.domain = op
+        return O.add_samjna(op)
 
 
 class AtideshaRule(SamjnaRule):
@@ -250,56 +356,11 @@ class TasmatRule(Rule):
 
     __slots__ = ()
 
-    def apply(self, state, index):
-        state = state.mark_rule(self, index)
-        result = self.operator
-
-        # Optional insertion
-        if isinstance(result, Option):
-            # declined
-            yield state.mark_rule(self, index)
-            # accepted
-            result = result.data
-
-        # Operator insertion
-        if hasattr(result, '__call__'):
-            inserted = result(state, index)
-            if isinstance(inserted, Option):
-                yield state.mark_rule(self, index)
-                inserted = inserted.data
-
-        # Other insertion
-        else:
-            inserted = result
-
-        if inserted is not None:
-            yield state.insert(index + 1, inserted)
+    def _make_operator(self, op):
+        return O.insert(op)
 
 
-
-class StateRule(Rule):
-
-    """A rule that changes multiple terms.
-
-    For some locus ``(state, index)``, the rule applies filters starting
-    from ``state[index]``. `self.operator` is a function that accepts a
-    ``(state, index)`` pair and yields new states.
-    """
-
-    __slots__ = ()
-
-    def apply(self, state, index):
-        """Return a rule generator.
-
-        :param state: a :class:`State`
-        :param index: the current index
-        """
-        state = state.mark_rule(self, index)
-        for s in self.operator(state, index, self.locus):
-            yield s.mark_rule(self, index)
-
-
-class ParibhashaRule(StateRule):
+class ParibhashaRule(Rule):
 
     RULE_TYPE = Rule.PARIBHASHA
 
@@ -331,105 +392,55 @@ def generate_filter(data, base=None, prev=None):
         return extension & base
 
 
-def process_tuple_rules(rules, base_filters):
+def process_tuples(rules, base):
     """
 
     :param rules: a list of tuple rules
-    :param base_filters: a list of :class:`Filter`s.
+    :param base: a list of :class:`Filter`s.
     """
-    prev_name = None
-    prev_filters = [None] * 3
-    prev_result = None
+    prev = (None, None, None)
+    prev_operator = None
+
     for row in rules:
+        kw = {'option': False}
+
+        if isinstance(row, TupleWrapper):
+            kw['option'] = isinstance(row, Option)
+            row = row.data
+
+        assert len(row) == 5
+
         name = row[0]
-        window = row[1:-1]
-        result = row[-1]
+        window = row[1:4]
+        operator = row[4]
 
         filters = []
-        for base, spot, prev in zip(base_filters, window, prev_filters):
-            filters.append(generate_filter(spot, base=base, prev=prev))
+        for b, w, p in zip(base, window, prev):
+            filters.append(generate_filter(w, base=b, prev=p))
 
-        if result is True:
-            result = prev_result
+        if operator is True:
+            operator = prev_operator
 
-        yield name, filters, result
-        prev_name, prev_filters, prev_result = name, filters, result
+        yield name, filters, operator, kw
+        prev, prev_operator = (filters, operator)
 
 
-# Rule decorators
-# ~~~~~~~~~~~~~~~
+def inherit(*base, **base_kw):
+    """
 
-def make_rule_decorator(cls, *base_filters, **kw):
-    base_filters = [F.auto(f) for f in base_filters]
+    """
+
+    base = [F.auto(x) for x in base]
 
     def decorator(fn):
         rules = fn()
-        for name, filters, op in process_tuple_rules(rules, base_filters):
-            rule = cls(name, filters, op, **kw)
+
+        for name, filters, operator, rule_kw in process_tuples(rules, base):
+            left, center, right = filters
+
+            kw = dict(base_kw, **rule_kw)
+            rule = Rule.new(name, [left], [center], [right],
+                            operator, **kw)
             ALL_RULES.append(rule)
 
     return decorator
-
-
-def tasya(*base_filters, **kw):
-    """Decorator for a function that returns a list of tuple rules. Each
-    tuple defines a substitution.
-
-    This decorator defines a template that is applied to each of the
-    tuples in the returned list. The tuples have the following format::
-
-        (name, f1, f2, ..., fn, op)
-
-    with the following meanings:
-
-    - ``name`` is a string identifier for the rule, e.g. ``'6.4.77'``
-    - ``f1`` through ``fn`` can take various values. For details, see
-      `generate_filter`.
-    - ``op`` is a valid operator function. If ``op`` is ``True``, the
-      operator for the previous rule is used. ``op`` is applied to the
-      term that matches ``f2``.
-
-    Each of the tuples is converted to a :class:`TasyaRule` and appended
-    to a global rule list.
-
-    :param base_filters: a list of objects, each of which is sent to
-                         `filters.auto`.
-    """
-    return make_rule_decorator(TasyaRule, *base_filters, **kw)
-
-
-def atidesha(*base_filters, **kw):
-    return make_rule_decorator(AtideshaRule, *base_filters, **kw)
-
-
-def tasmat(*base_filters, **kw):
-    return make_rule_decorator(TasmatRule, *base_filters, **kw)
-
-
-def paribhasha(*base_filters, **kw):
-    return make_rule_decorator(ParibhashaRule, *base_filters, **kw)
-
-
-def state(*base_filters, **kw):
-    """Decorator for a function that returns a list of tuple rules. Each
-    tuple defines a state transformation.
-
-    This decorator defines a template that is applied to each of the
-    tuples in the returned list. The tuples have the following format::
-
-        (name, f1, f2, ..., fn, body)
-
-    with the following meanings:
-
-    - ``name`` is a string identifier for the rule, e.g. ``'6.4.77'``
-    - ``f1`` through ``fn`` can take various values. For details, see
-      `generate_filter`.
-    - `'op`` accepts a state with its index and yields new states.
-
-    Each of the tuples is converted to a :class:`StateRule` and appended
-    to a global rule list.
-
-    :param base_filters: a list of objects, each of which is sent to
-                         `filters.auto`.
-    """
-    return make_rule_decorator(StateRule, *base_filters, **kw)

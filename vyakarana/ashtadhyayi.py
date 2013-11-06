@@ -14,12 +14,12 @@ import os
 from collections import OrderedDict, defaultdict
 
 import abhyasa
+import adhyaya1
+import adhyaya7
 import anga
 import atidesha
 import dhatu
 import dhatupatha
-import paribhasha
-import pratyaya
 import sandhi
 import siddha
 import vibhakti
@@ -124,7 +124,18 @@ class Ashtadhyayi(object):
         self.sorted_rules = sorted(ALL_RULES, cmp = lambda x, y: cmp(y.rank, x.rank))
         #: Maps a rule's name to a :class:`Rule` instance.
         self.rule_map = {x.name: x for x in ALL_RULES}
+
         self.rule_tree = RuleTree(self.sorted_rules)
+
+        self.utsarga = {}
+        for rule in ALL_RULES:
+            self.utsarga[rule] = []
+            for other in ALL_RULES:
+                if rule.has_utsarga(other):
+                    self.utsarga[rule].append(other)
+
+        for rule in ALL_RULES:
+            rule.utsarga = self.utsarga[rule]
 
     def matching_rules(self, state):
         state_indices = range(len(state))
@@ -147,7 +158,7 @@ class Ashtadhyayi(object):
         sorted_rules = self.sorted_rules
         for ra, ia in self.matching_rules(state):
             # Ignore redundant applications
-            if ra.name in state[ia].ops:
+            if ra in state[ia].ops:
                 continue
 
             # Only worthwhile rules
@@ -155,30 +166,11 @@ class Ashtadhyayi(object):
             if not ra_states:
                 continue
 
-            # Verify this doesn't undo a prior rule.
-            nullifies_old = False
-            for rb, ib in state.history:
-
-                # We skip if both of these statements hold:
-                # 1. (rb, ib) does not apply to `state`
-                # 2. (rb, ib) applies to one of `ra_states`
-                #
-                # We need (1) because `rb` could be a rule that always
-                # has the option of applying, e.g. an optional vowel
-                # change on a root.
-                if not rb.yields(state, ib) and any(rb.yields(s, ib) for s in ra_states):
-                    nullifies_old = True
-                    log.debug('-- %s nullifies %s' % (ra.name, rb.name))
-                    break
-            if nullifies_old and ra.locus != 'asiddhavat':
-                continue
-
             # Verify this isn't dominated by any other rules
             # TODO
 
             for s in ra_states:
                 log.debug('  %s : %s --> %s' % (ra.name, state, s))
-                # print s.pprint()
             return ra_states
 
     def derive(self, sequence):

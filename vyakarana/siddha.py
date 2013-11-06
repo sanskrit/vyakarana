@@ -59,6 +59,16 @@ def asiddha_helper(state):
             if c.last and (c.term.value in roots or c.term.antya in 'SC'):
                 x = 'z'
 
+        # 8.2.40 (TODO: not dhA)
+        if w in Sounds('Jaz') and x in 'tT':
+            x = 'D'
+        elif x == 'D' and y in 'tT':
+            continue
+
+         # 8.2.41 SaDhoH kaH si
+        elif x in 'zQ' and y == 's':
+             x = 'k'
+
         # 8.2.41 SaDhoH kaH si
         if x in 'zQ' and y == 's':
             x = 'k'

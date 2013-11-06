@@ -156,7 +156,7 @@ class State(object):
     def mark_rule(self, rule, index):
         c = self.copy()
         c.history.append((rule, index))
-        c.items[index] = c.items[index].add_op(rule.name)
+        c.items[index] = c.items[index].add_op(rule)
         return c
 
     def remove(self, index):

@@ -22,9 +22,12 @@ from dhatupatha import DHATUPATHA as DP
 from templates import *
 from upadesha import Upadesha
 
+f = F.auto
 
-@state('dhatu', None)
+@inherit(None, 'dhatu', None)
 def dvirvacana():
+
+    @O.Operator.unparameterized
     def do_dvirvacana(state, i, locus=None):
         # 6.1.1 ekAco dve prathamasya
         # 6.1.2 ajAder dvitIyasya
@@ -34,38 +37,24 @@ def dvirvacana():
         cur = state[i]
         abhyasa = Upadesha(data=cur.data, samjna=frozenset(['abhyasa']))
         abhyasta = cur.add_samjna('abhyasta')
-        yield state.swap(i, abhyasta).insert(i, abhyasa)
+        return state.swap(i, abhyasta).insert(i, abhyasa)
 
     return [
         # TODO: why stated as abhyasa?
-        ('6.1.8',
-            ~F.samjna('abhyasta'), 'li~w',
-            do_dvirvacana),
-        ('6.1.9',
-            True, ('san', 'yaN'),
-            True),
-        ('6.1.10',
-            True, F.lakshana('Slu~'),
-            True),
-        ('6.1.11',
-            True, 'caN',
-            True),
+        ('6.1.8', None, ~f('abhyasta'), 'li~w', do_dvirvacana),
+        ('6.1.9', None, True, ('san', 'yaN'), True),
+        ('6.1.10', None, True, F.lakshana('Slu~'), True),
+        ('6.1.11', None, True, 'caN', True),
     ]
 
-@tasya(None, None, None)
+
+@inherit(None, None, None)
 def do_samprasarana():
-    # 'vac' gana. Generally, these roots take samprasarana when followed
-    # by affixes that are marked with 'k'. The full list of such roots
-    # is defined in the Dhatupatha.
-    #
-    #     6.1.15 vaci-svapi-yajādīnāṃ kiti
+    # 6.1.15 vaci-svapi-yajādīnāṃ kiti
     vaci_svapi = ['va\ca~', 'Yizva\pa~'] + DP.dhatu_list('ya\\ja~^')
 
-    #: 'grah' gana. Generally, these roots take samprasarana when
-    #: followed by affixes that are marked with either 'k' or 'n'.
-    #:
-    #:     6.1.16 grahi-jyā-vayi-vyadhi-vaṣṭi-vicati-vṛścati-pṛcchati-
-    #:            bhṛjjatīnāṃ ṅiti ca
+    # 6.1.16 grahi-jyā-vayi-vyadhi-vaṣṭi-vicati-vṛścati-pṛcchati-bhṛjjatīnāṃ
+    #        ṅiti ca
     grahi_jya = ['graha~^', 'jyA\\', 'vaya~\\', 'vya\Da~', 'vaSa~',
                  'vyaca~', 'o~vraScU~', 'pra\cCa~', 'Bra\sja~^']
 
@@ -77,7 +66,7 @@ def do_samprasarana():
         ('6.1.16',
             None, grahi_jya, F.knit,
             True),
-        ('6.1.16',
-            None, 'abhyasa', vaci_svapi + grahi_jya, F.knit,
-            True),
+        # ('6.1.17',
+        #     None, 'abhyasa', [vaci_svapi + grahi_jya, F.knit],
+        #     True),
     ]

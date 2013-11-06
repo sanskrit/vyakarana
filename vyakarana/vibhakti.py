@@ -12,11 +12,12 @@ import itertools
 
 import filters as F
 import operators as O
-import dhatu as D
+import adhyaya1 as A1
 import util
 from upadesha import Vibhakti as V
-from templates import state, tasya
+from templates import inherit
 
+f = F.auto
 
 PADA = ['parasmaipada', 'atmanepada']
 PURUSHA = ['prathama', 'madhyama', 'uttama']
@@ -99,12 +100,12 @@ def tin_key(samjna, pada=None):
     return x, y, z
 
 
-@state('dhatu', f_lakara)
+@inherit(None, None, None)
 def lasya():
     """3.4.77 lasya"""
 
     base_tin = """tip tas Ji sip Tas Ta mip vas mas
-                  ta AtAm Ja TAs ATAm Dvam iw vahi mahiG""".split()
+                  ta AtAm Ja TAs ATAm Dvam iw vahi mahiN""".split()
     base_samjna = [set(['tin']) for s in base_tin]
 
     # 1.4.99 laH parasmaipadam
@@ -119,51 +120,30 @@ def lasya():
 
     key2index = {tin_key(x): i for i, x in enumerate(base_samjna)}
 
-    def tin_adesha(state, index, locus=None):
-        dhatu = state[index]
-        la = state[index + 1]
-        la_type = la.raw
-        # TODO: remove hacks
-        dhatuka = 'ardhadhatuka' if la_type == 'li~w' else 'sarvadhatuka'
-        has_para, has_atma = D.pada_options(dhatu)
-        indices = []
-        if has_para:
-            i = key2index[tin_key(la.samjna, pada='parasmaipada')]
-            new_raw = base_tin[i]
-            tin = la.set_raw(new_raw).add_samjna('tin', 'parasmaipada', dhatuka)
-            yield state.swap(index + 1, tin)
-        if has_atma:
-            i = key2index[tin_key(la.samjna, pada='atmanepada')]
-            new_raw = base_tin[i]
-            tin = la.set_raw(new_raw).add_samjna('tin', 'atmanepada', dhatuka)
-            yield state.swap(index + 1, tin)
-
-
-    return [
-        ('3.4.78',
-            None, None,
-            tin_adesha),
-    ]
-
-
-@tasya(None, 'tin')
-def tin_adesha():
-    """3.4.77 lasya"""
-
     base_p_tin = 'tip tas Ji sip Tas Ta mip vas mas'.split()
     lit_p_tin = 'Ral atus us Tal aTus a Ral va ma'.split()
 
+    @O.Operator.unparameterized
+    def tin_adesha(state, index, locus=None):
+        la = state[index]
+        la_type = la.raw
+        # TODO: remove hacks
+        dhatuka = 'ardhadhatuka' if la_type == 'li~w' else 'sarvadhatuka'
+        i = key2index[tin_key(la.samjna)]
+        new_raw = base_tin[i]
+        tin = la.set_raw(new_raw).add_samjna('tin', dhatuka)
+        return state.swap(index, tin)
+
     return [
-        ('3.4.79',
-            None, F.samjna('atmanepada') & F.samjna('wit'),
-            O.ti('e')),
+        ('3.4.78', None, f_lakara, None, tin_adesha),
+        ('3.4.79', None, F.samjna('atmanepada') & F.samjna('wit'), None, O.ti('e')),
         ('3.4.80',
-            None, F.samjna('atmanepada') & F.samjna('wit') & F.raw('TAs'),
+            None, f('atmanepada') & f('wit') & F.raw('TAs'), None,
             'se'),
         ('3.4.81',
-            None, F.samjna('atmanepada') & F.raw('ta', 'Ja') & F.auto('li~w'),
+            None, f('atmanepada') & F.raw('ta', 'Ja') & f('li~w'), None,
             O.yathasamkhya(['ta', 'Ja'], ['eS', 'irec'])),
         ('3.4.82',
-            None, F.raw(*base_p_tin) & F.auto('parasmaipada') & F.auto('li~w'),
+            None, F.raw(*base_p_tin) & f('parasmaipada') & f('li~w'), None,
             O.yathasamkhya(base_p_tin, lit_p_tin)),
     ]

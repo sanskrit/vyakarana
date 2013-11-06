@@ -16,6 +16,7 @@
 
 from collections import defaultdict
 
+import lists
 from dhatupatha import DHATUPATHA as DP
 from sounds import Sounds
 from util import Rank
@@ -46,6 +47,14 @@ class Filter(object):
         #: a general :class:`Filter`, this function accepts a state and
         #: index and returns a new state.
         self.body = body
+
+        # A collection that somehow characterizes the domain of the
+        # filter. Some examples:
+        # - for an `al` filter, the set of matching letters
+        # - for a `samjna` filter, the set of matching samjna
+        # - for a `raw` filter, the set of matching raw values
+        # - for an and/or/not filter, the original filters
+        self.domain = domain
 
         if rank is None:
             self.rank = self.new_rank(domain)
@@ -92,8 +101,9 @@ class Filter(object):
         cls = Filter._common_ancestor(filters)
         name = 'and(%s)' % ', '.join(f.name for f in filters)
         body = cls._make_and_body(filters)
+        domain = filters
         rank = Rank.and_(f.rank for f in filters)
-        return cls(name, body, rank)
+        return cls(name, body, rank, domain)
 
     @staticmethod
     def or_(*filters):
@@ -101,8 +111,9 @@ class Filter(object):
         cls = Filter._common_ancestor(filters)
         name = 'or(%s)' % ', '.join(f.name for f in filters)
         body = cls._make_or_body(filters)
+        domain = filters
         rank = Rank.or_(f.rank for f in filters)
-        return cls(name, body, rank)
+        return cls(name, body, rank, domain)
 
     @staticmethod
     def not_(filt):
@@ -113,8 +124,9 @@ class Filter(object):
         cls = filt.__class__
         name = 'not(%s)' % filt.name
         body = cls._make_not_body(filt)
+        domain = [filt]
         rank = filt.rank
-        return cls(name, body, rank)
+        return cls(name, body, rank, domain)
 
     @staticmethod
     def _common_ancestor(filters):
@@ -139,7 +151,6 @@ class Filter(object):
         """
         def func(state, index):
             return all(f(state, index) for f in filters)
-        func.members = filters
         return func
 
     @classmethod
@@ -205,24 +216,56 @@ class Filter(object):
     def new_rank(self, domain):
         return Rank()
 
-    def subset_of(self, filt):
-        if self.name == filt.name:
+    def subset_of(self, other):
+        if self.name == other.name:
             return True
-        try:
-            return any(x.subset_of(filt) for x in self.body.members)
-        except AttributeError:
-            return False
 
-    def required(self):
-        returned = set()
+        s_sets = self.supersets
+        o_sets = other.supersets
+
+        # Weird method name. A.issubset(B) checks if B is a subset of A.
+        return o_sets.issubset(s_sets)
+
+    @property
+    def supersets(self):
+        """Return the indivisible filters that compose this one.
+
+        Consider a universal set that contains every possible element.
+        A filter defines a subset of the universal set, i.e. the set of
+        items for which the filter returns `True`. Thus every filter
+        defines a subset. For two filters `f1` and `f2`:
+        - `f1 & f2` is like an intersection of two sets
+        - `f1 | f2` is like a union of two sets
+        - `~f1` is like an "antiset"
+
+        Now consider a filter `f` composed of `n` filters, as in:
+
+            f = f1 & f2 & ... & fn
+
+        This function returns the `n` filters that compose `f`. Each
+        `fi` is essentially a superset of `f`.
+
+        "Or" and "not" filters are tough to break up, so they're treated
+        as indivisible.
+        """
         try:
-            for m in self.body.members:
-                returned |= m.required()
+            return self._supersets
         except AttributeError:
+            pass
+
+        returned = set()
+        # Break up 'and' filters
+        if self.name.startswith('and'):
+            for m in self.domain:
+                returned |= m.supersets
+        # All others are treated as indivisible. Ignore `allow_all`,
+        # since it applies for every filter and isn't too interesting.
+        else:
             name = self.name
             if name != 'allow_all':
                 returned.add(self)
 
+        self._supersets = returned
         return returned
 
 
@@ -254,7 +297,6 @@ class TermFilter(Filter):
         bodies = [f.body for f in filters]
         def func(term):
             return all(b(term) for b in bodies)
-        func.members = filters
         return func
 
     @classmethod
@@ -340,6 +382,18 @@ def lakshana(*names):
     names = frozenset(names)
     def func(term):
         return any(n in term.lakshana for n in names)
+
+    return func, names
+
+
+@SamjnaFilter.parameterized
+def part(*names):
+    """Filter on the ``samjna`` property of the term.
+
+    :param names: a list of samjnas
+    """
+    def func(term):
+        return any(n in term.parts for n in names)
 
     return func, names
 
@@ -465,36 +519,6 @@ def auto(data):
 
     :param data:
     """
-    hal_it = set([L + 'it' for L in 'kKGNYwqRpmS'])
-    ac_it = set([L + 'dit' for L in 'aiufx'])
-    samjna_set = set([
-        'atmanepada', 'parasmaipada',
-        'dhatu', 'anga', 'pada', 'pratyaya',
-        'krt', 'taddhita',
-        'sarvadhatuka', 'ardhadhatuka',
-        'abhyasa', 'abhyasta',
-        'tin', 'sup',
-    ])
-    samjna_set |= (hal_it | ac_it)
-    sound_set = set([
-        'a', 'at',
-        'i', 'it',
-        'u', 'ut',
-        'f', 'ft',
-        'ak', 'ik',
-        'ac', 'ec',
-        'yaY',
-        'JaS', 'jaS',
-        'car',
-        'hal', 'Jal',
-    ])
-    pratyaya_set = set([
-        'luk', 'Slu', 'lup',
-        'la~w', 'li~w', 'lu~w', 'lf~w', 'le~w', 'lo~w',
-        'la~N', 'li~N', 'lu~N', 'lf~N',
-        'Sap', 'Syan', 'Snu', 'Sa', 'Snam', 'u', 'SnA',
-        'Ric',
-    ])
 
     if data is None:
         return allow_all
@@ -511,12 +535,14 @@ def auto(data):
         matcher = None
         # String selector: value, samjna, or sound
         if isinstance(datum, basestring):
-            if datum in samjna_set:
+            if datum in lists.SAMJNA or datum in lists.IT:
                 parsed['samjna'].append(datum)
-            elif datum in sound_set:
+            elif datum in lists.SOUNDS:
                 parsed['al'].append(datum)
-            elif datum in pratyaya_set:
+            elif datum in lists.LA:
                 parsed['lakshana'].append(datum)
+            elif datum in lists.PRATYAYA:
+                parsed['raw'].append(datum)
             else:
                 parsed['raw'].append(datum)
 
