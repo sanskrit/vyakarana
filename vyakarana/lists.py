@@ -14,6 +14,7 @@ PRATYAYA = set([
 ]) | LA
 
 SAMJNA = set([
+    'guna', 'vrddhi',
     'atmanepada', 'parasmaipada',
     'dhatu', 'anga', 'pada', 'pratyaya',
     'krt', 'taddhita',

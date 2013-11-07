@@ -57,12 +57,12 @@ def nalopa():
 
 @inherit(None, 'anga', 'ardhadhatuka', locus='asiddhavat')
 def ardhadhatuke():
-    return []
     return [
-        Anyatarasyam('6.4.47', None, 'Bra\sja~^', None, _47),
-        ('6.4.48', None, 'a', None, F.lopa),
-        ('6.4.49', 'hal', F.antya('ya'), None, None),
-        Vibhasha('6.4.50', True, F.antya('kya'), None, None),
+        # Anyatarasyam('6.4.47', None, 'Bra\sja~^', None, _47),
+        # ('6.4.48', None, 'a', None, F.lopa),
+        # ('6.4.49', 'hal', F.antya('ya'), None, None),
+        # Vibhasha('6.4.50', True, F.antya('kya'), None, None),
+        ('6.4.64', None, 'At', (F.adi('ac') & F.knit) | F.part('iw'), ''),
     ]
 
 
@@ -155,30 +155,7 @@ def abhyasa_lopa_liti():
         Ca('6.4.121', None, True, F.value('iTa'), True),
         Ca('6.4.122', None, f('tF', 'YiPalA~', 'Ba\ja~^', 'trapU~\z'), f('kit') | F.value('iTa'), True),
         Artha('6.4.123', None, F.value('rAD'), True, True),
-        # # TODO: va
-        # ('6.4.124',
-        #     ),
-        # # TODO: va
-        # ('6.4.125',
-        #     ),
-        # # TODO: na
-        # ('6.4.126',
-        #     ),
+        Va('6.4.124', None, f('jF', 'Bramu~', 'trasI~'), True, True),
+        Ca('6.4.125', None, F.gana('PaRa~', 'svana~'), True, True),
+        Na('6.4.125', None, f('Sasu~', 'dada~\\', F.adi('v'), 'guna'), True, True),
     ]
-
-    #     # 6.4.126 na zasadadavAdiguNAnAm
-    #     vadi = anga.adi == 'v'
-    #     if anga.raw in ('Sasu~', 'dada~\\') or vadi or 'guna' in anga.samjna:
-    #         status = False
-
-    #     # 6.4.123 rAdho hiMsAyAm
-    #     elif anga.value == 'rAD':
-    #         status = 'optional'
-
-    #     # 6.4.124 vA jRRbhramutrasAm
-    #     elif anga.raw in ('jF', 'Bramu~', 'trasI~'):
-    #         status = 'optional'
-
-    #     # 6.4.125 phaNAM ca saptAnAm
-    #     elif anga.raw in DP.dhatu_set('PaRa~', 'svana~'):
-    #         status = 'optional'

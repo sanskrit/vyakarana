@@ -17,10 +17,14 @@ def it():
 
     titutra = f('ti', 'tu', 'tra', 'ta', 'Ta', 'si', 'su', 'sara', 'ka', 'sa')
     kr_sr_bhr = F.value('kf', 'sf', 'Bf', 'vf', 'stu', 'dru', 'sru', 'Sru')
+    svarati_suti = f('svf', 'zUG', 'zUN', 'DUY', 'Udit')
 
     return [
-        Na('7.2.13', kr_sr_bhr, f('li~w'), None, U('iw')),
-        ('7.2.35', None, f('ardhadhatuka') & F.adi('val'), None, U('iw')),
+        Na('7.2.8', None, None, f('krt') & F.adi('vaS'), U('iw')),
+        Ca('7.2.9', None, f('krt') & titutra, None, U('iw')),
+        Na('7.2.13', kr_sr_bhr, f('li~w'), None, True),
+        ('7.2.35', None, f('ardhadhatuka') & F.adi('val'), None, True),
+        Va('7.2.44', svarati_suti, True, None, True),
     ]
 
 
