@@ -108,6 +108,9 @@ class Opinion(Option):
     """
 
 
+Shesha = object()
+
+
 # Rule classes
 # ~~~~~~~~~~~~
 
@@ -439,6 +442,9 @@ def process_tuples(rules, base):
 
         filters = []
         for b, w, p in zip(base, window, prev):
+            if w is Shesha:
+                w = None
+                kw['modifier'] = Shesha
             if not hasattr(w, '__iter__'):
                 w = [w]
             filters.append(make_context(w, base=b, prev=p))

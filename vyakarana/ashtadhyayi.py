@@ -26,6 +26,7 @@ import adhyaya7.pada2
 import adhyaya7.pada3
 import adhyaya7.pada4
 import dhatupatha
+import inference
 import sandhi
 import siddha
 import vibhakti
@@ -132,26 +133,7 @@ class Ashtadhyayi(object):
         self.rule_map = {x.name: x for x in ALL_RULES}
 
         self.rule_tree = RuleTree(self.sorted_rules)
-
-        self.utsarga = {}
-        for rule in ALL_RULES:
-            self.utsarga[rule] = []
-            append = self.utsarga[rule].append
-
-            if rule.modifier == Na:
-                for other in ALL_RULES:
-                    if rule.operator == other.operator and rule != other:
-                        append(other)
-            else:
-                for other in ALL_RULES:
-                    if rule.has_utsarga(other):
-                        append(other)
-
-        for rule in ALL_RULES:
-            rule.utsarga = self.utsarga[rule]
-
-        # print self.rule_map['7.2.13'].utsarga
-        # import sys; sys.exit()
+        inference.apply(ALL_RULES)
 
     def matching_rules(self, state):
         state_indices = range(len(state))
