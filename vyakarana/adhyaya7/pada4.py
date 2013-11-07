@@ -13,10 +13,10 @@ from ..templates import *
 f = F.auto
 
 
-@inherit(None, 'anga', 'li~w')
+@inherit(None, 'anga', F.lakshana('li~w'))
 def angasya_liti():
     return [
-        ('7.4.10', None, F.samyogadi & F.adi('ft'), None, O.force_guna),
+        ('7.4.10', None, F.samyogadi & F.al('ft'), None, O.force_guna),
         ('7.4.11', None, F.raw('f\\') | F.al('Ft'), None, True),
         Va('7.4.12', None, f('SF', 'dF', 'pF'), None, O.hrasva)
     ]
