@@ -28,15 +28,31 @@ class Operator(object):
 
     """A callable class that returns :class:`State`s."""
 
-    def __init__(self, name, body, category=None):
+    def __init__(self, name, body, category=None, params=None):
         #: A unique name for this operator.
         self.name = name
+
         #: The function that corresponds to this operator.
         self.body = body
+
+        self.params = params
+
+        #:
         self.category = category or name
 
     def __call__(self, state, index, locus='value'):
         return self.body(state, index, locus)
+
+    def __eq__(self, other):
+        if self is other:
+            return True
+        elif other is None:
+            return False
+        else:
+            return self.name == other.name and self.params == other.params
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __repr__(self):
         return '<op(%s)>' % self.name
@@ -55,7 +71,7 @@ class Operator(object):
             except TypeError:
                 name = '%s(...)' % category
             body = fn(*args, **kw)
-            return cls(name, body, category)
+            return cls(name, body, category, params=args)
         return wrapped
 
     @classmethod

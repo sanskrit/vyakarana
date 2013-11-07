@@ -16,7 +16,7 @@ f = F.auto
 def it():
 
     titutra = f('ti', 'tu', 'tra', 'ta', 'Ta', 'si', 'su', 'sara', 'ka', 'sa')
-    kr_sr_bhr = f('kf', 'sf', 'Bf', 'vf', 'zwu', 'dru', 'sru', 'Sru')
+    kr_sr_bhr = F.value('kf', 'sf', 'Bf', 'vf', 'stu', 'dru', 'sru', 'Sru')
 
     return [
         Na('7.2.13', kr_sr_bhr, f('li~w'), None, U('iw')),

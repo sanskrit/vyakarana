@@ -32,7 +32,7 @@ import vibhakti
 import filters as F
 import templates as T
 
-from templates import ALL_RULES
+from templates import ALL_RULES, Na
 from util import State
 
 log = logging.getLogger(__name__)
@@ -136,12 +136,22 @@ class Ashtadhyayi(object):
         self.utsarga = {}
         for rule in ALL_RULES:
             self.utsarga[rule] = []
-            for other in ALL_RULES:
-                if rule.has_utsarga(other):
-                    self.utsarga[rule].append(other)
+            append = self.utsarga[rule].append
+
+            if rule.modifier == Na:
+                for other in ALL_RULES:
+                    if rule.operator == other.operator and rule != other:
+                        append(other)
+            else:
+                for other in ALL_RULES:
+                    if rule.has_utsarga(other):
+                        append(other)
 
         for rule in ALL_RULES:
             rule.utsarga = self.utsarga[rule]
+
+        # print self.rule_map['7.2.13'].utsarga
+        # import sys; sys.exit()
 
     def matching_rules(self, state):
         state_indices = range(len(state))

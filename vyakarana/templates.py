@@ -187,6 +187,7 @@ class Rule(object):
             returned = cls(name, left + center + right, result, **kw)
 
         returned.offset = len(left)
+        returned.modifier = kw.get('modifier')
         return returned
 
     def _make_operator(self, op):
@@ -216,6 +217,14 @@ class Rule(object):
         if self.option:
             # Option declined. Mark the state but leave the rest alone.
             yield state.mark_rule(self, index)
+
+        # 'na' rule. Apply no operation, but block any general rules
+        # from applying.
+        if self.modifier is Na:
+            new = state.mark_rule(self, index)
+            new = new.swap(index, new[index].add_op(*self.utsarga))
+            yield new
+            return
 
         # Mandatory, or option accepted. Apply the operator and yield.
         # Also, block all utsarga rules.
@@ -402,10 +411,15 @@ def process_tuples(rules, base):
     prev_operator = None
 
     for row in rules:
-        kw = {'option': False}
+        kw = {
+            'option': False,
+            'modifier': None,
+        }
 
         if isinstance(row, TupleWrapper):
+            modifier = row.__class__
             kw['option'] = isinstance(row, Option)
+            kw['modifier'] = modifier
             row = row.data
 
         assert len(row) == 5

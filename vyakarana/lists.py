@@ -27,10 +27,13 @@ SOUNDS = set([
     'i', 'it', 'It',
     'u', 'ut', 'Ut',
     'f', 'ft', 'Ft',
-    'ak', 'ik',
-    'ac', 'ec',
-    'yaY',
-    'JaS', 'jaS',
-    'car',
-    'hal', 'Jal',
+
+    # Sharma Volume I, p. 33
+    'eN', 'yaY', 'aR', 'Cav', 'aw',
+    'Jaz', 'Baz',
+    'ak', 'ik', 'uk', 'yaR', 'iR', 'Nam', 'am', 'yam',
+    'ac', 'ec', 'Ec', 'ic', 'may', 'Jay', 'Kay', 'yay',
+    'Sar', 'yar', 'Jar', 'Kar', 'car',
+    'JaS', 'jaS', 'baS', 'S', 'haS', 'vaS',
+    'al', 'hal', 'sal', 'val', 'ral', 'Jal'
 ])

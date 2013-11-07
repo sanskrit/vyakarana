@@ -54,7 +54,8 @@ class Upadesha(object):
             return False
         if self is other:
             return True
-        return (self.data == other.data and
+        return (self.__class__ == other.__class__ and
+                self.data == other.data and
                 self.samjna == other.samjna and
                 self.lakshana == other.lakshana and
                 self.ops == other.ops and
