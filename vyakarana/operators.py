@@ -175,7 +175,7 @@ def replace(target, result):
 def tasya(sthani, adi=False):
     def func(state, index, locus=None):
         cur = state[index]
-        return state.swap(index, cur.tasya(sthani, adi=adi))
+        return state.swap(index, cur.tasya(sthani, adi=adi, locus=locus))
     return func
 
 
