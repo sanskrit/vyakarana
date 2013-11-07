@@ -53,7 +53,7 @@ def angasya_abhyasasya():
         ('7.4.61', None, F.adi('Sar'), None, True),
         ('7.4.62', None, None, None, O.al_tasya('ku h', 'cu')),
         ('7.4.66', None, None, None, O.al_tasya('f', 'at')),
-        ('7.4.69', None, 'i\\R', 'kit', O.dirgha),
+        ('7.4.69', None, None, ['i\\R', 'kit'], O.dirgha),
         ('7.4.70', None, F.adi('at'), None, True),
         ('7.4.73', None, None, 'BU', 'a'),
     ]

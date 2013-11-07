@@ -377,7 +377,7 @@ class ParibhashaRule(Rule):
 # Rule creators
 # ~~~~~~~~~~~~~
 
-def generate_filter(data, base=None, prev=None):
+def make_context(data, base=None, prev=None):
     """Create and return a filter for a tuple rule.
 
     :param data: one of the following:
@@ -389,16 +389,24 @@ def generate_filter(data, base=None, prev=None):
     :param base: the corresponding base filter.
     :param prev: the corresponding filter created on the previous tuple.
     """
-    if data is None:
-        return base
-    if data is True:
-        return prev
-
-    extension = F.auto(data)
-    if base is None or base is F.allow_all:
-        return extension
-    else:
-        return extension & base
+    returned = []
+    for i, datum in enumerate(data):
+        if datum is None:
+            result = base[i]
+        elif datum is True:
+            result = prev[i]
+        else:
+            extension = F.auto(datum)
+            try:
+                b = base[i]
+            except IndexError:
+                b = None
+            if b is None or b is F.allow_all:
+                result = extension
+            else:
+                result = extension & b
+        returned.append(result)
+    return returned
 
 
 def process_tuples(rules, base):
@@ -407,7 +415,8 @@ def process_tuples(rules, base):
     :param rules: a list of tuple rules
     :param base: a list of :class:`Filter`s.
     """
-    prev = (None, None, None)
+    prev = ([None], [None], [None])
+    base = [[b] for b in base]
     prev_operator = None
 
     for row in rules:
@@ -430,7 +439,9 @@ def process_tuples(rules, base):
 
         filters = []
         for b, w, p in zip(base, window, prev):
-            filters.append(generate_filter(w, base=b, prev=p))
+            if not hasattr(w, '__iter__'):
+                w = [w]
+            filters.append(make_context(w, base=b, prev=p))
 
         if operator is True:
             operator = prev_operator
@@ -453,7 +464,7 @@ def inherit(*base, **base_kw):
             left, center, right = filters
 
             kw = dict(base_kw, **rule_kw)
-            rule = Rule.new(name, [left], [center], [right],
+            rule = Rule.new(name, left, center, right,
                             operator, **kw)
             ALL_RULES.append(rule)
 
