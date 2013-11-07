@@ -26,3 +26,10 @@ def ata_au_nalah():
     return [
         ('7.1.34', None, None, None, 'O')
     ]
+
+
+@inherit(None, None, None)
+def nal_uttamo_va():
+    return [
+        Va('7.1.91', None, f('Ral') & f('uttama'), None, 'Rit')
+    ]

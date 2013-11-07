@@ -21,6 +21,9 @@ SAMJNA = set([
     'sarvadhatuka', 'ardhadhatuka',
     'abhyasa', 'abhyasta',
     'tin', 'sup',
+    'prathama', 'madhyama', 'uttama',
+    'ekavacana', 'dvivacana', 'bahuvacana',
+    'karta', 'karma', 'karana', 'adhikarana', 'sampradana', 'apadana',
 ])
 
 SOUNDS = set([

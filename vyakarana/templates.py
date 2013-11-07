@@ -211,6 +211,9 @@ class Rule(object):
         rank = rank.replace(category=self.RULE_TYPE, locus=rank_locus)
         return rank
 
+    def _apply_option_declined(self, state, index):
+        return state.mark_rule(self, index)
+
     def apply(self, state, index):
         """Apply this rule and yield the results.
 
@@ -219,7 +222,7 @@ class Rule(object):
         """
         if self.option:
             # Option declined. Mark the state but leave the rest alone.
-            yield state.mark_rule(self, index)
+            yield self._apply_option_declined(state, index)
 
         # 'na' rule. Apply no operation, but block any general rules
         # from applying.
@@ -235,7 +238,7 @@ class Rule(object):
         # We yield only if the state is different; otherwise the system
         # will loop.
         new = self.operator(state, index + self.offset, self.locus)
-        if new != state:
+        if new != state or self.option:
             new = new.mark_rule(self, index)
             new = new.swap(index, new[index].add_op(*self.utsarga))
             yield new
@@ -346,6 +349,10 @@ class SamjnaRule(TasyaRule):
     """
 
     RULE_TYPE = Rule.SAMJNA
+
+    def _apply_option_declined(self, state, index):
+        new_cur = state[index].remove_samjna(self.domain)
+        return state.swap(index, new_cur).mark_rule(self, index)
 
     def _make_operator(self, op):
         self.domain = op
