@@ -57,8 +57,12 @@ def nalopa():
 
 @inherit(None, 'anga', 'ardhadhatuka', locus='asiddhavat')
 def ardhadhatuke():
+    @O.DataOperator.unparameterized
+    def _47(value, **kw):
+        return 'Barj'
+
     return [
-        # Anyatarasyam('6.4.47', None, 'Bra\sja~^', None, _47),
+        Anyatarasyam('6.4.47', None, 'Bra\sja~^', None, _47),
         # ('6.4.48', None, 'a', None, F.lopa),
         # ('6.4.49', 'hal', F.antya('ya'), None, None),
         # Vibhasha('6.4.50', True, F.antya('kya'), None, None),

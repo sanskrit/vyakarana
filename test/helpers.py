@@ -46,7 +46,7 @@ def load_forms(filename):
         if dhatu in data:
             for i, items in enumerate(data[dhatu]):
                 try:
-                    items.update([paradigm[i]])
+                    items.update(paradigm[i].split('/'))
                 except IndexError:
                     break
         else:
