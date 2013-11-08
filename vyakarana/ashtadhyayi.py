@@ -8,10 +8,9 @@
     :license: MIT and BSD
 """
 
-import itertools
 import logging
 import os
-from collections import OrderedDict, defaultdict
+from collections import defaultdict
 
 import adhyaya1.pada1
 import adhyaya1.pada2
@@ -30,10 +29,8 @@ import inference
 import sandhi
 import siddha
 import vibhakti
-import filters as F
-import templates as T
 
-from templates import ALL_RULES, Na
+from templates import ALL_RULES
 from util import State
 
 log = logging.getLogger(__name__)
@@ -79,7 +76,6 @@ class RuleTree(object):
         buckets = sorted(feature_map.iteritems(), key=lambda p: -len(p[1]))
 
         seen = set()
-        depth = len(used_features)
         for feat, rule_list in buckets:
             unseen = [r for r in rule_list if r not in seen]
             if not unseen:
@@ -122,24 +118,36 @@ class Ashtadhyayi(object):
 
     """The Ashtadhyayi."""
 
-    def __init__(self):
+    def __init__(self, rules=None):
         dirname = os.path.dirname(os.path.dirname(__file__))
         dhatu_file = os.path.join(dirname, 'data', 'dhatupatha.csv')
         dhatupatha.DHATUPATHA.init(dhatu_file)
 
-        #: The rules of the grammar, from highest priority to lowest.
-        self.sorted_rules = sorted(ALL_RULES, cmp = lambda x, y: cmp(y.rank, x.rank))
-        #: Maps a rule's name to a :class:`Rule` instance.
-        self.rule_map = {x.name: x for x in ALL_RULES}
+        #: The rules of the grammar, from first to last.
+        self.rules = inference.create(rules or ALL_RULES)
 
-        self.rule_tree = RuleTree(self.sorted_rules)
-        inference.apply(ALL_RULES)
+        #: The rules of the grammar, from highest priority to lowest.
+        self.ranked_rules = sorted(self.rules,
+                                   cmp = lambda x, y: cmp(y.rank, x.rank))
+
+        #:
+        self.rule_tree = RuleTree(self.ranked_rules)
+
+    @classmethod
+    def with_rules_in(cls, start, end):
+        key = inference.name_key
+        start_key = key(start)
+        end_key = key(end)
+
+        rules = {k: v for k, v in ALL_RULES.iteritems()
+                 if start_key <= key(k) <= end_key}
+        return cls(rules)
 
     def matching_rules(self, state):
         state_indices = range(len(state))
         candidates = [self.rule_tree.select(state, i) for i in state_indices]
 
-        for i, ra in enumerate(self.sorted_rules):
+        for i, ra in enumerate(self.ranked_rules):
             for ia in state_indices:
                 if ra in candidates[ia]:
                     yield ra, ia
@@ -153,7 +161,6 @@ class Ashtadhyayi(object):
         :param state: the current :class:`State`
         """
 
-        sorted_rules = self.sorted_rules
         for ra, ia in self.matching_rules(state):
             # Ignore redundant applications
             if ra in state[ia].ops:

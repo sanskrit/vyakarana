@@ -4,9 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~
 
     This module contains classes and functions that let us define
-    the Ashtadhyayi's rules as tersely as possible. For example, most
-    rules are defined as lists of tuples, which this module then
-    synthesizes into a more usable form.
+    the Ashtadhyayi's rules as tersely as possible.
 
     :license: MIT and BSD
 """
@@ -16,8 +14,8 @@ import lists
 import operators as O
 from util import Rank
 
-# New-style rules. Temporary.
-ALL_RULES = []
+#:
+ALL_RULES = {}
 
 
 # Rule conditions
@@ -39,7 +37,7 @@ class TupleWrapper(object):
         self.data = args
 
     def __repr__(self):
-        return '<%s(%s)>' % self.__class__.__name__, repr(self.data)
+        return '<%s(%s)>' % (self.__class__.__name__, repr(self.data))
 
 
 class Ca(TupleWrapper):
@@ -384,101 +382,23 @@ class ParibhashaRule(Rule):
     RULE_TYPE = Rule.PARIBHASHA
 
 
-# Rule creators
-# ~~~~~~~~~~~~~
+# Rule decorator
+# ~~~~~~~~~~~~~~
 
-def make_context(data, base=None, prev=None):
-    """Create and return a filter for a tuple rule.
+def inherit(*args, **kw):
+    """Decorator for a function that returns a list of rule tuples.
 
-    :param data: one of the following:
-                 - ``None``, which signals that `base` should be used.
-                 - ``True``, which signals that `prev` should be used.
-                 - an arbitrary object, which is sent to `filters.auto`.
-                   The result is "and"-ed with `base`, if `base` is
-                   defined.
-    :param base: the corresponding base filter.
-    :param prev: the corresponding filter created on the previous tuple.
-    """
-    returned = []
-    for i, datum in enumerate(data):
-        if datum is None:
-            result = base[i]
-        elif datum is True:
-            result = prev[i]
-        else:
-            extension = F.auto(datum)
-            try:
-                b = base[i]
-            except IndexError:
-                b = None
-            if b is None or b is F.allow_all:
-                result = extension
-            else:
-                result = extension & b
-        returned.append(result)
-    return returned
-
-
-def process_tuples(rules, base):
-    """
-
-    :param rules: a list of tuple rules
-    :param base: a list of :class:`Filter`s.
-    """
-    prev = ([None], [None], [None])
-    base = [[b] for b in base]
-    prev_operator = None
-
-    for row in rules:
-        kw = {
-            'option': False,
-            'modifier': None,
-        }
-
-        if isinstance(row, TupleWrapper):
-            modifier = row.__class__
-            kw['option'] = isinstance(row, Option)
-            kw['modifier'] = modifier
-            row = row.data
-
-        assert len(row) == 5
-
-        name = row[0]
-        window = row[1:4]
-        operator = row[4]
-
-        filters = []
-        for b, w, p in zip(base, window, prev):
-            if w is Shesha:
-                w = None
-                kw['modifier'] = Shesha
-            if not hasattr(w, '__iter__'):
-                w = [w]
-            filters.append(make_context(w, base=b, prev=p))
-
-        if operator is True:
-            operator = prev_operator
-
-        yield name, filters, operator, kw
-        prev, prev_operator = (filters, operator)
-
-
-def inherit(*base, **base_kw):
-    """
 
     """
-
-    base = [F.auto(x) for x in base]
 
     def decorator(fn):
         rules = fn()
+        for rule in rules:
+            try:
+                name = rule[0]
+            except TypeError:
+                name = rule.data[0]
 
-        for name, filters, operator, rule_kw in process_tuples(rules, base):
-            left, center, right = filters
-
-            kw = dict(base_kw, **rule_kw)
-            rule = Rule.new(name, left, center, right,
-                            operator, **kw)
-            ALL_RULES.append(rule)
+            ALL_RULES[name] = (args, kw, rule)
 
     return decorator
