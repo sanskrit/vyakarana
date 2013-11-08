@@ -360,6 +360,19 @@ def al(*names):
     return func, names
 
 
+@AlFilter.parameterized
+def contains(*names):
+    """Filter on the sounds contained within the term.
+
+    :param names: a list of sounds
+    """
+    sounds = Sounds(*names)
+    def func(term):
+        return any(s in term.value for s in sounds)
+
+    return func, sounds
+
+
 @UpadeshaFilter.parameterized
 def gana(start, end=None):
     """Filter on the `raw`.

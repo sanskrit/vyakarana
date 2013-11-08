@@ -49,12 +49,11 @@ def do_samprasarana():
     #        ṅiti ca
     grahi_jya = f(*['graha~^', 'jyA\\', 'vaya~\\', 'vya\Da~', 'vaSa~',
                  'vyaca~', 'o~vraScU~', 'pra\cCa~', 'Bra\sja~^'])
+    ubhaya = vaci_svapi | grahi_jya
 
     return [
         ('6.1.15', None, vaci_svapi, 'kit', O.samprasarana),
         Ca('6.1.16', None, grahi_jya, F.knit, True),
-        # ('6.1.17',
-        #     None, 'abhyasa', [vaci_svapi + grahi_jya, F.knit],
-        #     True),
+        ('6.1.17', None, 'abhyasa', ubhaya, True),
     ]
 
