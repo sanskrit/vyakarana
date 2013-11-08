@@ -102,7 +102,7 @@ def asiddha_helper(state):
         # TODO: AG, num
         if x in 'rzfF':
             had_rs = True
-        elif x == 'n' and had_rs:
+        elif x == 'n' and had_rs and p.term.value != 'kzuB':
             x = 'R'
             had_rs = False
         elif x not in Sounds('aw ku pu'):
