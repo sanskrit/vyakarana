@@ -9,6 +9,7 @@
 from .. import filters as F, operators as O
 from ..sounds import Sounds
 from ..templates import *
+from ..upadesha import Upadesha as U
 
 f = F.auto
 
@@ -56,4 +57,24 @@ def angasya_abhyasasya():
         ('7.4.69', None, None, ['i\\R', 'kit'], O.dirgha),
         ('7.4.70', None, F.adi('at'), None, True),
         ('7.4.73', None, None, 'BU', 'a'),
+    ]
+
+
+@inherit('abhyasa', 'anga', None)
+def nut_agama():
+    """These rules are stored separately because the substitution is
+    on the anga, not the abhyasa.
+
+    TODO: merge with other abhyasa rules
+    """
+    hal = Sounds('hal')
+    hal_r = Sounds('hal f')
+
+    @F.AlFilter.unparameterized
+    def dvihal(term):
+        return term.upadha in hal_r and term.antya in hal
+
+    return [
+        ('7.4.71', F.value('A'), dvihal, None, U('nu~w')),
+        Ca('7.4.72', True, 'aSU~\\', None, True),
     ]

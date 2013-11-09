@@ -94,7 +94,7 @@ def aci():
         ('6.4.82', None, F.al('i') & ~F.ekac & ~F.samyogapurva, None, True),
         ('6.4.83', None, F.al('u') & ~F.ekac & ~F.samyogapurva, 'sup', True),
         ('6.4.87', None, 'hu\\', 'sarvadhatuka', True),
-        ('6.4.88', None, 'BU', f('luN', 'liw'), 'vuk'),
+        ('6.4.88', None, 'BU', f('lu~N', 'li~w'), 'vu~k'),
         ('6.4.89', None, F.value('goh'), None, O.upadha('U')),
         ('6.4.98', None, gama_hana, F.knit & ~F.raw('aN'), O.upadha(''))
     ]
