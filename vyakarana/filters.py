@@ -217,14 +217,39 @@ class Filter(object):
         return Rank()
 
     def subset_of(self, other):
+        """Return whether this filter is a subset of some other filter.
+
+        All members of some subset S are in the parent set O. So if it
+        is the case that:
+
+            S applies -> O applies
+
+        then S is a subset of P. For the "set" interpretation of a
+        filter, see the comments on :meth:`~Filter.supersets`.
+
+        :param other: a filter
+        """
         if self.name == other.name:
             return True
 
         s_sets = self.supersets
         o_sets = other.supersets
 
-        # Weird method name. A.issubset(B) checks if B is a subset of A.
-        return o_sets.issubset(s_sets)
+        # If `self` is a subset of `other`, then `self` is *more*
+        # specific and has *more* components than `other`. If every
+        # component of `other` is in `self`, then the subset relation
+        # holds.
+        for o in o_sets:
+            # Both filters share this condition.
+            if o in s_sets:
+                continue
+
+            # `o` is an "or" condition that must be matched by at least
+            # one member of `s_sets`
+            elif o.domain and any(s in o.domain for s in s_sets):
+                continue
+            return False
+        return True
 
     @property
     def supersets(self):
@@ -254,10 +279,12 @@ class Filter(object):
             pass
 
         returned = set()
+
         # Break up 'and' filters
         if self.name.startswith('and'):
             for m in self.domain:
                 returned |= m.supersets
+
         # All others are treated as indivisible. Ignore `allow_all`,
         # since it applies for every filter and isn't too interesting.
         else:

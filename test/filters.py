@@ -1,4 +1,5 @@
 import vyakarana.filters as F
+import vyakarana.lists as L
 from vyakarana.upadesha import *
 
 
@@ -35,6 +36,8 @@ def dhatu_tester(filt, data):
     return filt([Dhatu(data)], 0)
 
 
+# Filter behavior
+# ~~~~~~~~~~~~~~~
 
 def test_adi():
     cases = [
@@ -193,6 +196,7 @@ def test_or_():
     verify(cases, lambda names: F.upadha(names) | F.al('hal'),
            term_tester)
 
+
 def test_not_():
     cases = [
         (['al'],
@@ -217,3 +221,34 @@ def test_not_():
         ),
     ]
     verify(cases, lambda x: ~F.al(x), term_tester)
+
+
+# 'auto' filter
+# ~~~~~~~~~~~~~
+
+def test_auto():
+    for item in L.IT:
+        assert F.auto(item) == F.samjna(item)
+
+    for item in L.SAMJNA:
+        assert F.auto(item) == F.samjna(item)
+
+    for item in L.SOUNDS:
+        assert F.auto(item) == F.al(item)
+
+
+# Filter relationships
+# ~~~~~~~~~~~~~~~~~~~~
+
+def test_subset_of():
+    cases = [
+        [F.al('ac'), F.samjna('dhatu'), F.upadha('Yam')]
+    ]
+    for filters in cases:
+        intersection = F.Filter.and_(*filters)
+        for f in filters:
+            assert intersection.subset_of(f)
+
+        union = F.Filter.or_(*filters)
+        for f in filters:
+            assert f.subset_of(union)
