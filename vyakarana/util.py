@@ -79,20 +79,6 @@ class Rank(RankBase):
         return self._replace(**kw)
 
 
-class OldRank(object):
-    """Old-style ranks, for backward compatibility"""
-    #: Rank of an unknown rule
-    UNKNOWN = 0
-    #: Rank of a general rule
-    UTSARGA = 1
-    #: Rank of a specific rule, as counter to an utsarga
-    APAVADA = 2
-    #: Rank of a rule that acts on a specific upadesha
-    UPADESHA = 4
-    #: Rank of a rule that acts on a specific form
-    NIPATANA = 5
-
-
 class State(object):
     """A sequence of terms.
 

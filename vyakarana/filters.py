@@ -536,7 +536,7 @@ def samyogapurva(term):
     value = term.value
     hal = Sounds('hal')
     try:
-        return value[-2] in hal and value[-1] in hal
+        return value[-3] in hal and value[-2] in hal
     except IndexError:
         return False
 
