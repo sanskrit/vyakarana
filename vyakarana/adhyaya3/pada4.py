@@ -9,6 +9,7 @@
 import itertools
 
 from .. import filters as F, operators as O, util
+from ..lists import PADA, PURUSHA, VACANA, VIBHAKTI, TIN
 from ..sounds import Sounds
 from ..templates import *
 
@@ -16,18 +17,11 @@ from ..templates import *
 f = F.auto
 
 
-PADA = ['parasmaipada', 'atmanepada']
-PURUSHA = ['prathama', 'madhyama', 'uttama']
-VACANA = ['ekavacana', 'dvivacana', 'bahuvacana']
-VIBHAKTI = ['prathama', 'dvitiya', 'trtiya', 'caturthi', 'pancami', 'sasthi',
-            'saptami']
-
-
 def label_by_triplet(terms, labels):
     """
     Apply a single label to each triplet of terms.
 
-    :param terms: a list of Terms
+    :param terms: a list of sets
     :param labels: a list of strings
     """
     num_labels = len(labels)
@@ -43,12 +37,12 @@ def label_by_item(terms, labels):
     Suppose there are 4 terms and 2 labels. Then::
 
         term[0] -> label[0]
-        term[0] -> label[1]
-        term[1] -> label[0]
         term[1] -> label[1]
+        term[2] -> label[0]
+        term[3] -> label[1]
 
-    :param terms: a list of Terms
-    :param terms: a list of strings
+    :param terms: a list of sets
+    :param labels: a list of strings
     """
     labels = itertools.cycle(labels)
     for term in terms:
@@ -62,12 +56,12 @@ def label_by_group(terms, labels):
     Suppose there are 4 terms and 2 labels. Then::
 
         term[0] -> label[0]
-        term[0] -> label[0]
-        term[1] -> label[1]
-        term[1] -> label[1]
+        term[1] -> label[0]
+        term[2] -> label[1]
+        term[3] -> label[1]
 
-    :param terms: a list of Terms
-    :param terms: a list of strings
+    :param terms: a list of sets
+    :param labels: a list of strings
     """
     num_groups = len(terms) /  len(labels)
     for i, group in enumerate(util.iter_group(terms, num_groups)):
@@ -79,6 +73,7 @@ def label_by_group(terms, labels):
 def f_lakara(term):
     return 'vibhakti' in term.samjna and term.raw[0] == 'l'
 f_lakara.rank = util.Rank(upadesha=1, samjna=1)
+
 
 def tin_key(samjna, pada=None):
     if pada:
@@ -100,10 +95,7 @@ def tin_key(samjna, pada=None):
 @inherit(None, None, None)
 def lasya():
     """3.4.77 lasya"""
-
-    base_tin = """tip tas Ji sip Tas Ta mip vas mas
-                  ta AtAm Ja TAs ATAm Dvam iw vahi mahiN""".split()
-    base_samjna = [set(['tin']) for s in base_tin]
+    base_samjna = [set(['tin']) for s in TIN]
 
     # 1.4.99 laH parasmaipadam
     # 1.4.100 taGAnAv Atmanepadam
@@ -127,7 +119,7 @@ def lasya():
         # TODO: remove hacks
         dhatuka = 'ardhadhatuka' if la_type == 'li~w' else 'sarvadhatuka'
         i = key2index[tin_key(la.samjna)]
-        new_raw = base_tin[i]
+        new_raw = TIN[i]
         tin = la.set_raw(new_raw).add_samjna('tin', dhatuka)
         return state.swap(index, tin)
 

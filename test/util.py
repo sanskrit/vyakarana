@@ -35,7 +35,7 @@ def test_rank():
 @pytest.fixture
 def editor_data():
     data = 'abcdefghijklmnopqrstuvxwyz1234567890'
-    terms = [Term(group) for group in iter_group(data, 6)]
+    terms = [Upadesha('_').set_value(group) for group in iter_group(data, 6)]
     state = State(terms)
     editor = SoundEditor(state)
     return (data, terms, state, editor)
