@@ -24,7 +24,6 @@ import adhyaya7.pada1
 import adhyaya7.pada2
 import adhyaya7.pada3
 import adhyaya7.pada4
-import dhatupatha
 import inference
 import sandhi
 import siddha
@@ -119,10 +118,6 @@ class Ashtadhyayi(object):
     """The Ashtadhyayi."""
 
     def __init__(self, rules=None):
-        dirname = os.path.dirname(os.path.dirname(__file__))
-        dhatu_file = os.path.join(dirname, 'data', 'dhatupatha.csv')
-        dhatupatha.DHATUPATHA.init(dhatu_file)
-
         #: The rules of the grammar, from first to last.
         self.rules = inference.create(rules or ALL_RULES)
 

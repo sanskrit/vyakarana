@@ -17,10 +17,8 @@ def test_name_key():
 
 
 def test_utsarga():
-
     _68 = ['3.1.68']
-
-    expected = {
+    u_expected = {
         '3.1.68': [],
         '3.1.69': _68,
         '3.1.70': _68,
@@ -35,7 +33,28 @@ def test_utsarga():
     ash = A.Ashtadhyayi.with_rules_in('3.1.68', '3.1.82')
     for rule in ash.rules:
         utsarga_names = [r.name for r in rule.utsarga]
-        assert utsarga_names == expected[rule.name]
+        assert utsarga_names == u_expected[rule.name]
+
+
+def test_apavada():
+    _68 = ['3.1.69', '3.1.70', '3.1.73', '3.1.77', '3.1.78', '3.1.79',
+           '3.1.81', '3.1.82']
+    a_expected = {
+        '3.1.68': _68,
+        '3.1.69': [],
+        '3.1.70': [],
+        '3.1.73': [],
+        '3.1.77': [],
+        '3.1.78': [],
+        '3.1.79': [],
+        '3.1.81': [],
+        '3.1.82': [],
+    }
+
+    ash = A.Ashtadhyayi.with_rules_in('3.1.68', '3.1.82')
+    for rule in ash.rules:
+        apavada_names = [r.name for r in rule.apavada]
+        assert apavada_names == a_expected[rule.name]
 
 
 def test_create():
