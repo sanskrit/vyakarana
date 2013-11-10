@@ -17,11 +17,12 @@ f = F.auto
 def sanadyanta_dhatu():
 
     def k(s):
-        return Krt(s).add_samjna('anga')
+        return Krt(s).add_samjna('dhatu', 'anga')
 
     gupu_dhupa = f('gupU~', 'DUpa~', 'vicCa~', 'paRa~\\', 'pana~\\')
 
     return [
+        ('3.1.25', F.gana('cura~'), None, 'tin', k('Ric')),
         ('3.1.28', gupu_dhupa, None, 'tin', k('Aya')),
         ('3.1.29', 'fti~\\', None, True, k('IyaN')),
         ('3.1.30', 'kamu~\\', None, True, k('RiN')),
