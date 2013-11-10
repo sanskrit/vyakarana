@@ -1,6 +1,7 @@
 import vyakarana.filters as F
 import vyakarana.lists as L
 from vyakarana.upadesha import *
+from vyakarana.dhatupatha import DHATUPATHA as DP
 
 
 def verify(cases, filter_creator, tester):
@@ -226,21 +227,32 @@ def test_not_():
 # 'auto' filter
 # ~~~~~~~~~~~~~
 
-def test_auto():
-    for item in L.IT:
-        assert F.auto(item) == F.samjna(item)
+def test_auto_on_lists():
+    pairs = [
+        (L.IT, F.samjna),
+        (L.LA, F.lakshana),
+        (L.SAMJNA, F.samjna),
+        (L.SOUNDS, F.al),
+    ]
 
-    for item in L.SAMJNA:
-        assert F.auto(item) == F.samjna(item)
+    for items, function in pairs:
+        for item in items:
+            assert F.auto(item) == function(item)
 
-    for item in L.SOUNDS:
-        assert F.auto(item) == F.al(item)
+
+def test_auto_on_dhatu():
+    for item in DP.all_dhatu:
+        # Ambiguity with F.al('f')
+        if item == 'f':
+            continue
+        assert F.auto(item) == F.dhatu(item)
 
 
 # Filter relationships
 # ~~~~~~~~~~~~~~~~~~~~
 
-def test_subset_of():
+def test_subset_of_and_or():
+    """Ordinary subset ("and", "or")"""
     cases = [
         [F.al('ac'), F.samjna('dhatu'), F.upadha('Yam')]
     ]
@@ -252,3 +264,38 @@ def test_subset_of():
         union = F.Filter.or_(*filters)
         for f in filters:
             assert f.subset_of(union)
+
+
+def test_subset_of_inference():
+    """Inferential subset"""
+    bhu = F.dhatu('BU')
+    dhatu = F.samjna('dhatu')
+    assert bhu.subset_of(dhatu)
+
+
+def test_subset_of_domain():
+    """Subset with different domains."""
+    ak = F.auto('ak')
+    ac = F.auto('ac')
+    assert ak.subset_of(ac)
+    assert not ac.subset_of(ak)
+
+    dhatu = F.auto('dhatu')
+    anga = F.auto('dhatu', 'anga')
+    assert dhatu.subset_of(anga)
+    assert not anga.subset_of(dhatu)
+
+
+def test_subset_of_combined():
+    """Combined subset (ordinary, inferential, domain)"""
+    f = F.auto
+
+    # Examples from 6.4.77 and 6.4.88
+    snu_dhatu_bhru = f('Snu', 'dhatu', 'BrU')
+    bhu = f('BU')
+    assert bhu.subset_of(snu_dhatu_bhru)
+    assert not snu_dhatu_bhru.subset_of(bhu)
+
+    snu_dhatu_bhru_yv = snu_dhatu_bhru & F.al('i u')
+    assert bhu.subset_of(snu_dhatu_bhru_yv)
+    assert not snu_dhatu_bhru_yv.subset_of(bhu)

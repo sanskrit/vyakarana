@@ -19,7 +19,11 @@ from collections import defaultdict
 import lists
 from dhatupatha import DHATUPATHA as DP
 from sounds import Sounds
+from upadesha import Upadesha as U
 from util import Rank
+
+
+DHATU_SET = set(DP.all_dhatu)
 
 
 class Filter(object):
@@ -38,6 +42,9 @@ class Filter(object):
     CACHE = {}
 
     def __init__(self, name, body, rank=None, domain=None):
+        #:
+        self.category = name.split('(')[0]
+
         #: A unique name for the filter. This is used as a key to the
         #: filter cache.
         self.name = name
@@ -63,6 +70,13 @@ class Filter(object):
 
     def __call__(self, state, index):
         return self.body(state, index)
+
+    def __eq__(self, other):
+        if self is other:
+            return True
+        if other is None:
+            return False
+        return self.name == other.name and self.domain == other.domain
 
     def __repr__(self):
         return '<f(%s)>' % self.name
@@ -98,20 +112,20 @@ class Filter(object):
     @staticmethod
     def and_(*filters):
         """Return the logical "AND" over all filters."""
-        cls = Filter._common_ancestor(filters)
+        cls = Filter._select_class(filters)
         name = 'and(%s)' % ', '.join(f.name for f in filters)
         body = cls._make_and_body(filters)
-        domain = filters
+        domain = set(filters)
         rank = Rank.and_(f.rank for f in filters)
         return cls(name, body, rank, domain)
 
     @staticmethod
     def or_(*filters):
         """Return the logical "OR" over all filters."""
-        cls = Filter._common_ancestor(filters)
+        cls = Filter._select_class(filters)
         name = 'or(%s)' % ', '.join(f.name for f in filters)
         body = cls._make_or_body(filters)
-        domain = filters
+        domain = set(filters)
         rank = Rank.or_(f.rank for f in filters)
         return cls(name, body, rank, domain)
 
@@ -121,24 +135,22 @@ class Filter(object):
 
         :param filt: some :class:`Filter`
         """
-        cls = filt.__class__
+        cls = Filter._select_class([filt])
         name = 'not(%s)' % filt.name
         body = cls._make_not_body(filt)
-        domain = [filt]
+        domain = set([filt])
         rank = filt.rank
         return cls(name, body, rank, domain)
 
     @staticmethod
-    def _common_ancestor(filters):
+    def _select_class(filters):
         """Return the lowest common ancestor of the given filters.
 
         :param filters: a list of filters
         """
-        candidate = filters[0].__class__
-        for f in filters:
-            if not isinstance(f, candidate):
-                candidate = f.__class__
-        return candidate
+        if all(isinstance(f, TermFilter) for f in filters):
+            return TermFilter
+        return Filter
 
     @classmethod
     def _make_and_body(cls, filters):
@@ -213,6 +225,11 @@ class Filter(object):
         """
         return cls(name=fn.__name__, body=fn, domain=None)
 
+    def domain_subset_of(self, other):
+        if self.domain == other.domain:
+            return True
+        return self.domain.issubset(other.domain)
+
     def new_rank(self, domain):
         return Rank()
 
@@ -229,30 +246,36 @@ class Filter(object):
 
         :param other: a filter
         """
-        if self.name == other.name:
-            return True
-
         s_sets = self.supersets
         o_sets = other.supersets
 
         # If `self` is a subset of `other`, then `self` is *more*
         # specific and has *more* components than `other`. If every
-        # component of `other` is in `self`, then the subset relation
-        # holds.
+        # component of `other` (or something more specific) is in
+        # `self`, then the subset relation holds.
         for o in o_sets:
-            # Both filters share this condition.
+            # Both filters share the condition.
             if o in s_sets:
                 continue
 
             # `o` is an "or" condition that must be matched by at least
             # one member of `s_sets`
-            elif o.domain and any(s in o.domain for s in s_sets):
+            if o.category == 'or' and any(s in o.domain for s in s_sets):
                 continue
+
+            skip = False
+            for s in s_sets:
+                if s.category == o.category and s.domain_subset_of(o):
+                    skip = True
+                    break
+            if skip:
+                continue
+
             return False
         return True
 
     @property
-    def supersets(self):
+    def feature_sets(self):
         """Return the indivisible filters that compose this one.
 
         Consider a universal set that contains every possible element.
@@ -270,8 +293,25 @@ class Filter(object):
         This function returns the `n` filters that compose `f`. Each
         `fi` is essentially a superset of `f`.
 
-        "Or" and "not" filters are tough to break up, so they're treated
-        as indivisible.
+        "Or" and "not" filters are tough to break up, so they're
+        treated as indivisible.
+        """
+        stack = [self]
+        returned = set()
+        while stack:
+            cur = stack.pop()
+            if cur.category == 'and':
+                stack.extend(cur.domain)
+            else:
+                returned.add(cur)
+        return returned
+
+    @property
+    def supersets(self):
+        """Return some interesting supersets of this filter.
+
+        For what a "set" means in the context of a filter, see the
+        comments on :meth:`Filter.feature_sets`.
         """
         try:
             return self._supersets
@@ -341,6 +381,14 @@ class TermFilter(Filter):
 
 
 class AlFilter(TermFilter):
+
+    def domain_subset_of(self, other):
+        if self.domain == other.domain:
+            return True
+        ov = other.domain.values
+        sv = self.domain.values
+        return sv.issubset(ov)
+
     def new_rank(self, domain):
         if domain is None:
             return Rank()
@@ -355,6 +403,19 @@ class SamjnaFilter(TermFilter):
 class UpadeshaFilter(TermFilter):
     def new_rank(self, domain):
         return Rank.with_upadesha(domain)
+
+
+class DhatuFilter(UpadeshaFilter):
+    @property
+    def supersets(self):
+        try:
+            return self._supersets
+        except AttributeError:
+            antya = ' '.join(U(x).antya for x in self.domain)
+            _al = al(antya)
+            _samjna = samjna('dhatu')
+            self._supersets = set([self, _samjna, _al])
+            return self._supersets
 
 
 # Parameterized filters
@@ -400,17 +461,26 @@ def contains(*names):
     return func, sounds
 
 
-@UpadeshaFilter.parameterized
+@DhatuFilter.parameterized
+def dhatu(*names):
+    """Filter on the ``raw`` property of the term.
+
+    :param names: a list of raw values
+    """
+    names = frozenset(names)
+    def func(term):
+        return term.raw in names and 'dhatu' in term.samjna
+
+    return func, names
+
+
 def gana(start, end=None):
     """Filter on the `raw`.
 
-    :param names: a list of sounds
+    :param names: a list of raw values
     """
-    names = DP.dhatu_set(start, end)
-    def func(term):
-        return term.raw in names
-
-    return func, names
+    names = DP.dhatu_list(start, end)
+    return dhatu(*names)
 
 
 @UpadeshaFilter.parameterized
@@ -432,6 +502,7 @@ def part(*names):
 
     :param names: a list of samjnas
     """
+    names = frozenset(names)
     def func(term):
         return any(n in term.parts for n in names)
 
@@ -457,6 +528,7 @@ def samjna(*names):
 
     :param names: a list of samjnas
     """
+    names = frozenset(names)
     def func(term):
         return any(n in term.samjna for n in names)
 
@@ -577,6 +649,8 @@ def auto(*data):
                 parsed['lakshana'].append(datum)
             elif datum in lists.PRATYAYA:
                 parsed['raw'].append(datum)
+            elif datum in DHATU_SET:
+                parsed['dhatu'].append(datum)
             else:
                 parsed['raw'].append(datum)
 
@@ -591,11 +665,12 @@ def auto(*data):
     base_filter = None
     d = {
         'raw': raw,
+        'dhatu': dhatu,
         'lakshana': lakshana,
         'samjna': samjna,
         'al': al
     }
-    for key in ['raw', 'lakshana', 'samjna', 'al']:
+    for key in d.keys():
         values = parsed[key]
         if values:
             matcher = d[key](*values)

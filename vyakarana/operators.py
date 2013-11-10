@@ -100,7 +100,6 @@ class Operator(object):
         :param other: an operator
         """
         for c in conflicts:
-            # print self.category, other.category
             if self.category in c and other.category in c:
                 return True
         return False

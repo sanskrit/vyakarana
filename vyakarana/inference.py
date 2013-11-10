@@ -35,7 +35,8 @@ def utsarga_apavada(rules):
         # 'na' negates an operator, so we can just match on operators.
         if rule.modifier == Na:
             for other in rules:
-                if rule.operator == other.operator and rule != other:
+                if (rule.operator == other.operator
+                    and rule != other and rule.rank > other.rank):
                     utsargas[rule].append(other)
                     apavadas[other].append(rule)
 

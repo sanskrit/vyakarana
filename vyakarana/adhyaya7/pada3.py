@@ -21,8 +21,7 @@ def angasya_ku():
         ('7.3.55', 'abhyasa', True, None, True),
         ('7.3.56', True, 'hi\\', ~F.samjna('caN'), True),
         ('7.3.57', True, 'ji\\', f('san', 'li~w'), O.al_tasya('j', 'ku')),
-        # TODO: vibhasha
-        ('7.3.58', True, 'ci\\Y', True, O.al_tasya('c', 'ku')),
+        Vibhasha('7.3.58', True, 'ci\\Y', True, O.al_tasya('c', 'ku')),
     ]
 
 

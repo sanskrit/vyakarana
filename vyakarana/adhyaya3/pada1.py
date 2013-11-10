@@ -23,6 +23,7 @@ def sanadyanta_dhatu():
 
     return [
         ('3.1.28', gupu_dhupa, None, 'tin', k('Aya')),
+        ('3.1.29', 'fti~\\', None, True, k('IyaN')),
         ('3.1.30', 'kamu~\\', None, True, k('RiN')),
     ]
 

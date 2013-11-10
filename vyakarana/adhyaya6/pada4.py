@@ -21,7 +21,7 @@
 from .. import filters as F, operators as O
 from ..templates import *
 from ..sounds import Sounds
-from ..upadesha import Upadesha
+from ..upadesha import Upadesha as U
 
 f = F.auto
 
@@ -77,13 +77,15 @@ def aci():
     def _6_4_77(state, index, locus):
         cur = state[index]
         if cur.antya in 'iI':
-            return state.swap(index, cur.tasya(Upadesha('iya~N'), locus=locus))
+            return state.swap(index, cur.tasya(U('iya~N'), locus=locus))
         else:
-            return state.swap(index, cur.tasya(Upadesha('uva~N'), locus=locus))
+            return state.swap(index, cur.tasya(U('uva~N'), locus=locus))
+    _6_4_77.category = 'tasya'
 
     gama_hana = f('ga\\mx~', 'ha\\na~', 'janI~\\', 'Kanu~^', 'Gasx~')
 
     snu_dhatu_yvor = f('Snu', 'dhatu', 'BrU') & F.al('i u')
+    anekac_asamyogapurva = f('dhatu') & ~F.ekac & ~F.samyogapurva
 
     return [
         ('6.4.77', None, snu_dhatu_yvor, None, _6_4_77),
@@ -91,10 +93,11 @@ def aci():
         ('6.4.79', None, 'strI', None, True),
         Va('6.4.80', None, True, f('am', 'Sas'), True),
         ('6.4.81', None, 'i\R', None, Sounds('yaR')),
-        ('6.4.82', None, F.al('i') & ~F.ekac & ~F.samyogapurva, None, True),
-        ('6.4.83', None, F.al('u') & ~F.ekac & ~F.samyogapurva, 'sup', True),
+        ('6.4.82', None, F.al('i') & anekac_asamyogapurva, None, True),
+        ('6.4.83', None, F.al('u') & anekac_asamyogapurva, 'sup', True),
+        # TODO: Snu
         ('6.4.87', None, 'hu\\', 'sarvadhatuka', True),
-        ('6.4.88', None, 'BU', f('lu~N', 'li~w'), 'vu~k'),
+        ('6.4.88', None, 'BU', f('lu~N', 'li~w'), U('vu~k')),
         ('6.4.89', None, F.value('goh'), None, O.upadha('U')),
         ('6.4.98', None, gama_hana, F.knit & ~F.raw('aN'), O.upadha(''))
     ]
@@ -161,5 +164,5 @@ def abhyasa_lopa_liti():
         Artha('6.4.123', None, F.value('rAD'), True, True),
         Va('6.4.124', None, f('jF', 'Bramu~', 'trasI~'), True, True),
         Ca('6.4.125', None, F.gana('PaRa~', 'svana~'), True, True),
-        Na('6.4.125', None, f('Sasu~', 'dada~\\', F.adi('v'), 'guna'), True, True),
+        Na('6.4.126', None, f('Sasu~', 'dada~\\', F.adi('v'), 'guna'), True, True),
     ]

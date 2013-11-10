@@ -8,12 +8,26 @@
 
 from .. import filters as F, operators as O
 from ..templates import *
-from ..upadesha import Upadesha as U
+from ..upadesha import Upadesha as U, Pratyaya
 
 f = F.auto
+it_ashtadhyayi = None
+TAS = Pratyaya('tAsi~').add_samjna('ardhadhatuka')
+
 
 @inherit('anga', None, None)
 def it():
+
+    @O.Operator.unparameterized
+    def tasvat(state, index, **kw):
+        global it_ashtadhyayi
+        if it_ashtadhyayi is None:
+            from ..ashtadhyayi import Ashtadhyayi
+            it_ashtadhyayi = Ashtadhyayi.with_rules_in('7.2.8', '7.2.78')
+
+        print state
+        import sys; sys.exit()
+
 
     titutra = f('ti', 'tu', 'tra', 'ta', 'Ta', 'si', 'su', 'sara', 'ka', 'sa')
     kr_sr_bhr = F.value('kf', 'sf', 'Bf', 'vf', 'stu', 'dru', 'sru', 'Sru')
@@ -25,8 +39,8 @@ def it():
         Na('7.2.13', kr_sr_bhr, f('li~w'), None, True),
         ('7.2.35', None, f('ardhadhatuka') & F.adi('val'), None, True),
         Va('7.2.44', svarati_suti, True, None, True),
+        # ('7.2.61', 'ac', True, None, True),
     ]
-
 
 
 @inherit('anga', 'sarvadhatuka', None)
