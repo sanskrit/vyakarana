@@ -1358,10 +1358,10 @@
 4,91,Ra\Sa~
 4,92,tf\pa~
 4,93,df\pa~
-4,94,druH\a~
-4,95,muH\a~
-4,96,zRuH\a~
-4,97,zRiH\a~
+4,94,druh\a~
+4,95,muh\a~
+4,96,zRuh\a~
+4,97,zRih\a~
 4,98,Samu~
 4,99,tamu~
 4,100,damu~
@@ -1798,7 +1798,7 @@
 # 10,52,{SAntva~
 10,53,Svalka~
 10,54,valka~
-10,55,zRiha~
+# 10,55,zRiha~
 10,56,sPiwa~
 10,57,smiwa~
 10,58,zmiN
