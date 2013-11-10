@@ -35,7 +35,7 @@ def it():
 
     return [
         Na('7.2.8', None, None, f('krt') & F.adi('vaS'), U('iw')),
-        Ca('7.2.9', None, f('krt') & titutra, None, U('iw')),
+        Ca('7.2.9', None, f('krt') & titutra, None, True),
         Na('7.2.13', kr_sr_bhr, f('li~w'), None, True),
         ('7.2.35', None, f('ardhadhatuka') & F.adi('val'), None, True),
         Va('7.2.44', svarati_suti, True, None, True),

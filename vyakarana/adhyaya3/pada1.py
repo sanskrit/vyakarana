@@ -28,6 +28,15 @@ def sanadyanta_dhatu():
         ('3.1.30', 'kamu~\\', None, True, k('RiN')),
     ]
 
+@inherit('dhatu', None, 'tin')
+def syatasi():
+    def k(s):
+        return Krt(s).add_samjna('anga')
+
+    return [
+        # TODO: lut
+        ('3.1.33', None, None, 'lf~w', k('sya'))
+    ]
 
 @inherit('dhatu', None, f('tin') & f('sarvadhatuka'))
 def vikarana():
