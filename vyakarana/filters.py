@@ -6,7 +6,7 @@
     Excluding paribhāṣā, all rules in the Ashtadhyayi describe a context
     then specify an operation to apply based on that context. Within
     this simulator, a rule's context is defined using *filters*, which
-    return a true or false value for a given term within some state.
+    return a true or false value for a given index within some state.
 
     This module defines a variety of parameterized and unparameterized
     filters, as well as as some basic operators for combining filters.
@@ -42,7 +42,8 @@ class Filter(object):
     CACHE = {}
 
     def __init__(self, name, body, rank=None, domain=None):
-        #:
+        #: The filter type. For example, a filter on the first letter
+        #: of a term has the category ``adi``.
         self.category = name.split('(')[0]
 
         #: A unique name for the filter. This is used as a key to the
@@ -632,53 +633,57 @@ def auto(*data):
     :param data:
     """
 
+    # Maps a filter type to a list of selectors. This is populated in
+    # the loop below.
     parsed = defaultdict(list)
-    for datum in data:
 
+    for datum in data:
+        # ``None`` implies no filter -> allow all
         if datum is None:
             return allow_all
 
-        matcher = None
         # String selector: value, samjna, or sound
         if isinstance(datum, basestring):
             if datum in lists.SAMJNA or datum in lists.IT:
-                parsed['samjna'].append(datum)
+                key = 'samjna'
             elif datum in lists.SOUNDS:
-                parsed['al'].append(datum)
+                key = 'al'
             elif datum in lists.LA:
-                parsed['lakshana'].append(datum)
-            elif datum in lists.PRATYAYA:
-                parsed['raw'].append(datum)
+                key = 'lakshana'
             elif datum in DHATU_SET:
-                parsed['dhatu'].append(datum)
+                key = 'dhatu'
             else:
-                parsed['raw'].append(datum)
+                key = 'raw'
+            parsed[key].append(datum)
 
         # Function
         elif hasattr(datum, '__call__'):
             parsed['functions'].append(datum)
+
+        # Unknown
         else:
             raise NotImplementedError(datum)
 
-
     # Create filter
     base_filter = None
-    d = {
+    name2creator = {
         'raw': raw,
         'dhatu': dhatu,
         'lakshana': lakshana,
         'samjna': samjna,
         'al': al
     }
-    for key in d.keys():
-        values = parsed[key]
+    for name in name2creator:
+        values = parsed[name]
         if values:
-            matcher = d[key](*values)
+            filt_creator = name2creator[name]
+            filt = filt_creator(*values)
             if base_filter is None:
-                base_filter = matcher
+                base_filter = filt
             else:
-                base_filter |= matcher
+                base_filter |= filt
 
+    # Combine filter with `functions` filters
     if base_filter:
         if parsed['functions']:
             base_filter = Filter.or_(base_filter, *parsed['functions'])

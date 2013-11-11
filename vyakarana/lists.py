@@ -23,7 +23,7 @@ LA = set([
 ])
 
 
-#:
+#: Various pratyaya
 PRATYAYA = set([
     'luk', 'Slu', 'lup',
     'Sap', 'Syan', 'Snu', 'Sa', 'Snam', 'u', 'SnA',

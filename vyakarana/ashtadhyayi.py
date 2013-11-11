@@ -27,7 +27,6 @@ import adhyaya7.pada4
 import inference
 import sandhi
 import siddha
-import vibhakti
 
 from templates import ALL_RULES
 from util import State
@@ -125,7 +124,7 @@ class Ashtadhyayi(object):
         self.ranked_rules = sorted(self.rules,
                                    cmp = lambda x, y: cmp(y.rank, x.rank))
 
-        #:
+        #: a :class:`RuleTree`
         self.rule_tree = RuleTree(self.ranked_rules)
 
     @classmethod

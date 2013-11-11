@@ -29,16 +29,19 @@ class Operator(object):
     """A callable class that returns :class:`State`s."""
 
     def __init__(self, name, body, category=None, params=None):
+        #: The operator type. For example, a substitution operator has
+        #: category ``tasya``.
+        self.category = category or name
+
         #: A unique name for this operator.
         self.name = name
 
         #: The function that corresponds to this operator.
         self.body = body
 
+        #: If a parameterized operator, the list of parameters used to
+        #: create it. If not, ``None``.
         self.params = params
-
-        #:
-        self.category = category or name
 
     def __call__(self, state, index, locus='value'):
         return self.body(state, index, locus)

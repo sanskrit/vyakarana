@@ -152,7 +152,7 @@ class Rule(object):
         #: more powerful the rule.
         self.rank = self._make_rank(self.locus, filters)
 
-        #:
+        #: Indicates whether or not the rule is optional
         self.option = kw.pop('option', None)
 
         #: A list of rules. These rules are all blocked if the current
