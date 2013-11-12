@@ -55,16 +55,22 @@ VIBHAKTI = ['prathama', 'dvitiya', 'trtiya', 'caturthi',
             'pancami', 'sasthi', 'saptami']
 
 
+#: saṃjñā for verbal suffixes
+DHATUKA = ['sarvadhatuka', 'ardhadhatuka']
+
+
+#: saṃjñā for kāraka relations (currently unused)
+KARAKA = ['karta', 'karma', 'karana', 'adhikarana', 'sampradana', 'apadana']
+
+
 #: Collected saṃjñā
 SAMJNA = set([
     'guna', 'vrddhi',
     'dhatu', 'anga', 'pada', 'pratyaya',
     'krt', 'taddhita',
-    'sarvadhatuka', 'ardhadhatuka',
     'abhyasa', 'abhyasta',
     'tin', 'sup',
-    'karta', 'karma', 'karana', 'adhikarana', 'sampradana', 'apadana',
-]) | set(PADA + PURUSHA + VACANA + VIBHAKTI)
+]) | set(PADA + PURUSHA + VACANA + VIBHAKTI + DHATUKA + KARAKA)
 
 
 #: A collection of various sounds, including:

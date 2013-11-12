@@ -9,7 +9,7 @@
 import itertools
 
 from .. import filters as F, operators as O, util
-from ..lists import PADA, PURUSHA, VACANA, VIBHAKTI, TIN
+from ..lists import PADA, PURUSHA, VACANA, VIBHAKTI, TIN, LA
 from ..sounds import Sounds
 from ..templates import *
 
@@ -69,12 +69,6 @@ def label_by_group(terms, labels):
             term.add(labels[i])
 
 
-@F.TermFilter.unparameterized
-def f_lakara(term):
-    return 'vibhakti' in term.samjna and term.raw[0] == 'l'
-f_lakara.rank = util.Rank(upadesha=1, samjna=1)
-
-
 def tin_key(samjna, pada=None):
     if pada:
         x = pada
@@ -124,8 +118,8 @@ def lasya():
         return state.swap(index, tin)
 
     return [
-        ('3.4.78', None, f_lakara, None, tin_adesha),
-        ('3.4.79', None, F.samjna('atmanepada') & F.samjna('wit'), None, O.ti('e')),
+        ('3.4.78', None, F.raw(*LA), None, tin_adesha),
+        ('3.4.79', None, f('atmanepada') & f('wit'), None, O.ti('e')),
         ('3.4.80',
             None, f('atmanepada') & f('wit') & F.raw('TAs'), None,
             'se'),

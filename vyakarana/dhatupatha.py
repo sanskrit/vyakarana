@@ -52,8 +52,10 @@ class Dhatupatha(object):
 
     def __init__(self, filename=None):
         self.gana_map = {}
+
         #: List of all dhatu, one for each row in the original file.
         self.all_dhatu = []
+
         #: Maps a dhatu to its indices in `self.all_dhatu`.
         self.index_map = defaultdict(list)
 

@@ -129,9 +129,9 @@ def test_krt():
         ('kyac', 'ya', ['kit', 'cit']),
 
         ('Sap', 'a', ['Sit', 'pit']),
-        ('Syan', 'ya', ['Sit', 'nit', 'Nit']),
-        ('Sa', 'a', ['Sit', 'Nit']),
-        ('Snam', 'na', ['Sit', 'mit', 'Nit']),
+        ('Syan', 'ya', ['Sit', 'nit']),
+        ('Sa', 'a', ['Sit']),
+        ('Snam', 'na', ['Sit', 'mit']),
         ('Ric', 'i', ['Rit', 'cit']),
         ('kvasu~', 'vas', ['kit', 'udit'])
     ]

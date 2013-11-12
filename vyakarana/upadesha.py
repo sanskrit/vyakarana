@@ -325,13 +325,13 @@ class Upadesha(object):
         elif 'S' in sthani.it or len(sthani.value) > 1:
             value = sthani.value
 
-        if value:
+        if value is not None:
             returned = self.set_at(locus, value)
             if add_part:
                 returned = returned.add_part(sthani.raw)
             return returned
 
-        raise NotImplementedError
+        raise NotImplementedError(sthani)
 
 
 class Anga(Upadesha):
@@ -350,25 +350,6 @@ class Dhatu(Anga):
     def __init__(self, *a, **kw):
         Upadesha.__init__(self, *a, **kw)
         self.samjna |= set(['anga', 'dhatu'])
-
-        value = self.value
-        if not value:
-            return
-
-        # 6.1.64 dhAtvAdeH SaH saH
-        if value.startswith('z'):
-            value = 's' + value[1:]
-            # paribhasha: nimittApAye naimittikasya api apAyaH
-            converter = {'w': 't', 'W': 'T'}
-            v = value[1]
-            value = value[0] + converter.get(v, v) + value[2:]
-
-        # 6.1.65 No naH
-        elif value.startswith('R'):
-            value = 'n' + value[1:]
-
-        if value != self.value:
-            self.data = self.data.replace(value=value)
 
 
 class Pratyaya(Upadesha):

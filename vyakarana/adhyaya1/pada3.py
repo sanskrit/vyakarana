@@ -8,8 +8,15 @@
 
 from .. import filters as F, operators as O
 from ..templates import *
+from ..dhatupatha import DHATUPATHA as DP
 
 f = F.auto
+
+@inherit(None, None, None)
+def dhatu():
+    return [
+        ('1.3.1', None, F.raw(*DP.all_dhatu), None, 'dhatu'),
+    ]
 
 
 @inherit('dhatu', None, None)

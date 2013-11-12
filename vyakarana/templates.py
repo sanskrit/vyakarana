@@ -40,6 +40,10 @@ class TupleWrapper(object):
         return '<%s(%s)>' % (self.__class__.__name__, repr(self.data))
 
 
+class Boost(TupleWrapper):
+    """A hack that artificially boosts a rule's priority."""
+
+
 class Ca(TupleWrapper):
     """Wrapper for a rule that contains the word "ca".
 
@@ -171,7 +175,7 @@ class Rule(object):
         if center[0] is F.allow_all and result not in lists.SAMJNA:
             returned = TasmatRule(name, left + right, result, **kw)
         else:
-            if kw.get('category') == 'paribhasha':
+            if kw.get('category') == 'paribhasha' or kw.get('modifier') is Boost:
                 cls = ParibhashaRule
             elif result in lists.SAMJNA:
                 cls = SamjnaRule
@@ -314,6 +318,8 @@ class Rule(object):
             append('           %r' % f)
         append('    Operator : %r' % self.operator)
         append('    Rank     : %r' % (self.rank,))
+        append('    Utsarga  : %r' % (self.utsarga,))
+        append('    Apavada  : %r' % (self.apavada,))
         append('')
         print '\n'.join(data)
 

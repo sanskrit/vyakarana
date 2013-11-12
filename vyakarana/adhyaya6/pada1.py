@@ -57,3 +57,25 @@ def do_samprasarana():
         ('6.1.17', None, 'abhyasa', ubhaya, True),
     ]
 
+@inherit(None, None, None)
+def dhatu_adesha():
+
+    @O.DataOperator.unparameterized
+    def sa_adesha(value):
+        if value.startswith('z'):
+            converter = {'w': 't', 'W': 'T', 'R': 'n'}
+            v = value[1]
+            value = 's' + converter.get(v, v) + value[2:]
+        return value
+
+    @O.DataOperator.unparameterized
+    def na_adesha(value):
+        if value.startswith('R'):
+            value = 'n' + value[1:]
+        return value
+
+
+    return [
+        Boost('6.1.64', None, f('dhatu') & F.adi('z'), None, sa_adesha),
+        Boost('6.1.65', None, f('dhatu') & F.adi('R'), None, na_adesha),
+    ]
