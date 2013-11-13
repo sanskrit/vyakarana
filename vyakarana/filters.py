@@ -65,19 +65,12 @@ class Filter(object):
         self.domain = domain
 
         if rank is None:
-            self.rank = self.new_rank(domain)
+            self.rank = self._new_rank(domain)
         else:
             self.rank = rank
 
     def __call__(self, state, index):
         return self.body(state, index)
-
-    def __eq__(self, other):
-        if self is other:
-            return True
-        if other is None:
-            return False
-        return self.name == other.name and self.domain == other.domain
 
     def __repr__(self):
         return '<f(%s)>' % self.name
@@ -91,6 +84,20 @@ class Filter(object):
         :param other: the other :class:`Filter`.
         """
         return Filter.and_(self, other)
+
+    def __eq__(self, other):
+        """Equality operator.
+
+        Two filters are the same if they allow exactly the same set
+        of items.
+
+        :param other: the other :class:`Filter`.
+        """
+        if self is other:
+            return True
+        if other is None:
+            return False
+        return self.name == other.name and self.domain == other.domain
 
     def __invert__(self):
         """Bitwise "not" (``~``).
@@ -109,6 +116,9 @@ class Filter(object):
         :param other: the other :class:`Filter`.
         """
         return Filter.or_(self, other)
+
+    def _new_rank(self, domain):
+        return Rank()
 
     @staticmethod
     def and_(*filters):
@@ -226,55 +236,6 @@ class Filter(object):
         """
         return cls(name=fn.__name__, body=fn, domain=None)
 
-    def domain_subset_of(self, other):
-        if self.domain == other.domain:
-            return True
-        return self.domain.issubset(other.domain)
-
-    def new_rank(self, domain):
-        return Rank()
-
-    def subset_of(self, other):
-        """Return whether this filter is a subset of some other filter.
-
-        All members of some subset S are in the parent set O. So if it
-        is the case that:
-
-            S applies -> O applies
-
-        then S is a subset of P. For the "set" interpretation of a
-        filter, see the comments on :meth:`~Filter.supersets`.
-
-        :param other: a filter
-        """
-        s_sets = self.supersets
-        o_sets = other.supersets
-
-        # If `self` is a subset of `other`, then `self` is *more*
-        # specific and has *more* components than `other`. If every
-        # component of `other` (or something more specific) is in
-        # `self`, then the subset relation holds.
-        for o in o_sets:
-            # Both filters share the condition.
-            if o in s_sets:
-                continue
-
-            # `o` is an "or" condition that must be matched by at least
-            # one member of `s_sets`
-            if o.category == 'or' and any(s in o.domain for s in s_sets):
-                continue
-
-            skip = False
-            for s in s_sets:
-                if s.category == o.category and s.domain_subset_of(o):
-                    skip = True
-                    break
-            if skip:
-                continue
-
-            return False
-        return True
-
     @property
     def feature_sets(self):
         """Return the indivisible filters that compose this one.
@@ -336,6 +297,52 @@ class Filter(object):
         self._supersets = returned
         return returned
 
+    def domain_subset_of(self, other):
+        if self.domain == other.domain:
+            return True
+        return self.domain.issubset(other.domain)
+
+    def subset_of(self, other):
+        """Return whether this filter is a subset of some other filter.
+
+        All members of some subset S are in the parent set O. So if it
+        is the case that:
+
+            S applies -> O applies
+
+        then S is a subset of P. For the "set" interpretation of a
+        filter, see the comments on :meth:`~Filter.supersets`.
+
+        :param other: a filter
+        """
+        s_sets = self.supersets
+        o_sets = other.supersets
+
+        # If `self` is a subset of `other`, then `self` is *more*
+        # specific and has *more* components than `other`. If every
+        # component of `other` (or something more specific) is in
+        # `self`, then the subset relation holds.
+        for o in o_sets:
+            # Both filters share the condition.
+            if o in s_sets:
+                continue
+
+            # `o` is an "or" condition that must be matched by at least
+            # one member of `s_sets`
+            if o.category == 'or' and any(s in o.domain for s in s_sets):
+                continue
+
+            skip = False
+            for s in s_sets:
+                if s.category == o.category and s.domain_subset_of(o):
+                    skip = True
+                    break
+            if skip:
+                continue
+
+            return False
+        return True
+
 
 class TermFilter(Filter):
 
@@ -390,19 +397,19 @@ class AlFilter(TermFilter):
         sv = self.domain.values
         return sv.issubset(ov)
 
-    def new_rank(self, domain):
+    def _new_rank(self, domain):
         if domain is None:
             return Rank()
         return Rank.with_al(domain)
 
 
 class SamjnaFilter(TermFilter):
-    def new_rank(self, domain):
+    def _new_rank(self, domain):
         return Rank.with_samjna(domain)
 
 
 class UpadeshaFilter(TermFilter):
-    def new_rank(self, domain):
+    def _new_rank(self, domain):
         return Rank.with_upadesha(domain)
 
 
