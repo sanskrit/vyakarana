@@ -184,9 +184,66 @@ def replace(target, result):
 
 @Operator.parameterized
 def tasya(sthani, adi=False):
-    def func(state, index, locus=None):
-        cur = state[index]
-        return state.swap(index, cur.tasya(sthani, adi=adi, locus=locus))
+    def func(state, index, locus):
+        term = state[index]
+        term_value = term.get_at(locus)
+        new_value = None
+        add_part = False
+
+        # 1.1.54 ādeḥ parasya
+        if adi:
+            try:
+                new_value = sthani.value + term_value[1:]
+            except AttributeError:
+                new_value = sthani + term_value[1:]
+
+        elif isinstance(sthani, basestring):
+            # 1.1.52 alo 'ntyasya
+            # 1.1.55 anekālśit sarvasya
+            if len(sthani) <= 1:
+                new_value = term_value[:-1] + sthani
+            else:
+                new_value = sthani
+
+        elif not hasattr(sthani, 'value'):
+            # 1.1.50 sthāne 'ntaratamaḥ
+            last = Sound(term.antya).closest(sthani)
+            new_value = term_value[:-1] + last
+
+        # 1.1.47 mid aco 'ntyāt paraḥ
+        elif 'mit' in sthani.samjna:
+            ac = Sounds('ac')
+            for i, L in enumerate(reversed(term_value)):
+                if L in ac:
+                    break
+            new_value = term_value[:-i] + sthani.value + term_value[-i:]
+            add_part = True
+
+        # 1.1.46 ādyantau ṭakitau
+        elif 'kit' in sthani.samjna:
+            new_value = term_value + sthani.value
+            add_part = True
+        elif 'wit' in sthani.samjna:
+            new_value = sthani.value + term_value
+            add_part = True
+
+        # 1.1.52 alo 'ntyasya
+        # 1.1.53 ṅic ca
+        elif len(sthani.value) == 1 or 'Nit' in sthani.samjna:
+            new_value = term_value[:-1] + sthani.value
+
+        # 1.1.55 anekālśit sarvasya
+        elif 'S' in sthani.it or len(sthani.value) > 1:
+            new_value = sthani.value
+
+        if new_value is not None:
+            new_term = term.set_at(locus, new_value)
+            if add_part:
+                new_term = new_term.add_part(sthani.raw)
+            return state.swap(index, new_term)
+
+        raise NotImplementedError(sthani)
+
     return func
 
 

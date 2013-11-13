@@ -55,7 +55,7 @@ VIBHAKTI = ['prathama', 'dvitiya', 'trtiya', 'caturthi',
             'pancami', 'sasthi', 'saptami']
 
 
-#: saṃjñā for verbal suffixes
+#: saṃjñā for verb suffixes
 DHATUKA = ['sarvadhatuka', 'ardhadhatuka']
 
 
@@ -63,7 +63,7 @@ DHATUKA = ['sarvadhatuka', 'ardhadhatuka']
 KARAKA = ['karta', 'karma', 'karana', 'adhikarana', 'sampradana', 'apadana']
 
 
-#: Collected saṃjñā
+#: All saṃjñā
 SAMJNA = set([
     'guna', 'vrddhi',
     'dhatu', 'anga', 'pada', 'pratyaya',
@@ -78,17 +78,16 @@ SAMJNA = set([
 #: - single-item sets (1.1.70)
 #: - pratyāhāra (1.1.71)
 SOUNDS = set([
-    'a', 'at', 'At',
-    'i', 'it', 'It',
-    'u', 'ut', 'Ut',
-    'f', 'ft', 'Ft',
-    'x', 'xt',
-    'et', 'Et',
-    'ot', 'Ot'
+    # 1.1.69 aṇudit savarṇasya cāpratyayaḥ
+    'a', 'i', 'u', 'f', 'x',
+    'ku~', 'cu~', 'wu~', 'tu~', 'pu~',
 
-    # pratyāhāra
+    # 1.1.70 taparas tatkālasya
+    'at', 'At', 'it', 'It', 'ut', 'Ut', 'ft', 'Ft', 'et', 'Et', 'ot', 'Ot',
+
+    # 1.1.71 ādir antyena sahetā
     # Although the Shiva Sutras allow a large number of pratyāhāras,
-    # only the following are used in the Ashtadhyayi
+    # only the following are used in the Ashtadhyayi.
     # (Sharma Volume I, p. 33)
     'eN', 'yaY', 'aR', 'Cav', 'aw',
     'Jaz', 'Baz',

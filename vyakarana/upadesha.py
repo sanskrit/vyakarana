@@ -11,7 +11,7 @@
 import re
 from collections import namedtuple
 
-from sounds import Sound, Sounds
+from sounds import Sounds
 
 
 _DataSpace = namedtuple('_DataSpace',
@@ -42,11 +42,31 @@ class Upadesha(object):
             clean, it_samjna = self._parse_it(raw, **kw)
             data = DataSpace(raw, clean, clean, clean, clean)
             samjna = samjna | it_samjna if samjna else it_samjna
+
+        #: The term`s data space. A given term is represented in a
+        #: variety of ways, depending on the circumstance. For example,
+        #: a rule might match based on a specific upadeśa (including
+        #: 'it' letters) in one context and might match on a term's
+        #: final sound (excluding 'it' letters) in another.
         self.data = data
+
+        #: The set of markers that apply to this term. Although the
+        #: Ashtadhyayi distinguishes between samjna and 'it' letters,
+        #: this simulation merges them together. Thus ``self.samjna``
+        #: might contain both ``kit`` and ``pratyaya``.
         self.samjna = samjna
+
+        #: The set of values that this term used to have. Technically,
+        #: only pratyaya have access to this information.
         self.lakshana = lakshana or frozenset()
+
+        #: The set of operations that have been applied to this term.
         self.ops = ops or frozenset()
+
+        #: The various augments that have been applied to this term.
         self.parts = parts or frozenset()
+
+        #:
         self._filter_cache = {}
 
     def __eq__(self, other):
@@ -77,27 +97,29 @@ class Upadesha(object):
             )
 
     @property
-    def adi(self, key='value'):
+    def adi(self, locus='value'):
+        """Return the first sound, or ``None`` if there isn't one."""
         try:
-            return getattr(self.data, key)[0]
+            return getattr(self.data, locus)[0]
         except IndexError:
             return None
 
     @property
-    def antya(self, key='value'):
+    def antya(self, locus='value'):
+        """Return the last sound, or ``None`` if there isn't one."""
         try:
-            return getattr(self.data, key)[-1]
+            return getattr(self.data, locus)[-1]
         except IndexError:
             return None
 
     @property
     def asiddha(self):
-        """Return the value created by asiddha rules."""
+        """Return the value stored in the asiddha space."""
         return self.data.asiddha
 
     @property
     def asiddhavat(self):
-        """Return the value created by asiddhavat rules."""
+        """Return the value stored in the asiddhavat space."""
         return self.data.asiddhavat
 
     @property
@@ -111,15 +133,16 @@ class Upadesha(object):
         return self.data.raw
 
     @property
-    def upadha(self, key='value'):
+    def upadha(self, locus='value'):
+        """Return the penultimate sound, or ``None`` if there isn't one."""
         try:
-            return getattr(self.data, key)[-2]
+            return getattr(self.data, locus)[-2]
         except IndexError:
             return None
 
     @property
     def value(self):
-        """Return the value created by normal rules."""
+        """Return the value created by siddha rules."""
         return self.data.value
 
     def _parse_it(self, raw, **kw):
@@ -239,6 +262,9 @@ class Upadesha(object):
     def any_samjna(self, *args):
         return any(a in self.samjna for a in args)
 
+    def get_at(self, locus):
+        return getattr(self.data, locus)
+
     def remove_samjna(self, *names):
         return self.copy(
             samjna=self.samjna.difference(names)
@@ -273,65 +299,6 @@ class Upadesha(object):
 
     def set_asiddha(self, asiddha):
         return self.copy(data=self.data.replace(asiddha=asiddha))
-
-    def tasya(self, sthani, adi=False, locus='value'):
-        term_value = self.value
-        value = None
-        add_part = False
-
-        # 1.1.54 AdeH parasya
-        if adi:
-            try:
-                value = sthani.value + term_value[1:]
-            except AttributeError:
-                value = sthani + term_value[1:]
-
-        elif isinstance(sthani, basestring):
-            # 1.1.52 alo 'ntyasya
-            # 1.1.55 anekAlSit sarvasya
-            if len(sthani) <= 1:
-                value = term_value[:-1] + sthani
-            else:
-                value = sthani
-
-        elif not hasattr(sthani, 'value'):
-            # 1.1.50 sthAne 'ntaratamaH
-            last = Sound(self.antya).closest(sthani)
-            value = term_value[:-1] + last
-
-        # 1.1.47 mid aco 'ntyAt paraH
-        elif 'mit' in sthani.samjna:
-            ac = Sounds('ac')
-            for i, L in enumerate(reversed(term_value)):
-                if L in ac:
-                    break
-            value = term_value[:-i] + sthani.value + term_value[-i:]
-            add_part = True
-
-        # 1.1.46 Adyantau Takitau
-        elif 'kit' in sthani.samjna:
-            value = term_value + sthani.value
-            add_part = True
-        elif 'wit' in sthani.samjna:
-            value = sthani.value + term_value
-            add_part = True
-
-        # 1.1.52 alo 'ntyasya
-        # 1.1.53 Gic ca
-        elif len(sthani.value) == 1 or 'Nit' in sthani.samjna:
-            value = term_value[:-1] + sthani.value
-
-        # 1.1.55 anekAlSit sarvasya
-        elif 'S' in sthani.it or len(sthani.value) > 1:
-            value = sthani.value
-
-        if value is not None:
-            returned = self.set_at(locus, value)
-            if add_part:
-                returned = returned.add_part(sthani.raw)
-            return returned
-
-        raise NotImplementedError(sthani)
 
 
 class Anga(Upadesha):

@@ -37,8 +37,8 @@ def dhatu_tester(filt, data):
     return filt([Dhatu(data)], 0)
 
 
-# Filter behavior
-# ~~~~~~~~~~~~~~~
+# Ordinary filters
+# ~~~~~~~~~~~~~~~~
 
 def test_adi():
     cases = [
@@ -110,7 +110,6 @@ def test_gana():
          first, last = pair
          yes = ' '.join(pair)
          no = ' '.join(' '.join(p) for j, p in enumerate(pairs) if i != j)
-         print no
          cases.append(([first], yes, no))
 
     verify(cases, F.gana, dhatu_tester)
@@ -121,7 +120,11 @@ def test_it_samjna():
         (['kit', 'Nit'],
             'kta ktvA iyaN uvaN kvasu~',
             'GaY ap yat anIyar',
-        )
+        ),
+        (['Rit'],
+            'Ral Rvul',
+            'tip lyuw',
+        ),
     ]
     verify(cases, F.samjna, pratyaya_tester)
 
@@ -130,7 +133,7 @@ def test_raw():
     cases = [
         (['jYA\\', 'janI~\\'],
             'jYA\\ janI~\\',
-            'gamx~ SF dF pF',
+            'gamx~ SF dF pF jYA janI janI~',
         )
     ]
     verify(cases, F.raw, dhatu_tester)
@@ -175,6 +178,9 @@ def test_value():
     ]
     verify(cases, F.value, dhatu_tester)
 
+
+# Filter combination
+# ~~~~~~~~~~~~~~~~~~
 
 def test_and_():
     cases = [
@@ -233,6 +239,7 @@ def test_auto_on_lists():
         (L.LA, F.lakshana),
         (L.SAMJNA, F.samjna),
         (L.SOUNDS, F.al),
+        (L.TIN, F.raw),
     ]
 
     for items, function in pairs:

@@ -73,13 +73,17 @@ def ardhadhatuke():
 @inherit(None, 'anga', F.adi('ac'), locus='asiddhavat')
 def aci():
 
+    iyan = O.tasya(U('iya~N'))
+    uvan = O.tasya(U('uva~N'))
+
     @O.Operator.unparameterized
     def _6_4_77(state, index, locus):
         cur = state[index]
         if cur.antya in 'iI':
-            return state.swap(index, cur.tasya(U('iya~N'), locus=locus))
+            return iyan(state, index, locus)
         else:
-            return state.swap(index, cur.tasya(U('uva~N'), locus=locus))
+            return uvan(state, index, locus)
+
     _6_4_77.category = 'tasya'
 
     gama_hana = f('ga\\mx~', 'ha\\na~', 'janI~\\', 'Kanu~^', 'Gasx~')

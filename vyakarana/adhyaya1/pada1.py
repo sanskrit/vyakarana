@@ -29,10 +29,10 @@ def mit_aco_ntyat_parah():
 
     @O.Operator.unparameterized
     def move_mit(state, index, locus=None):
-        base = state[index - 1]
         mit = state[index]
-        base = base.tasya(mit)
-        return state.remove(index).swap(index - 1, base)
+        op = O.tasya(mit)
+        state = op(state, index - 1, locus)
+        return state.remove(index)
 
     return [
         ('1.1.47', None, None, None, move_mit)
