@@ -36,7 +36,10 @@ class Operator(object):
         #: A unique name for this operator.
         self.name = name
 
-        #: The function that corresponds to this operator.
+        #: The function that corresponds to this operator. The input
+        #: and output of the function depend on the operator class. For
+        #: a general :class:`Operator`, this function accepts a state
+        #: and index and returns a new state.
         self.body = body
 
         #: If a parameterized operator, the list of parameters used to
@@ -47,6 +50,12 @@ class Operator(object):
         return self.body(state, index, locus)
 
     def __eq__(self, other):
+        """Equality operator.
+
+        Two operators are the same if they perform the same operation.
+
+        :param other: the other :class:`Operator`
+        """
         if self is other:
             return True
         elif other is None:

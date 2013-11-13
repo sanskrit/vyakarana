@@ -53,27 +53,24 @@ class Filter(object):
         #: The function that corresponds to this filter. The input and
         #: output of the function depend on the filter class. For
         #: a general :class:`Filter`, this function accepts a state and
-        #: index and returns a new state.
+        #: index and returns ``True`` or ``False``.
         self.body = body
 
-        # A collection that somehow characterizes the domain of the
-        # filter. Some examples:
-        # - for an `al` filter, the set of matching letters
-        # - for a `samjna` filter, the set of matching samjna
-        # - for a `raw` filter, the set of matching raw values
-        # - for an and/or/not filter, the original filters
+        #: A collection that somehow characterizes the domain of the
+        #: filter. Some examples:
+        #: - for an `al` filter, the set of matching letters
+        #: - for a `samjna` filter, the set of matching samjna
+        #: - for a `raw` filter, the set of matching raw values
+        #: - for an and/or/not filter, the original filters
         self.domain = domain
 
-        if rank is None:
-            self.rank = self._new_rank(domain)
-        else:
-            self.rank = rank
+        #: A :class:`Rank` that characterizes the relative power of
+        #: this filter. Rules with more powerful filters tend to have
+        #: higher priority over rules with less powerful filters.
+        self.rank = rank or self._new_rank(domain)
 
     def __call__(self, state, index):
         return self.body(state, index)
-
-    def __repr__(self):
-        return '<f(%s)>' % self.name
 
     def __and__(self, other):
         """Bitwise "and" (``&``).
@@ -107,6 +104,9 @@ class Filter(object):
         """
         return Filter.not_(self)
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __or__(self, other):
         """Bitwise "or" (``|``).
 
@@ -116,6 +116,9 @@ class Filter(object):
         :param other: the other :class:`Filter`.
         """
         return Filter.or_(self, other)
+
+    def __repr__(self):
+        return '<f(%s)>' % self.name
 
     def _new_rank(self, domain):
         return Rank()
@@ -390,17 +393,17 @@ class TermFilter(Filter):
 
 class AlFilter(TermFilter):
 
+    def _new_rank(self, domain):
+        if domain is None:
+            return Rank()
+        return Rank.with_al(domain)
+
     def domain_subset_of(self, other):
         if self.domain == other.domain:
             return True
         ov = other.domain.values
         sv = self.domain.values
         return sv.issubset(ov)
-
-    def _new_rank(self, domain):
-        if domain is None:
-            return Rank()
-        return Rank.with_al(domain)
 
 
 class SamjnaFilter(TermFilter):
@@ -578,7 +581,7 @@ def value(*names):
 
 @AlFilter.unparameterized
 def Sit_adi(term):
-    """Filter on whether the term starts with ś nn upadeśa.
+    """Filter on whether the term starts with ś in upadeśa.
     """
     return term.raw and term.raw[0] == 'S'
 
@@ -597,12 +600,14 @@ def allow_all(*args):
 
 @AlFilter.unparameterized
 def samyoga(term):
+    """Filter on whether the term ends with a conjunct."""
     hal = Sounds('hal')
     return term.antya in hal and term.upadha in hal
 
 
 @AlFilter.unparameterized
 def samyogadi(term):
+    """Filter on whether the term begins with a conjunct."""
     value = term.value
     hal = Sounds('hal')
     try:
@@ -613,6 +618,7 @@ def samyogadi(term):
 
 @TermFilter.unparameterized
 def samyogapurva(term):
+    """Filter on whether the term's final sound follows a conjunct."""
     value = term.value
     hal = Sounds('hal')
     try:
@@ -637,7 +643,7 @@ each = term_placeholder
 def auto(*data):
     """Create a filter to match the context specified by `data`.
 
-    :param data:
+    :param data: arbitrary data, usually a list of strings
     """
 
     # Maps a filter type to a list of selectors. This is populated in
