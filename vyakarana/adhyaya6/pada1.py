@@ -10,6 +10,7 @@
 
 from .. import filters as F, operators as O
 from ..dhatupatha import DHATUPATHA as DP
+from ..sounds import Sounds
 from ..templates import *
 from ..upadesha import Upadesha
 
@@ -75,7 +76,13 @@ def dhatu_adesha():
         return value
 
 
+    @F.TermFilter.unparameterized
+    def ec_upadesha(term):
+        clean = term.clean
+        return clean and clean[-1] in Sounds('ec')
+
     return [
+        Boost('6.1.45', None, f('dhatu') & ec_upadesha, f('tin') & ~F.Sit_adi, O.tasya('A')),
         Boost('6.1.64', None, f('dhatu') & F.adi('z'), None, sa_adesha),
         Boost('6.1.65', None, f('dhatu') & F.adi('R'), None, na_adesha),
     ]
