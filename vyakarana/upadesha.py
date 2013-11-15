@@ -70,10 +70,10 @@ class Upadesha(object):
         self._filter_cache = {}
 
     def __eq__(self, other):
-        if other is None:
-            return False
         if self is other:
             return True
+        if other is None:
+            return False
         return (self.__class__ == other.__class__ and
                 self.data == other.data and
                 self.samjna == other.samjna and

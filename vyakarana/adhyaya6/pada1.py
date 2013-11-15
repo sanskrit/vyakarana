@@ -76,7 +76,7 @@ def dhatu_adesha():
         return value
 
 
-    @F.TermFilter.unparameterized
+    @F.TermFilter.no_params
     def ec_upadesha(term):
         clean = term.clean
         return clean and clean[-1] in Sounds('ec')

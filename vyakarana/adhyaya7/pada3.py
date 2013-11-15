@@ -53,7 +53,7 @@ def angasya_shiti():
 @inherit(None, 'anga', None)
 def angasya_guna():
 
-    @F.TermFilter.unparameterized
+    @F.TermFilter.no_params
     def puganta_laghupadha(term):
         # TODO: puganta
         return term.upadha in Sounds('at it ut ft xt')

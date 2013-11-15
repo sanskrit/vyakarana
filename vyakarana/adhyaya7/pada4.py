@@ -70,7 +70,7 @@ def nut_agama():
     hal = Sounds('hal')
     hal_r = Sounds('hal f')
 
-    @F.AlFilter.unparameterized
+    @F.AlFilter.no_params
     def dvihal(term):
         return term.upadha in hal_r and term.antya in hal
 

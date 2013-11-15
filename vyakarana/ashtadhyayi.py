@@ -127,6 +127,7 @@ class Ashtadhyayi(object):
         #: a :class:`RuleTree`
         self.rule_tree = RuleTree(self.ranked_rules)
 
+
     @classmethod
     def with_rules_in(cls, start, end):
         key = inference.name_key

@@ -89,7 +89,8 @@ def aci():
     gama_hana = f('ga\\mx~', 'ha\\na~', 'janI~\\', 'Kanu~^', 'Gasx~')
 
     snu_dhatu_yvor = f('Snu', 'dhatu', 'BrU') & F.al('i u')
-    anekac_asamyogapurva = f('dhatu') & ~F.ekac & ~F.samyogapurva
+    # TODO: anekac
+    anekac_asamyogapurva = f('dhatu') & ~F.samyogapurva
 
     return [
         ('6.4.77', None, snu_dhatu_yvor, None, _6_4_77),
@@ -130,11 +131,11 @@ def kniti_sarvadhatuke():
 @inherit('abhyasa', 'anga', 'li~w', locus='asiddhavat')
 def abhyasa_lopa_liti():
 
-    @F.Filter.unparameterized
+    @F.Filter.no_params
     def at_ekahalmadhya_anadeshadi(state, index):
-        abhyasa = state[index - 1]
-        anga = state[index]
         try:
+            abhyasa = state[index - 1]
+            anga = state[index]
             a, b, c = anga.value
             hal = Sounds('hal')
             # Anga has the pattern CVC, where C is a consonant and V
@@ -148,7 +149,7 @@ def abhyasa_lopa_liti():
             anadeshadi = abhyasa.adi == anga.adi and _8_4_54
 
             return eka_hal_madhya and anadeshadi
-        except ValueError:
+        except (IndexError, ValueError):
             return False
 
     @O.Operator.unparameterized

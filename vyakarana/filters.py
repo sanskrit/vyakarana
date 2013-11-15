@@ -8,7 +8,7 @@
     this simulator, a rule's context is defined using *filters*, which
     return a true or false value for a given index within some state.
 
-    This module defines a variety of parameterized and unparameterized
+    This module defines a variety of parameterized and no_params
     filters, as well as as some basic operators for combining filters.
 
     :license: MIT and BSD
@@ -41,20 +41,20 @@ class Filter(object):
     #: in the cache, the cached result is returned instead.
     CACHE = {}
 
-    def __init__(self, name, body, rank=None, domain=None):
+    def __init__(self, *args, **kw):
         #: The filter type. For example, a filter on the first letter
         #: of a term has the category ``adi``.
-        self.category = name.split('(')[0]
+        self.category = kw.get('category') or self._make_category(*args, **kw)
 
         #: A unique name for the filter. This is used as a key to the
         #: filter cache.
-        self.name = name
+        self.name = kw.get('name') or self._make_name(*args, **kw)
 
         #: The function that corresponds to this filter. The input and
         #: output of the function depend on the filter class. For
         #: a general :class:`Filter`, this function accepts a state and
         #: index and returns ``True`` or ``False``.
-        self.body = body
+        self.body = kw.get('body') or self._make_body(*args, **kw)
 
         #: A collection that somehow characterizes the domain of the
         #: filter. Some examples:
@@ -62,12 +62,12 @@ class Filter(object):
         #: - for a `samjna` filter, the set of matching samjna
         #: - for a `raw` filter, the set of matching raw values
         #: - for an and/or/not filter, the original filters
-        self.domain = domain
+        self.domain = self._make_domain(*args, **kw)
 
         #: A :class:`Rank` that characterizes the relative power of
         #: this filter. Rules with more powerful filters tend to have
         #: higher priority over rules with less powerful filters.
-        self.rank = rank or self._new_rank(domain)
+        self.rank = kw.get('rank') or self._make_rank(self.domain)
 
     def __call__(self, state, index):
         return self.body(state, index)
@@ -96,6 +96,9 @@ class Filter(object):
             return False
         return self.name == other.name and self.domain == other.domain
 
+    def __hash__(self):
+        return hash(self.name)
+
     def __invert__(self):
         """Bitwise "not" (``~``).
 
@@ -120,7 +123,29 @@ class Filter(object):
     def __repr__(self):
         return '<f(%s)>' % self.name
 
-    def _new_rank(self, domain):
+    def _make_category(self, *args, **kw):
+        return self.__class__.__name__
+
+    def _make_body(self, *args, **kw):
+        return self.body
+
+    def _make_name(self, *args, **kw):
+        try:
+            return kw['name']
+        except KeyError:
+            class_name = self.__class__.__name__
+            str_args = [str(a) for a in args]
+            return '{}({})'.format(class_name, ', '.join(str_args))
+
+    def _make_domain(self, *args, **kw):
+        try:
+            return kw['domain']
+        except KeyError:
+            if args:
+                return frozenset(args)
+            return None
+
+    def _make_rank(self, domain):
         return Rank()
 
     @staticmethod
@@ -131,7 +156,7 @@ class Filter(object):
         body = cls._make_and_body(filters)
         domain = set(filters)
         rank = Rank.and_(f.rank for f in filters)
-        return cls(name, body, rank, domain)
+        return cls(category='and', name=name, body=body, domain=domain, rank=rank)
 
     @staticmethod
     def or_(*filters):
@@ -141,7 +166,7 @@ class Filter(object):
         body = cls._make_or_body(filters)
         domain = set(filters)
         rank = Rank.or_(f.rank for f in filters)
-        return cls(name, body, rank, domain)
+        return cls(category='or', name=name, body=body, domain=domain, rank=rank)
 
     @staticmethod
     def not_(filt):
@@ -154,7 +179,7 @@ class Filter(object):
         body = cls._make_not_body(filt)
         domain = set([filt])
         rank = filt.rank
-        return cls(name, body, rank, domain)
+        return cls(category='not', name=name, body=body, domain=domain, rank=rank)
 
     @staticmethod
     def _select_class(filters):
@@ -206,38 +231,15 @@ class Filter(object):
         return func
 
     @classmethod
-    def parameterized(cls, fn):
-        """Decorator constructor for parameterized filters.
-
-        :param fn: a function factory. It accepts parameters and returns
-                   a parameterized filter function.
-        """
-
-        cache = cls.CACHE
-        def wrapped(*params):
-            try:
-                if hasattr(params[0], '__call__'):
-                    param_str = ', '.join(f.name for f in params)
-                    name = "%s(%s)" % (fn.__name__, param_str)
-                else:
-                    name = "%s(%s)" % (fn.__name__, ', '.join(params))
-            except IndexError:
-                name = "%s()" % fn.__name__
-
-            if name not in cache:
-                body, domain = fn(*params)
-                result = cls(name=name, body=body, domain=domain)
-                cache[name] = result
-            return cache[name]
-        return wrapped
-
-    @classmethod
-    def unparameterized(cls, fn):
+    def no_params(cls, fn):
         """Decorator constructor for unparameterized filters.
 
         :param fn: some filter function.
         """
-        return cls(name=fn.__name__, body=fn, domain=None)
+        category = name = fn.__name__
+        domain = None
+        body = fn
+        return cls(category=category, name=name, body=body, domain=domain)
 
     @property
     def feature_sets(self):
@@ -392,8 +394,12 @@ class TermFilter(Filter):
 
 
 class AlFilter(TermFilter):
+    def _make_domain(self, domain_str=None, *args, **kw):
+        if domain_str is None:
+            return None
+        return Sounds(domain_str)
 
-    def _new_rank(self, domain):
+    def _make_rank(self, domain):
         if domain is None:
             return Rank()
         return Rank.with_al(domain)
@@ -405,14 +411,17 @@ class AlFilter(TermFilter):
         sv = self.domain.values
         return sv.issubset(ov)
 
+    def body(self, term):
+        return self.op(term)
+
 
 class SamjnaFilter(TermFilter):
-    def _new_rank(self, domain):
+    def _make_rank(self, domain):
         return Rank.with_samjna(domain)
 
 
 class UpadeshaFilter(TermFilter):
-    def _new_rank(self, domain):
+    def _make_rank(self, domain):
         return Rank.with_upadesha(domain)
 
 
@@ -433,145 +442,98 @@ class DhatuFilter(UpadeshaFilter):
 # ~~~~~~~~~~~~~~~~~~~~~
 # Each function accepts arbitrary arguments and returns a body and rank.
 
-@AlFilter.parameterized
-def adi(*names):
-    """Filter on the sounds at the beginning of the term.
 
-    :param names: a list of sounds
-    """
-    sounds = Sounds(*names)
-    def func(term):
-        return term.adi in sounds
+class adi(AlFilter):
 
-    return func, sounds
+    """Filter on a term's first sound."""
+
+    def body(self, term):
+        return term.adi in self.domain
 
 
-@AlFilter.parameterized
-def al(*names):
-    """Filter on the sounds at the end of the term.
+class al(AlFilter):
 
-    :param names: a list of sounds
-    """
-    names = Sounds(*names)
-    def func(term):
-        return term.antya in names
+    """Filter on a term's final sound."""
 
-    return func, names
+    def body(self, term):
+        return term.antya in self.domain
 
 
-@AlFilter.parameterized
-def contains(*names):
-    """Filter on the sounds contained within the term.
+class contains(AlFilter):
 
-    :param names: a list of sounds
-    """
-    sounds = Sounds(*names)
-    def func(term):
-        return any(s in term.value for s in sounds)
+    """Filter on whether a term has a certain sound."""
 
-    return func, sounds
+    def body(self, term):
+        return any(s in term.value for s in self.domain)
 
 
-@DhatuFilter.parameterized
-def dhatu(*names):
-    """Filter on the ``raw`` property of the term.
+class dhatu(DhatuFilter):
 
-    :param names: a list of raw values
-    """
-    names = frozenset(names)
-    def func(term):
-        return term.raw in names and 'dhatu' in term.samjna
+    """Filter on whether a term represents a particular dhatu."""
 
-    return func, names
+    def body(self, term):
+        return term.raw in self.domain and 'dhatu' in term.samjna
 
 
 def gana(start, end=None):
-    """Filter on the `raw`.
+    """Return a filter on whether a term is in a particular dhatu set.
 
-    :param names: a list of raw values
+    :param start: the ``raw`` value of the first dhatu in the list
+    :param end: the ``raw`` value of the last dhatu in the list. If
+                ``None``, use all roots from ``start`` to the end of
+                the gana.
     """
+
     names = DP.dhatu_list(start, end)
     return dhatu(*names)
 
 
-@UpadeshaFilter.parameterized
-def lakshana(*names):
-    """Filter on the ``raw`` property of the term, as well as `lakshana`.
+class lakshana(UpadeshaFilter):
 
-    :param names: a list of raw values
-    """
-    names = frozenset(names)
-    def func(term):
-        return any(n in term.lakshana for n in names)
+    """Filter on a term's prior values."""
 
-    return func, names
+    def body(self, term):
+        return any(x in term.lakshana for x in self.domain)
 
 
-@SamjnaFilter.parameterized
-def part(*names):
-    """Filter on the ``samjna`` property of the term.
+class part(TermFilter):
 
-    :param names: a list of samjnas
-    """
-    names = frozenset(names)
-    def func(term):
-        return any(n in term.parts for n in names)
+    """Filter on a term's augments."""
 
-    return func, names
+    def body(self, term):
+        return any(x in term.parts for x in self.domain)
 
 
-@UpadeshaFilter.parameterized
-def raw(*names):
-    """Filter on the ``raw`` property of the term.
+class raw(UpadeshaFilter):
 
-    :param names: a list of raw values
-    """
-    names = frozenset(names)
-    def func(term):
-        return term.raw in names
+    """Filter on a term's raw value."""
 
-    return func, names
+    def body(self, term):
+        return term.raw in self.domain
 
 
-@SamjnaFilter.parameterized
-def samjna(*names):
-    """Filter on the ``samjna`` property of the term.
+class samjna(SamjnaFilter):
 
-    :param names: a list of samjnas
-    """
-    names = frozenset(names)
-    def func(term):
-        return any(n in term.samjna for n in names)
+    """Filter on a term's designations."""
 
-    return func, names
+    def body(self, term):
+        return any(x in term.samjna for x in self.domain)
 
 
-@AlFilter.parameterized
-def upadha(*names):
-    """Filter on the penultimate letter of the term.
+class upadha(AlFilter):
 
-        1.1.65 alo 'ntyāt pūrva upadhā
+    """Filter on a term's penultimate sound."""
 
-    :param names:
-    """
-    names = Sounds(*names)
-    def func(term):
-        return term.upadha in names
-
-    return func, names
+    def body(self, term):
+        return term.upadha in self.domain
 
 
-@UpadeshaFilter.parameterized
-def value(*names):
-    """Filter on the ``value`` property of the term.
+class value(UpadeshaFilter):
 
-    :param names: a list of values
-    """
-    names = frozenset(names)
-    def func(term):
-        return term.value in names
+    """Filter on a term's current value."""
 
-    return func, names
+    def body(self, term):
+        return term.value in self.domain
 
 
 
@@ -579,35 +541,46 @@ def value(*names):
 # ~~~~~~~~~~~~~~~~~~~~~~~
 # Each function defines a filter body.
 
-@AlFilter.unparameterized
+@AlFilter.no_params
 def Sit_adi(term):
-    """Filter on whether the term starts with ś in upadeśa.
-    """
+    """Filter on whether a term starts with ś in upadeśa."""
     return term.raw and term.raw[0] == 'S'
 
 
-@Filter.unparameterized
+@Filter.no_params
 def placeholder(*args):
     """Matches nothing."""
     return False
 
 
-@Filter.unparameterized
+@Filter.no_params
 def allow_all(*args):
     """Matches everything."""
     return True
 
 
-@AlFilter.unparameterized
+@AlFilter.no_params
+def ekac(term):
+    seen = False
+    ac = Sounds('ac')
+    for L in term.value:
+        if L in ac:
+            if seen:
+                return False
+            seen = True
+    return True
+
+
+@AlFilter.no_params
 def samyoga(term):
-    """Filter on whether the term ends with a conjunct."""
+    """Filter on whether a term ends with a conjunct."""
     hal = Sounds('hal')
     return term.antya in hal and term.upadha in hal
 
 
-@AlFilter.unparameterized
+@AlFilter.no_params
 def samyogadi(term):
-    """Filter on whether the term begins with a conjunct."""
+    """Filter on whether a term begins with a conjunct."""
     value = term.value
     hal = Sounds('hal')
     try:
@@ -616,9 +589,9 @@ def samyogadi(term):
         return False
 
 
-@TermFilter.unparameterized
+@AlFilter.no_params
 def samyogapurva(term):
-    """Filter on whether the term's final sound follows a conjunct."""
+    """Filter on whether a term's final sound follows a conjunct."""
     value = term.value
     hal = Sounds('hal')
     try:
@@ -627,13 +600,12 @@ def samyogapurva(term):
         return False
 
 
-@TermFilter.unparameterized
+@TermFilter.no_params
 def term_placeholder(term):
     return False
 
 
 asavarna = term_placeholder
-ekac = term_placeholder
 each = term_placeholder
 
 

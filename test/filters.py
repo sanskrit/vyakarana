@@ -92,6 +92,16 @@ def test_al():
     verify(cases, F.al, term_tester)
 
 
+def test_ekac():
+    yes = 'sa nI BU yo vE ad or Ow rah grah'
+    no = 'nara siMha Sarad jAgf'
+
+    for y in yes.split():
+        assert term_tester(F.ekac, y)
+    for n in no.split():
+        assert not term_tester(F.ekac, n)
+
+
 def test_gana():
     pairs = [
         ('BU', 'wvo~Svi'),
@@ -228,6 +238,22 @@ def test_not_():
         ),
     ]
     verify(cases, lambda x: ~F.al(x), term_tester)
+
+
+# Filter operators
+# ~~~~~~~~~~~~~~~~
+
+def test_equality():
+    pairs = [
+        (L.IT, F.samjna),
+        (L.LA, F.lakshana),
+        (L.SAMJNA, F.samjna),
+        (L.SOUNDS, F.al),
+        (L.TIN, F.raw),
+    ]
+    for items, function in pairs:
+        for item in items:
+            assert function(item) == function(item)
 
 
 # 'auto' filter
