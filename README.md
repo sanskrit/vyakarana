@@ -10,6 +10,13 @@ Strong support for *liṭ* and *laṭ*. Experimental support for *lṛṭ*.
 
 ## Setup
 
+`vyakarana` has no external dependencies. [pytest](http://pytest.org/latest/)
+is used for testing. To install pytest, run
+
+    pip install pytest
+
+Or just install from requirements.txt:
+
     pip install -r requirements.txt
 
 ## Tests
