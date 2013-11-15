@@ -1,11 +1,23 @@
 # Vyākaraṇa
 
+`vyakarana` derives Sanskrit words by applying the rules of the Ashtadhyayi.
+For a given step in the derivation, the system repeatedly selects and applies
+an appropriate rule until no further changes can be made.
 
-## Introduction
+## Current progress
 
-This library simulates the Paninian process of Sanskrit word derivation. Its name comes from the traditional name for the Sanskrit grammatical tradition.
+Strong support for *liṭ* and *laṭ*. Experimental support for *lṛṭ*.
 
-## Quickstart
+## Setup
 
     pip install -r requirements.txt
-    py.test test/*.py --tb=line > out.txt
+
+## Tests
+
+All test code is in the `test` directory. To run all tests:
+
+    py.test test/*.py --tb=line
+
+## Documentation
+
+Go to http://vyakarana.readthedocs.org for details.
