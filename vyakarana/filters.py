@@ -8,7 +8,7 @@
     this simulator, a rule's context is defined using *filters*, which
     return a true or false value for a given index within some state.
 
-    This module defines a variety of parameterized and no_params
+    This module defines a variety of parameterized and unparameterized
     filters, as well as as some basic operators for combining filters.
 
     :license: MIT and BSD
@@ -35,10 +35,10 @@ class Filter(object):
     create more complex conditions, e.g. ``al('hal') & upadha('a')``.
     """
 
-    #: An internal cache to avoid creating redundant filter objects.
-    #: When a filter is declared, the constructor creates a `name` for
-    #: the filter and checks it against the cache. If `name` is found
-    #: in the cache, the cached result is returned instead.
+    # An internal cache to avoid creating redundant filter objects.
+    # When a filter is declared, the constructor creates a `name` for
+    # the filter and checks it against the cache. If `name` is found
+    # in the cache, the cached result is returned instead.
     CACHE = {}
 
     def __init__(self, *args, **kw):
@@ -80,7 +80,7 @@ class Filter(object):
 
         :param other: the other :class:`Filter`.
         """
-        return Filter.and_(self, other)
+        return Filter._and(self, other)
 
     def __eq__(self, other):
         """Equality operator.
@@ -105,7 +105,7 @@ class Filter(object):
         The result is a function that matches the "not" of the current
         filter.
         """
-        return Filter.not_(self)
+        return Filter._not(self)
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -118,7 +118,7 @@ class Filter(object):
 
         :param other: the other :class:`Filter`.
         """
-        return Filter.or_(self, other)
+        return Filter._or(self, other)
 
     def __repr__(self):
         return '<f(%s)>' % self.name
@@ -149,7 +149,7 @@ class Filter(object):
         return Rank()
 
     @staticmethod
-    def and_(*filters):
+    def _and(*filters):
         """Return the logical "AND" over all filters."""
         cls = Filter._select_class(filters)
         name = 'and(%s)' % ', '.join(f.name for f in filters)
@@ -159,7 +159,7 @@ class Filter(object):
         return cls(category='and', name=name, body=body, domain=domain, rank=rank)
 
     @staticmethod
-    def or_(*filters):
+    def _or(*filters):
         """Return the logical "OR" over all filters."""
         cls = Filter._select_class(filters)
         name = 'or(%s)' % ', '.join(f.name for f in filters)
@@ -169,7 +169,7 @@ class Filter(object):
         return cls(category='or', name=name, body=body, domain=domain, rank=rank)
 
     @staticmethod
-    def not_(filt):
+    def _not(filt):
         """Return the logical "NOT" of the filter.
 
         :param filt: some :class:`Filter`
@@ -249,13 +249,14 @@ class Filter(object):
         A filter defines a subset of the universal set, i.e. the set of
         items for which the filter returns `True`. Thus every filter
         defines a subset. For two filters `f1` and `f2`:
+
         - `f1 & f2` is like an intersection of two sets
         - `f1 | f2` is like a union of two sets
         - `~f1` is like an "antiset"
 
-        Now consider a filter `f` composed of `n` filters, as in:
+        Now consider a filter `f` composed of `n` intersecting filters:
 
-            f = f1 & f2 & ... & fn
+            `f = f1 & f2 & ... & fn`
 
         This function returns the `n` filters that compose `f`. Each
         `fi` is essentially a superset of `f`.
@@ -613,7 +614,19 @@ each = term_placeholder
 # ~~~~~~~~~~~~~~~~
 
 def auto(*data):
-    """Create a filter to match the context specified by `data`.
+    """Create a new :class:`Filter` using the given *data*.
+
+    Most of the terms in the Ashtadhyayi have obvious interpretations
+    that can be inferred from context. For example, a rule that
+    contains the word *dhātoḥ* clearly refers to a term with *dhātu* as
+    a *saṃjñā*, as opposed to a term with *dhātu* as its current value.
+    In that example, it's redundant to have to specify that
+    ``F.samjna('dhatu')`` is a :class:`samjna` filter.
+
+    This function accepts a string argument and returns the appropriate
+    filter. If multiple arguments are given, the function returns the
+    "or" of the corresponding filters. If the argument is a function,
+    it remains unprocessed.
 
     :param data: arbitrary data, usually a list of strings
     """
@@ -671,7 +684,7 @@ def auto(*data):
     # Combine filter with `functions` filters
     if base_filter:
         if parsed['functions']:
-            base_filter = Filter.or_(base_filter, *parsed['functions'])
+            base_filter = Filter._or(base_filter, *parsed['functions'])
     else:
         base_filter = parsed['functions'][0]
     return base_filter

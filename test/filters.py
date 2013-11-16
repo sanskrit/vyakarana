@@ -290,11 +290,11 @@ def test_subset_of_and_or():
         [F.al('ac'), F.samjna('dhatu'), F.upadha('Yam')]
     ]
     for filters in cases:
-        intersection = F.Filter.and_(*filters)
+        intersection = F.Filter._and(*filters)
         for f in filters:
             assert intersection.subset_of(f)
 
-        union = F.Filter.or_(*filters)
+        union = F.Filter._or(*filters)
         for f in filters:
             assert f.subset_of(union)
 

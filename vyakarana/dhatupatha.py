@@ -111,4 +111,7 @@ class Dhatupatha(object):
         return frozenset(self.dhatu_list(*args))
 
 
-DHATUPATHA = Dhatupatha('data/dhatupatha.csv')
+import os
+vyak = os.path.dirname(os.path.dirname(__file__))
+dhatupatha_data = os.path.join(vyak, 'data', 'dhatupatha.csv')
+DHATUPATHA = Dhatupatha(dhatupatha_data)

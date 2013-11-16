@@ -6,7 +6,7 @@
     Excluding paribhāṣā, all rules in the Ashtadhyayi describe a context
     then specify an operation to apply based on that context. Within
     this simulator, operations are defined using *operators*, which
-    take some (state, index) pair and return a new :class:`State`.
+    take some (state, index) pair and return a new state.
 
     This module defines a variety of parameterized and unparameterized
     operators.
@@ -26,7 +26,7 @@ conflicts = [
 
 class Operator(object):
 
-    """A callable class that returns :class:`State`s."""
+    """A callable class that returns states."""
 
     def __init__(self, name, body, category=None, params=None):
         #: The operator type. For example, a substitution operator has
@@ -99,12 +99,13 @@ class Operator(object):
         Return whether this operator conflicts with another.
 
         Two operators are in conflict if any of the following hold:
+
         - they each insert something into the state
         - one prevents or nullifies the change caused by the other. By
           "nullify" I mean that the result is as if neither operator
           was applied.
 
-        For example, two 'tasmat' operators are always in conflict. And
+        For example, two `insert` operators are always in conflict. And
         `hrasva` and `dirgha` are in conflict, since `hrasva` undoes
         `dirgha`. But `hrasva` and `guna` are not in conflict, since
         neither blocks or nullifies the other.
