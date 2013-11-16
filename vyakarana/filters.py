@@ -58,6 +58,7 @@ class Filter(object):
 
         #: A collection that somehow characterizes the domain of the
         #: filter. Some examples:
+        #:
         #: - for an `al` filter, the set of matching letters
         #: - for a `samjna` filter, the set of matching samjna
         #: - for a `raw` filter, the set of matching raw values
