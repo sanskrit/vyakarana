@@ -8,6 +8,7 @@ This is a high-level overview of the Ashtadhyayi and how it works.
 
     introduction
     rule_types
+    terms
     glossary
 
 
