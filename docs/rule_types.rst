@@ -19,11 +19,13 @@ of sounds. For example, the input to a rule might be something like
 There are various kinds of ordinary rules;
 
 - rules that substitute
-- rules that insert
 - rules that designate
+- rules that insert
 - rules that block
 
 These are described below.
+
+.. _iko-yan-aci:
 
 Substituting
 ^^^^^^^^^^^^
@@ -44,7 +46,7 @@ Here, *L*, *C*, *R*, and *X* are terms:
 For each input, we look for a place where we have *L*, *C*, and *R* in order.
 Then we replace *C* with X.
 
-For example, rule 6.1.77 of the Ashtadhyayi states that short vowels are
+For example, rule 6.1.77 of the Ashtadhyayi states that simple vowels are
 replaced by semivowels when followed by other vowels. Given this input:
 
     *ca + kṛ + a*
@@ -119,6 +121,8 @@ Interpreting
 Most metarules are intended to help us understand what rules in the
 Ashtadhyayi mean. Such rules are called **paribhāṣā**. Some examples:
 
+    | Terms in case 6 define the center context. (1.1.49)
+    | Terms in case 7 (*tasmin*) define the right context. (1.1.66)
     | Terms in case 5 (*tasmāt*) define the left context. (1.1.67)
     | If *X* is just a single letter, then only the last letter of *C* is
       replaced. (1.1.52)
