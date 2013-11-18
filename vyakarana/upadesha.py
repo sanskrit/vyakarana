@@ -32,7 +32,7 @@ class DataSpace(_DataSpace):
 
 class Upadesha(object):
 
-    """A Term with indicatory letters."""
+    """A term with indicatory letters."""
 
     __slots__ = ['data', 'samjna', 'lakshana', 'ops', 'parts', '_filter_cache']
     nasal_re = re.compile('([aAiIuUfFxeEoO])~')
@@ -52,21 +52,23 @@ class Upadesha(object):
 
         #: The set of markers that apply to this term. Although the
         #: Ashtadhyayi distinguishes between samjna and 'it' letters,
-        #: this simulation merges them together. Thus ``self.samjna``
-        #: might contain both ``kit`` and ``pratyaya``.
+        #: this simulation merges them together. Thus this set might
+        #: contain both ``'kit'`` and ``'pratyaya'``.
         self.samjna = samjna
 
         #: The set of values that this term used to have. Technically,
-        #: only pratyaya have access to this information.
+        #: only pratyaya need to have access to this information.
         self.lakshana = lakshana or frozenset()
 
-        #: The set of operations that have been applied to this term.
+        #: The set of rules that have been applied to this term. This
+        #: set is maintained for two reasons. First, it prevents us
+        #: from redundantly applying cerain rules. Second, it supports
+        #: painless rule blocking in other parts of the grammar.
         self.ops = ops or frozenset()
 
-        #: The various augments that have been applied to this term.
+        #: The various augments that have been added to this term.
         self.parts = parts or frozenset()
 
-        #:
         self._filter_cache = {}
 
     def __eq__(self, other):

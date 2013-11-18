@@ -3,7 +3,10 @@
     vyakarana.lists
     ~~~~~~~~~~~~~~~
 
-    Lists of terms, designations, and sounds.
+    Lists of various terms, designations, and sounds. Some of these
+    lists could probably be inferred programmatically, but for the sake
+    of basic sanity these are encoded explicitly. Thankfully these lists
+    are rather small.
 
     :license: MIT and BSD
 """
@@ -74,6 +77,7 @@ SAMJNA = set([
 
 
 #: A collection of various sounds, including:
+#:
 #: - savarṇa sets (1.1.69)
 #: - single-item sets (1.1.70)
 #: - pratyāhāra (1.1.71)
