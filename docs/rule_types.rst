@@ -8,7 +8,7 @@ output(s), and metarules, which describe how to interpret other rules.
     The divisions loosely correspond to traditional definitions, but there
     is no 1:1 mapping.
 
-Ordinary Rules
+Ordinary rules
 --------------
 
 Ordinary rules, or just "rules" for short, are the bulk of the Ashtadhyayi.

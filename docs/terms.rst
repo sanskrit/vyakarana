@@ -37,16 +37,16 @@ In addition, *ca + kṛ* together are called both :term:`abhyasta` and
 :term:`aṅga`.
 
 
-:term:`it` letters
-------------------
+*it* letters
+------------
 
-The Ashtadhyayi also has a second set of designations. These are the **it**
+The Ashtadhyayi also has a second set of designations. These are called **it**
 letters. They are attached to a term:
 
     *ḍukṛñ*
 
-then removed by applying some metarules (1.3.2 - 1.3.9). Whatever remains is
-the value of interest:
+then removed by applying certain metarules, which are described further below.
+Whatever remains is the value of interest:
 
     *ḍukṛñ → ḍu kṛ ñ → kṛ*
 
@@ -54,11 +54,33 @@ The *it* letters are stated with the word *it* after them. Thus *ḍvit* and
 *ñit*. A group of sounds stated with its *it* letters is called its
 **upadeśa**.
 
-Think of these letters as "tags" on the original value. Just a shirt might have
-a label that tells us how to wash it, a term might have *it* letters that tell
-us how it behaves in certain contexts. *it* letters are not letters in any
-meaningful sense, and they have no meaning outside of the metalanguage of the
-Ashtadhyayi.
+Think of an *it* as a "tag" on the original value. Just a shirt might have
+a label that tells us how to wash it, a term might have an *it* that tells
+us how it behaves in certain contexts.
+
+*it* letters are not letters in any meaningful sense, and they have no meaning
+outside of the metalanguage of the Ashtadhyayi.
+
+Rules
+^^^^^
+
+For some term T, the following are *it* letters:
+
+- nasal vowels (1.3.2)
+- at the end of T:
+
+  - consonants (1.3.3)
+  - but not {*t, th, d, dh, n, s, m*} when T is a :term:`vibhakti` (1.3.4)
+
+- at the beginning of T:
+
+  - *ñi*, *ṭu*, and *ḍu* (1.3.5)
+
+- at the beginning of T, if T is a :term:`pratyaya`:
+
+  - *ṣ* (1.3.6)
+  - *c, ch, j, jh, ñ, ṭ, ṭh, ḍ, ḍh, ṇ* (1.3.7)
+  - *l, ś, k, kh, g, gh, ṅ* if not a *taddhita* suffix
 
 Usage and examples
 ^^^^^^^^^^^^^^^^^^
@@ -72,4 +94,5 @@ of the suffix *a* is just *a*, the resulting word will be *cakra*. If the
 *upadeśa* of the suffix *a* is *ṇal*, the suffix has *ṇit*, which strengthens
 the root vowel and produces the word *cakāra*.
 
-The :ref:`glossary <it-glossary>` describes the most common *it* letters.
+The :ref:`glossary <it-glossary>` describes the most common *it* letters and
+the roles they perform.
