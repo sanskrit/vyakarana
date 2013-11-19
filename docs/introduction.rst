@@ -31,6 +31,15 @@ on the assembly line move from one machine to the other. This continues until
 there's no way to change the result any further. When this occurs, the process
 is complete. The result is a correct Sanskrit expression.
 
+This documentation makes reference to various rules from the Ashtadhayi. All
+rules are numbered *x.y.z*, where:
+
+- *x* is the **book** that contains the rule. There are 8 books in total.
+- *y* is the **chapter** that contains the rule. Each book has 4 chapters.
+- *z* is the rule's position within the chapter.
+
+For example, 1.1.1 is the first rule of the text, and 8.4.68 is the last.
+
 The Dhatupatha
 --------------
 
@@ -41,9 +50,12 @@ about 2000 verb roots, each stated with a basic meaning:
     | 1.1 *bhū sattāyām*
     | *bhū* in the sense of existence (*sattā*)
 
-Modern editions of the Dhatupatha are numbered *x.y*, where *x* is the root's
-verb class (**gaṇa**) and *y* is its order within the *gaṇa*. Thus *bhū* is
-entry 1 in *gaṇa* 1; it's the first root in the list.
+Modern editions of the Dhatupatha are numbered *x.y*, where:
+
+- *x* is the root's verb class (**gaṇa**). There are 10 classes in total.
+- *y* is the root's position within the *gaṇa*.
+
+Thus *bhū* is entry 1 in *gaṇa* 1; it's the first root in the list.
 
 There is no single version of the Dhātupāṭha. I used a version I found on
 `Sanskrit Documents`_ (specifically, `this file`_) and made some small

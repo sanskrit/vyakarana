@@ -14,20 +14,20 @@ Generally, these are used to describe concepts from the grammatical tradition.
         See :term:`it`.
 
     abhyāsa
-        If a term is doubled, the *abhyāsa* refers to the first of the two.
+        If a term is doubled, *abhyāsa* refers to the first part.
 
     abhyasta
-        If a term is doubled, the *abhyasta* refers to the two parts together.
+        If a term is doubled, *abhyasta* refers to the two parts together.
 
     ātmanepada
-        The second set of tiṅ suffixes.
+        The last 9 tiṅ suffixes.
 
     ārdhadhātuka
         Refers to certain kinds of verb suffixes.
 
     Aṣṭādhyāyī
     Ashtadhyayi
-        The set of rules that takes some input and produces one or more valid
+        A list of rules. It takes some input and produces one or more valid
         Sanskrit expressions.
 
     it
@@ -35,6 +35,16 @@ Generally, these are used to describe concepts from the grammatical tradition.
 
     upadeśa
         A term stated with its indicatory letters (:term:`it`).
+
+    guṇa
+        An operation that strengthens a vowel to the "medium" level
+        (*a, e, o*, but *ṛ* and *ṝ* become *ar*). Also refers to the result
+        of this operation.
+
+    vṛddhi
+        An operation that strengthens a vowel to the "strong" level
+        (*ā, ai, au*, but *ṛ* and *ṝ* become *ār*). Also refers to the result
+        of this operation.
 
     tiṅ
         Refers to one of the 18 basic verb suffixes: 9 in :term:`parasmaipada`
@@ -48,17 +58,21 @@ Generally, these are used to describe concepts from the grammatical tradition.
         A list of verb roots. These roots are used as input to the Ashtadhyayi.
 
     parasmaipada
-        The second set of tiṅ suffixes.
+        The first 9 tiṅ suffixes.
 
     pratyaya
         A suffix.
 
     vibhakti
-        A triplet of noun/verb endings.
+        A triplet of noun/verb endings. Also, an ending within that triplet.
 
     saṃjñā
-        A technical name for a group of terms. For example, *pratyaya* is a
-        *saṃjñā* for the set of all suffixes.
+        A technical name that is assigned to a group of terms. For
+        example, *pratyaya* is a *saṃjñā* for the set of all suffixes.
+
+    sārvadhātuka
+        Refers to certain kinds of verb suffixes. Generally, :term:`tiṅ` and
+        :term:`śit` suffixes receive this saṃjñā.
 
     sthānī
         In a substitution, the term where the substitution occurs.
@@ -95,26 +109,31 @@ Generally, these are used to describe concepts in the program.
 
 .. _it-glossary:
 
-*it* letters
-------------
+*it* tags
+---------
 
 .. glossary::
     kit
-        Prevents *guṇa* and *vṛddhi* operations. If a replacement is marked
-        with *k*, it's added to the end of the :term:`sthānī`.
+        Prevents *guṇa* and *vṛddhi*. If a replacement is marked with *k*, it
+        is added to the end of the :term:`sthānī`.
 
     ṅit
-        Prevents *guṇa* and *vṛddhi* operations. If a replacement is marked
-        with *ṅ*, it replaces the last letter of the *sthānī*.
+        Prevents *guṇa* and *vṛddhi*. If a replacement is marked with *ṅ*, it
+        replaces the last letter of the *sthānī*.
 
     ñit
         Causes *vṛddhi*.
+
+    ṭit
+        If a replacement is marked with *ṭ*, it is added to the beginning of
+        the *sthānī*.
 
     ṇit
         Causes *vṛddhi*.
 
     pit
-        pass
+        Causes *anudātta* accent on a :term:`pratyaya`. A :term:`sārvadhātuka`
+        suffix not marked by *p* is treated as :term:`ṅit`.
 
     mit
         If a replacement is marked with *m*, it is inserted after the last
@@ -122,3 +141,5 @@ Generally, these are used to describe concepts in the program.
 
     śit
         If a replacement is marked with *ś*, it replaces the entire *sthānī*.
+        Generally, a :term:`pratyaya` marked with *ś* can be called
+        :term:`sārvadhātuka`.

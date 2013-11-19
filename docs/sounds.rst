@@ -63,11 +63,13 @@ list:
 These rows are usually called the **Shiva Sutras**. They were arranged
 deliberately so that similar sounds would appear next to each other.
 
-Here's how we use the list. Each row has a list of sounds and ends in an *it*
-letter. Then we use this metarule:
+Here's how we use the list. Each row has a list of sounds that ends with an
+*it* tag. We take advantage of the following metarule:
 
     In lists like the one above, an item stated with an *it* refers to all
     the items between them, too. (1.1.71)
+
+and use it to produce concise terms for various Sanskrit sounds.
 
 For example, the *ha* on row 5, when used with *it* letter *l* on row 14,
 creates the term *hal*. And this *hal* refers to all sounds between *ha* and
@@ -83,19 +85,3 @@ Such groups are called **pratyāhāra**. Other examples:
 
 Certain sounds and *it* letters are used in the list twice, but context is
 enough to tell us how to interpret a given *pratyāhāra*.
-
-A fuller example
-^^^^^^^^^^^^^^^^
-
-Rule 6.1.77, :ref:`which we saw already <iko-yan-aci>`, states that simple
-vowels are replaced by semivowels when followed by other vowels. Or, to use
-the formalism above, *ik* is replaced by *yaṇ* when followed by *ac*. Here is
-how the rule is stated in the Ashtadhyayi:
-
-    6.1.77 *iko yaṇ aci*
-
-Note how the different noun cases are used:
-
-- *ikaḥ* (*ik*, case 6) defines the center context.
-- *yaṇ* (*yaṇ*, case 1) defines the replacement.
-- *aci* (*ac*, case 7) defines the right context.

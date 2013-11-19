@@ -5,7 +5,7 @@ The Ashtadhyayi has **ordinary rules**, which take some input and yield some
 output(s), and metarules, which describe how to interpret other rules.
 
 .. note::
-    The divisions loosely correspond to traditional definitions, but there
+    The types loosely correspond to the traditional classification, but there
     is no 1:1 mapping.
 
 Ordinary rules
@@ -46,8 +46,9 @@ Here, *L*, *C*, *R*, and *X* are terms:
 For each input, we look for a place where we have *L*, *C*, and *R* in order.
 Then we replace *C* with X.
 
-For example, rule 6.1.77 of the Ashtadhyayi states that simple vowels are
-replaced by semivowels when followed by other vowels. Given this input:
+For example, rule 6.1.77 of the Ashtadhyayi states that simple vowels (or
+*ik*, if we use a *pratyāhāra*) are replaced by semivowels (*yaṇ*) when
+followed by other vowels (*ac*). Given this input:
 
     *ca + kṛ + a*
 
@@ -59,15 +60,15 @@ it.) We replace with *X = r* to get our output:
 Designating
 ^^^^^^^^^^^
 
-Some rules **designate** a term by assigning some name to it.
-Those rules look something like this:
+Some rules **designate** a term by assigning some name to it. They look
+something like this:
 
     C is called X (when L comes before C) (when C comes before R).
 
 where *X* is the name given to the center context *C*.
 
 For example, rule 1.3.1 states that items in the Dhatupatha are called
-*dhātu* ("root") Given this input:
+:term:`dhātu` ("root") Given this input:
 
     *bhū*
 
@@ -96,7 +97,7 @@ Blocking
 
 Some rules are used to *block* other rules from occurring:
 
-    C does not accept rule Y (when L comes before C) (when C comes before X).
+    C does not accept rule X (when L comes before C) (when C comes before R).
 
 For example, rule 1.1.5 blocks *guṇa* substitution if the right context has
 a certain property.
@@ -113,7 +114,12 @@ Metarules
 Metarules define the metalanguage used by the Ashtadhyayi. Since we're using
 our own metalanguage (Python), many of these metarules are modeled implicitly.
 
-There are basically two kinds of metarules. These are described below.
+There are basically two kinds of metarules:
+
+- rules that help us interpret other rules
+- rules that provide useful context for other rules
+
+These are described below.
 
 Interpreting
 ^^^^^^^^^^^^

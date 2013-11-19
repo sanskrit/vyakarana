@@ -1,26 +1,38 @@
 Terms and Data
 ==============
 
-The input to an ordinary rule is a list of *terms*. Here we define what
-terms are and what they contain.
+The rules of the Ashtadhyayi accept a list of **terms** as input and produce
+a new list of terms as output. Let's start by discussing what terms are and
+what information they contain.
 
-Throughout this section, our working example will be *ca + kṛ + a*.
+Throughout this section, our working example will be *ca + kṛ + a*, a sequence
+of three terms. Depending on the data attached to these terms, this sequence
+can yield a variety of outputs:
+
+- *cakāra* ("he/I did", perfect tense)
+- *cakara* ("I did", perfect tense)
+- *cakra* ("he did", perfect tense)
 
 
 Sounds
 ------
 
 Our example has three terms, each of which represents a piece of sound.
-I state that for the sake of completeness, but really it's self-evident.
+These "pieces of sound" usually represent morphemes, but that's not always
+the case.
+
+We'll have more to say about these sounds later, but for now they're
+pretty straightforward.
 
 
 *Saṃjñā*
 --------
 
-What's not self-evident is that each term has a variety of designations
-(*saṃjñā*) associated with it. These *saṃjñā*, which are assigned by the
-Ashtadhyayi itself, enable some rules and block others. This process guides
-the original input toward the desired results.
+Each term has a variety of designations (**saṃjñā**) associated with it.
+These *saṃjñā*, which are assigned by the Ashtadhyayi itself, enable
+some rules and block others. By assigning names to different terms and
+changing which rules can be used, the system can guide the original
+input toward the desired output.
 
 Our example uses the following *saṃjñā*:
 
@@ -36,35 +48,28 @@ _                _              :term:`ārdhadhātuka`
 In addition, *ca + kṛ* together are called both :term:`abhyasta` and
 :term:`aṅga`.
 
+Some examples of what these *saṃjñā* do:
 
-*it* letters
-------------
+- *dhātu* allows the rule that creates the *abhyāsa*.
+- *abhyāsa* allows a rule that changes *ka* to *ca*.
+- *ārdhadhātuka* allows a rule that strengthens the vowel of the term before it.
 
-The Ashtadhyayi also has a second set of designations. These are called **it**
-letters. They are attached to a term:
+*it* tags
+---------
+
+Terms also use a second set of designations, which we can call **it** tags.
+Just a shirt might have a label that tells us how to wash it, a term might
+have an *it* that tells us how it behaves in certain contexts.
+
+For example, *kṛ* has two *it* tags. The first is *ḍu*, and it allows *kṛ* to
+take a certain suffix. The second is *ñ*, and it allows *kṛ* to use both
+:term:`parasmaipada` and :term:`ātmanepada` endings in its verbs. *it* tags
+are attached directly to the term of interest, like so:
 
     *ḍukṛñ*
 
-then removed by applying certain metarules, which are described further below.
-Whatever remains is the value of interest:
-
-    *ḍukṛñ → ḍu kṛ ñ → kṛ*
-
-The *it* letters are stated with the word *it* after them. Thus *ḍvit* and
-*ñit*. A group of sounds stated with its *it* letters is called its
-**upadeśa**.
-
-Think of an *it* as a "tag" on the original value. Just a shirt might have
-a label that tells us how to wash it, a term might have an *it* that tells
-us how it behaves in certain contexts.
-
-*it* letters are not letters in any meaningful sense, and they have no meaning
-outside of the metalanguage of the Ashtadhyayi.
-
-Rules
-^^^^^
-
-For some term T, the following are *it* letters:
+We can remove *it* tags by applying some metarules. For some term T, the
+following are *it* tags:
 
 - nasal vowels (1.3.2)
 - at the end of T:
@@ -82,17 +87,38 @@ For some term T, the following are *it* letters:
   - *c, ch, j, jh, ñ, ṭ, ṭh, ḍ, ḍh, ṇ* (1.3.7)
   - *l, ś, k, kh, g, gh, ṅ* if not a *taddhita* suffix
 
-Usage and examples
-^^^^^^^^^^^^^^^^^^
+*it* tags are not letters in any meaningful sense, and they have no meaning
+outside of the metalanguage of the Ashtadhyayi. In other words, all they do
+is describe certain properties; they have no deeper linguistic meaning and are
+not a fundamental part of Sanskrit. So if you see a term like *ḍukṛñ*, you
+should read it as:
 
-The *it* letters are basically just *saṃjñā*. *ḍvit* allows *kṛ* to take a
-certain suffix, and *ñit* allows *kṛ* to use both :term:`parasmaipada` and
-:term:`ātmanepada` endings in its verbs.
+    *kṛ* with the *it* tags *ḍu* and *ñ*.
 
-*it* letters have a huge impact on which forms are derived. If the *upadeśa*
-of the suffix *a* is just *a*, the resulting word will be *cakra*. If the
-*upadeśa* of the suffix *a* is *ṇal*, the suffix has *ṇit*, which strengthens
-the root vowel and produces the word *cakāra*.
+The *it* tags are often stated with the word *it* after them. Thus *ḍvit* and
+*ñit*. A term stated with its *it* letters is called the **upadeśa** of the
+term. Thus *ḍukṛñ* is the **upadeśa** of the root *kṛ*.
 
-The :ref:`glossary <it-glossary>` describes the most common *it* letters and
-the roles they perform.
+Usage
+^^^^^
+
+*it* tags are basically just *saṃjñā* that are expressed more tersely.
+
+To illustrate how alike these two are, let's return to our *ca + kṛ + a*
+example. We saw above that this sequence can yield three different results.
+But the result depends on the *saṃjñā* and *it* tags applied to the suffix *a*.
+As you read on, note how the different *saṃjñā* and *it* tags interact.
+
+- If the *upadeśa* is just *a*, then rule 1.2.5 tags the suffix with *kit*.
+  This prevents :term:`guṇa`. After a few more rules, we get *cakra* for our
+  result.
+- If the *upadeśa* is *ṇal*, the suffix has *ṇit*, which causes :term:`vṛddhi`.
+  After a few more rules, we get *cakāra* for our result.
+- If the *upadeśa* is *ṇal*, the suffix has *ṇit*. But if the suffix has
+  *uttama* as a *saṃjñā* -- that is, if it is in the first person -- then *ṇit*
+  is used only optionally. If we reject *ṇit*, then the *ārdhadhātuka-saṃjñā*
+  causes :term:`guṇa`. After a few more rules, we get *cakara* for our result.
+
+The :ref:`glossary <it-glossary>` describes the most common *it* tags and some
+of the roles they perform. Many *it* tags are overloaded to provide a variety
+of different functions.
