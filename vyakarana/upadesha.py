@@ -51,7 +51,7 @@ class Upadesha(object):
         self.data = data
 
         #: The set of markers that apply to this term. Although the
-        #: Ashtadhyayi distinguishes between samjna and 'it' letters,
+        #: Ashtadhyayi distinguishes between samjna and *it* tags,
         #: this simulation merges them together. Thus this set might
         #: contain both ``'kit'`` and ``'pratyaya'``.
         self.samjna = samjna
@@ -62,7 +62,7 @@ class Upadesha(object):
 
         #: The set of rules that have been applied to this term. This
         #: set is maintained for two reasons. First, it prevents us
-        #: from redundantly applying cerain rules. Second, it supports
+        #: from redundantly applying certain rules. Second, it supports
         #: painless rule blocking in other parts of the grammar.
         self.ops = ops or frozenset()
 
@@ -100,7 +100,7 @@ class Upadesha(object):
 
     @property
     def adi(self, locus='value'):
-        """Return the first sound, or ``None`` if there isn't one."""
+        """The term's first sound, or ``None`` if there isn't one."""
         try:
             return getattr(self.data, locus)[0]
         except IndexError:
@@ -108,7 +108,7 @@ class Upadesha(object):
 
     @property
     def antya(self, locus='value'):
-        """Return the last sound, or ``None`` if there isn't one."""
+        """The term's last sound, or ``None`` if there isn't one."""
         try:
             return getattr(self.data, locus)[-1]
         except IndexError:
@@ -116,27 +116,27 @@ class Upadesha(object):
 
     @property
     def asiddha(self):
-        """Return the value stored in the asiddha space."""
+        """The term's value in the asiddha space."""
         return self.data.asiddha
 
     @property
     def asiddhavat(self):
-        """Return the value stored in the asiddhavat space."""
+        """The term's value in the asiddhavat space."""
         return self.data.asiddhavat
 
     @property
     def clean(self):
-        """Return the raw value without svaras and anubandhas."""
+        """The term's value without svaras and anubandhas."""
         return self.data.clean
 
     @property
     def raw(self):
-        """Return the raw value."""
+        """The term's raw value."""
         return self.data.raw
 
     @property
     def upadha(self, locus='value'):
-        """Return the penultimate sound, or ``None`` if there isn't one."""
+        """The term's penultimate sound, or ``None`` if there isn't one."""
         try:
             return getattr(self.data, locus)[-2]
         except IndexError:
@@ -144,7 +144,7 @@ class Upadesha(object):
 
     @property
     def value(self):
-        """Return the value created by siddha rules."""
+        """The term's value in the siddha space."""
         return self.data.value
 
     def _parse_it(self, raw, **kw):

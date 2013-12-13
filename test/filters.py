@@ -4,6 +4,33 @@ from vyakarana.upadesha import *
 from vyakarana.dhatupatha import DHATUPATHA as DP
 
 
+# Constructors
+# ~~~~~~~~~~~~
+
+def test_init_with_kw():
+    f = F.Filter(category='category', name='name', body='body',
+                 domain='domain', rank='rank')
+
+    assert f.category == 'category'
+    assert f.name == 'name'
+    assert f.body == 'body'
+    assert f.domain == 'domain'
+    assert f.rank == 'rank'
+
+
+def test_no_params():
+    def apples(state, index):
+        return True
+
+    f = F.Filter.no_params(apples)
+
+    assert f.category == 'apples'
+    assert f.name == 'apples'
+    assert f.body is apples
+    assert f.domain is None
+    # TODO: rank
+
+
 def verify(cases, filter_creator, tester):
     """Verify a filter function on some input.
 

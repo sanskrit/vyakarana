@@ -8,9 +8,11 @@
     :license: MIT and BSD
 """
 
+import os
 from collections import defaultdict
 
-
+vyak = os.path.dirname(os.path.dirname(__file__))
+DHATUPATHA_CSV = os.path.join(vyak, 'data', 'dhatupatha.csv')
 DHATUPATHA = None
 
 
@@ -26,13 +28,13 @@ class Dhatupatha(object):
     begins.
 
     The Dhātupāṭha is traditionally given as a list of roots, each
-    stated in upadeśa with a basic gloss. For example::
+    stated in upadeśa with a basic gloss. An example:
 
         1.1 bhū sattāyām
 
-    The first number indicates the root *gaṇa*, of which there are ten.
+    The first number indicates the root gaṇa, of which there are ten.
     This gaṇa determines the form that the root takes when followed by
-    sārvadhātuka affixes. The second number indicates the root's
+    :term:`sārvadhātuka` affixes. The second number indicates the root's
     relative position within the gaṇa.
 
     Although few modern editions of the text have accent markings, the
@@ -53,7 +55,7 @@ class Dhatupatha(object):
     def __init__(self, filename=None):
         self.gana_map = {}
 
-        #: List of all dhatu, one for each row in the original file.
+        #: List of all dhatu, one for each row in the original CSV file.
         self.all_dhatu = []
 
         #: Maps a dhatu to its indices in `self.all_dhatu`.
@@ -111,7 +113,4 @@ class Dhatupatha(object):
         return frozenset(self.dhatu_list(*args))
 
 
-import os
-vyak = os.path.dirname(os.path.dirname(__file__))
-dhatupatha_data = os.path.join(vyak, 'data', 'dhatupatha.csv')
-DHATUPATHA = Dhatupatha(dhatupatha_data)
+DHATUPATHA = Dhatupatha(DHATUPATHA_CSV)

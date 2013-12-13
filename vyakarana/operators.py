@@ -33,7 +33,8 @@ class Operator(object):
         #: category ``tasya``.
         self.category = category or name
 
-        #: A unique name for this operator.
+        #: A unique name for this operator. If the operator is not
+        #: parameterized, then this is the same as `self.category`.
         self.name = name
 
         #: The function that corresponds to this operator. The input
@@ -147,6 +148,7 @@ def add_samjna(*names):
         cur = state[index]
         return state.swap(index, cur.add_samjna(*names))
     return func
+
 
 def adi(result):
     return tasya(result, adi=True)
