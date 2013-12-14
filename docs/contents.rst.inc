@@ -21,6 +21,12 @@ This describes the overall architecture of the system.
 .. toctree::
     :maxdepth: 2
 
+    design_overview
+    inputs_and_outputs
+    modeling_rules
+    selecting_rules
+    defining_rules
+
 
 API Reference
 -------------
