@@ -89,6 +89,10 @@ Generally, these are used to describe concepts in the program.
         The term that undergoes substitution. In a *saṃjñā* rule: the term
         that receives the *saṃjñā*.
 
+    filter
+        A callable object that is used to test for a certain context. For
+        details, see the :class:`~vyakarana.filters.Filter` class.
+
     left context
         The term(s) that appear immediately before the center context. If no
         center context is defined: the term(s) after which something is
@@ -97,6 +101,10 @@ Generally, these are used to describe concepts in the program.
     metarule
         A rule that defines part of the metalanguage of the Ashtadhyayi. Some
         are explicitly stated, but many are implicit.
+
+    operator
+        A callable object that is used to apply an operation to a state. For
+        details, see the :class:`~vyakarana.operators.Operator` class.
 
     ordinary rule
         A rule that takes some input and produces some output(s). In this

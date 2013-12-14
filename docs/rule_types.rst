@@ -8,6 +8,8 @@ output(s), and metarules, which describe how to interpret other rules.
     The types loosely correspond to the traditional classification, but there
     is no 1:1 mapping.
 
+.. _ordinary-rules:
+
 Ordinary rules
 --------------
 
