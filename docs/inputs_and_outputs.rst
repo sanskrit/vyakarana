@@ -12,6 +12,8 @@ Terms
 -----
 :class:`~vyakarana.upadesha.Upadesha`
 
+
+.. _data-spaces:
+
 Data spaces
 ^^^^^^^^^^^
-

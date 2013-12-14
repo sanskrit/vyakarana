@@ -7,9 +7,10 @@ This is a high-level overview of the Ashtadhyayi and how it works.
     :maxdepth: 2
 
     introduction
+    rule_types
     terms
     sounds
-    rule_types
+    asiddha
     glossary
 
 
