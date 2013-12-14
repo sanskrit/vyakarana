@@ -13,7 +13,6 @@ from collections import defaultdict
 
 vyak = os.path.dirname(os.path.dirname(__file__))
 DHATUPATHA_CSV = os.path.join(vyak, 'data', 'dhatupatha.csv')
-DHATUPATHA = None
 
 
 class Dhatupatha(object):
@@ -64,6 +63,9 @@ class Dhatupatha(object):
         if filename is not None:
             self.init(filename)
 
+    def __repr__(self):
+        return '<Dhatupatha(%r)>' % len(self.all_dhatu)
+
     def init(self, filename):
         """
         :param filename: path to the Dhatupatha file
@@ -113,4 +115,6 @@ class Dhatupatha(object):
         return frozenset(self.dhatu_list(*args))
 
 
+#: A singleton instance available to all other modules. This has bad
+#: code smell, but I'm not compelled to change it.
 DHATUPATHA = Dhatupatha(DHATUPATHA_CSV)

@@ -9,6 +9,12 @@ Lists
 .. automodule:: vyakarana.lists
     :members:
 
+Dhatupatha
+----------
+
+.. automodule:: vyakarana.dhatupatha
+    :members:
+
 Upadesha
 --------
 
