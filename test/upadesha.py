@@ -8,24 +8,159 @@
     :license: MIT and BSD
 """
 
+import pytest
+
 from vyakarana.upadesha import *
 
 
-def test_dataspace():
+class TestDataSpace(object):
+
     d = DataSpace('A', 'A', 'A', 'A', 'A')
-    assert d == ('A',) * 5
 
-    db = d.replace(value='B')
-    assert db == ('A', 'A', 'B', 'B', 'B')
+    def test_init(self):
+        assert self.d == ('A',) * 5
 
-    dc = db.replace(asiddhavat='C')
-    assert dc == ('A', 'A', 'B', 'C', 'C')
+    def test_replace(self):
+        d2 = self.d.replace(asiddha='B')
+        assert d2 == ('A', 'A', 'A', 'A', 'B')
 
-    d_ = dc.replace(asiddhavat='')
-    assert d_ == ('A', 'A', 'B', '', '')
+        d2 = self.d.replace(asiddhavat='B')
+        assert d2 == ('A', 'A', 'A', 'B', 'B')
 
-    dd = d_.replace(asiddha='D')
-    assert dd == ('A', 'A', 'B', '', 'D')
+        d2 = self.d.replace(value='B')
+        assert d2 == ('A', 'A', 'B', 'B', 'B')
+
+    def test_replace_blank(self):
+        d2 = self.d.replace(asiddha='')
+        assert d2 == ('A', 'A', 'A', 'A', '')
+
+        d2 = self.d.replace(asiddhavat='')
+        assert d2 == ('A', 'A', 'A', '', '')
+
+        d2 = self.d.replace(value='')
+        assert d2 == ('A', 'A', '', '', '')
+
+
+# Constructors
+# ~~~~~~~~~~~~
+
+def test_init():
+    u = Upadesha('vu~k')
+    assert u.data == ('vu~k', 'v', 'v', 'v', 'v')
+    assert u.samjna == set(['udit', 'kit'])
+    assert not u.lakshana
+    assert not u.ops
+    assert not u.parts
+
+
+def test_init_no_raw():
+    u = Upadesha(data='data', samjna='samjna', lakshana='lakshana',
+                 ops='ops', parts='parts')
+
+    assert u.data == 'data'
+    assert u.samjna == 'samjna'
+    assert u.lakshana == 'lakshana'
+    assert u.ops == 'ops'
+    assert u.parts == 'parts'
+
+
+# Properties
+# ~~~~~~~~~~
+
+def test_properties_no_it():
+    t = Upadesha('gati')
+    assert t
+    assert t.adi == 'g'
+    assert t.antya == 'i'
+    assert t.asiddha == 'gati'
+    assert t.asiddhavat == 'gati'
+    assert t.clean == 'gati'
+    assert t.raw == 'gati'
+    assert t.upadha == 't'
+    assert t.value == 'gati'
+
+
+def test_properties_final_it():
+    t = Upadesha('anta~')
+    assert t
+    assert t.adi == 'a'
+    assert t.antya == 't'
+    assert t.asiddha == 'ant'
+    assert t.asiddhavat == 'ant'
+    assert t.clean == 'ant'
+    assert t.raw == 'anta~'
+    assert t.upadha == 'n'
+    assert t.value == 'ant'
+
+
+# Operators
+# ~~~~~~~~~
+
+def test_copy():
+    values = {
+        'data': 'data',
+        'samjna': 'samjna',
+        'lakshana': 'lakshana',
+        'ops': 'ops',
+        'parts': 'parts',
+    }
+
+    u = Upadesha(**values)
+
+    u2 = u.copy(data='data2')
+    assert u2.data == 'data2'
+
+    u2 = u.copy(samjna='samjna2')
+    assert u2.samjna == 'samjna2'
+
+    u2 = u.copy(lakshana='lakshana2')
+    assert u2.lakshana == 'lakshana2'
+
+    u2 = u.copy(ops='ops2')
+    assert u2.ops == 'ops2'
+
+    u2 = u.copy(parts='parts2')
+    assert u2.parts == 'parts2'
+
+
+@pytest.fixture
+def eq_upadeshas():
+    u2 = Upadesha('a')
+    return [
+        Upadesha('a'),
+        Upadesha('a'),
+        u2.copy(data='data'),
+        u2.copy(data='samjna'),
+        u2.copy(data='lakshana'),
+        u2.copy(data='ops'),
+        u2.copy(data='parts')
+    ]
+
+
+def test_eq(eq_upadeshas):
+    u1, u2, u3, u4, u5, u6, u7 = eq_upadeshas
+
+    assert u1 == u1  # same object
+    assert u1 == u2  # same values
+    assert not u1 == None
+    assert not u1 == u3
+    assert not u1 == u4
+    assert not u1 == u5
+    assert not u1 == u6
+    assert not u1 == u7
+
+
+def test_ne(eq_upadeshas):
+    u1, u2, u3, u4, u5, u6, u7 = eq_upadeshas
+
+    assert not u1 != u1  # same object
+    assert not u1 != u2  # same values
+    assert u1 != None
+    assert u1 != u3
+    assert u1 != u4
+    assert u1 != u5
+    assert u1 != u6
+    assert u1 != u7
 
 
 def test_upadesha_dataspace():
@@ -42,25 +177,7 @@ def test_upadesha_dataspace():
     assert abhyasta.data == ('Pala~', 'Pal', 'Pal', 'Pel', 'Pel')
 
 
-def test_upadesha_properties():
-    t = Upadesha('gati')
-    assert t
-    assert t.raw == 'gati'
-    assert t.value == 'gati'
-    assert t.adi == 'g'
-    assert t.upadha == 't'
-    assert t.antya == 'i'
-
-    t = Upadesha('anta~')
-    assert t
-    assert t.raw == 'anta~'
-    assert t.value == 'ant'
-    assert t.adi == 'a'
-    assert t.upadha == 'n'
-    assert t.antya == 't'
-
-
-def test_upadesha():
+def test_parse_it():
     # 1.3.2
     for v in Sounds('ac'):
         for c in Sounds('hal'):
@@ -102,7 +219,7 @@ def test_upadesha():
 
 
 def test_anga():
-    a = Anga('nara')
+    a = Upadesha.as_anga('nara')
     assert 'anga' in a.samjna
 
 
@@ -114,7 +231,7 @@ def test_dhatu():
         ('qukrI\Y', 'krI'),
     ]
     for raw, value in pairs:
-        d = Dhatu(raw)
+        d = Upadesha.as_dhatu(raw)
         assert 'anga' in d.samjna
         assert 'dhatu' in d.samjna
         assert d.raw == raw

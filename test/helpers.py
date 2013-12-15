@@ -12,7 +12,7 @@
 import os
 from collections import OrderedDict
 from vyakarana import ashtadhyayi as A
-from vyakarana.upadesha import Dhatu, Vibhakti
+from vyakarana.upadesha import Upadesha, Vibhakti
 
 def data_path(name):
     """Return a relative path to test file `name`."""
@@ -74,7 +74,7 @@ def verb_data(filename, la):
     test_cases = []
     ash = A.Ashtadhyayi()
     for dhatu, expected, person, number in load_forms(filename):
-        d = Dhatu(dhatu)
+        d = Upadesha.as_dhatu(dhatu)
         p = Vibhakti(la).add_samjna(person, number)
         actual = set(ash.derive([d, p]))
         print actual

@@ -37,37 +37,44 @@ class Upadesha(object):
     __slots__ = ['data', 'samjna', 'lakshana', 'ops', 'parts', '_filter_cache']
     nasal_re = re.compile('([aAiIuUfFxeEoO])~')
 
-    def __init__(self, raw=None, data=None, samjna=None, lakshana=None, ops=None, parts=None, **kw):
-        if raw is not None:
+    def __init__(self, raw=None, **kw):
+        # Initialized with new raw value: parse off its 'it' letters.
+        if raw:
             clean, it_samjna = self._parse_it(raw, **kw)
             data = DataSpace(raw, clean, clean, clean, clean)
-            samjna = samjna | it_samjna if samjna else it_samjna
+            samjna = it_samjna
+        else:
+            data = samjna = None
 
         #: The term`s data space. A given term is represented in a
         #: variety of ways, depending on the circumstance. For example,
         #: a rule might match based on a specific upadeśa (including
         #: 'it' letters) in one context and might match on a term's
         #: final sound (excluding 'it' letters) in another.
-        self.data = data
+        self.data = kw.pop('data', data)
 
         #: The set of markers that apply to this term. Although the
         #: Ashtadhyayi distinguishes between samjna and *it* tags,
-        #: this simulation merges them together. Thus this set might
+        #: the program merges them together. Thus this set might
         #: contain both ``'kit'`` and ``'pratyaya'``.
-        self.samjna = samjna
+        self.samjna = kw.pop('samjna', samjna)
 
         #: The set of values that this term used to have. Technically,
         #: only pratyaya need to have access to this information.
-        self.lakshana = lakshana or frozenset()
+        self.lakshana = kw.pop('lakshana', frozenset())
 
         #: The set of rules that have been applied to this term. This
         #: set is maintained for two reasons. First, it prevents us
         #: from redundantly applying certain rules. Second, it supports
         #: painless rule blocking in other parts of the grammar.
-        self.ops = ops or frozenset()
+        self.ops = kw.pop('ops', frozenset())
 
-        #: The various augments that have been added to this term.
-        self.parts = parts or frozenset()
+        #: The various augments that have been added to this term. Some
+        #: examples:
+        #: - 'aw' (verb prefix for past forms)
+        #: - 'iw' ('it' augment on suffixes)
+        #: - 'vu~k' ('v' for 'BU' in certain forms)
+        self.parts = kw.pop('parts', frozenset())
 
         self._filter_cache = {}
 
@@ -89,14 +96,22 @@ class Upadesha(object):
     def __repr__(self):
         return "<%s('%s')>" % (self.__class__.__name__, self.value)
 
-    def copy(self, data=None, samjna=None, lakshana=None, ops=None, parts=None):
-        return self.__class__(
-            data=data or self.data,
-            samjna=samjna or self.samjna,
-            lakshana=lakshana or self.lakshana,
-            ops=ops or self.ops,
-            parts=parts or self.parts
-            )
+    def copy(self, **kw):
+        for x in ['data', 'samjna', 'lakshana', 'ops', 'parts']:
+            if x not in kw:
+                kw[x] = getattr(self, x)
+
+        return self.__class__(**kw)
+
+    @staticmethod
+    def as_anga(*a, **kw):
+        """Create the upadesha then mark it as an ``'anga'``."""
+        return Upadesha(*a, **kw).add_samjna('anga')
+
+    @staticmethod
+    def as_dhatu(*a, **kw):
+        """Create the upadesha then mark it as a ``'dhatu'``."""
+        return Upadesha(*a, **kw).add_samjna('anga', 'dhatu')
 
     @property
     def adi(self, locus='value'):
@@ -242,24 +257,16 @@ class Upadesha(object):
         return clean, samjna
 
     def add_lakshana(self, *names):
-        return self.copy(
-            lakshana=self.lakshana.union(names)
-        )
+        return self.copy(lakshana=self.lakshana.union(names))
 
     def add_op(self, *names):
-        return self.copy(
-            ops=self.ops.union(names)
-        )
+        return self.copy(ops=self.ops.union(names))
 
     def add_part(self, *names):
-        return self.copy(
-            parts=self.parts.union(names)
-        )
+        return self.copy(parts=self.parts.union(names))
 
     def add_samjna(self, *names):
-        return self.copy(
-            samjna=self.samjna.union(names)
-        )
+        return self.copy(samjna=self.samjna.union(names))
 
     def any_samjna(self, *args):
         return any(a in self.samjna for a in args)
@@ -268,21 +275,25 @@ class Upadesha(object):
         return getattr(self.data, locus)
 
     def remove_samjna(self, *names):
-        return self.copy(
-            samjna=self.samjna.difference(names)
-        )
+        return self.copy(samjna=self.samjna.difference(names))
+
+    def set_asiddha(self, asiddha):
+        return self.copy(data=self.data.replace(asiddha=asiddha))
 
     def set_at(self, locus, value):
-        if locus == 'raw':
-            return self.set_raw(value)
-        elif locus == 'value':
-            return self.set_value(value)
-        elif locus == 'asiddhavat':
-            return self.set_asiddhavat(value)
-        elif locus == 'asiddha':
-            return self.set_asiddha(value)
-        else:
+        funcs = {
+            'raw': self.set_raw,
+            'value': self.set_value,
+            'asiddhavat': self.set_asiddhavat,
+            'asiddha': self.set_asiddha
+        }
+        try:
+            return funcs[locus](value)
+        except KeyError:
             raise NotImplementedError
+
+    def set_asiddhavat(self, asiddhavat):
+        return self.copy(data=self.data.replace(asiddhavat=asiddhavat))
 
     def set_raw(self, raw):
         clean, it_samjna = self._parse_it(raw)
@@ -296,29 +307,6 @@ class Upadesha(object):
     def set_value(self, value):
         return self.copy(data=self.data.replace(value=value))
 
-    def set_asiddhavat(self, asiddhavat):
-        return self.copy(data=self.data.replace(asiddhavat=asiddhavat))
-
-    def set_asiddha(self, asiddha):
-        return self.copy(data=self.data.replace(asiddha=asiddha))
-
-
-class Anga(Upadesha):
-
-    __slots__ = ()
-
-    def __init__(self, *a, **kw):
-        Upadesha.__init__(self, *a, **kw)
-        self.samjna |= set(['anga'])
-
-
-class Dhatu(Anga):
-
-    __slots__ = ()
-
-    def __init__(self, *a, **kw):
-        Upadesha.__init__(self, *a, **kw)
-        self.samjna |= set(['anga', 'dhatu'])
 
 
 class Pratyaya(Upadesha):

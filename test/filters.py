@@ -61,7 +61,7 @@ def pratyaya_tester(filt, data):
 
 
 def dhatu_tester(filt, data):
-    return filt([Dhatu(data)], 0)
+    return filt([Upadesha.as_dhatu(data)], 0)
 
 
 # Ordinary filters
@@ -187,7 +187,7 @@ def test_samjna():
     for pattern, yes, no in cases:
         f = F.samjna(*pattern)
         for y in yes.split():
-            assert f([Anga(y)], 0)
+            assert f([Upadesha.as_anga(y)], 0)
         for n in no.split():
             assert not f([Pratyaya(n)], 0)
 
