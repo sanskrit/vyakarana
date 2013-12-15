@@ -6,6 +6,7 @@
     This module creates a single :class:`~vyakarana.rules.Rule` object
     for each rule. These objects coordinate various lower-level
     components, such as:
+
     - filters that test some state
     - an operator that transform the state
     - a rank that defines the rule's relative power
@@ -37,7 +38,7 @@ class Rule(object):
     SAMJNA = 1
     #: Rank of an *atideśa* rule
     ATIDESHA = 1
-    #: Rank of a paribhāṣā* rule
+    #: Rank of a *paribhāṣā* rule
     PARIBHASHA = 1
 
     #: The current rule type, which is used to create the rule rank.
@@ -48,12 +49,15 @@ class Rule(object):
     ASIDDHAVAT = 0
 
     def __init__(self, name, filters, operator, **kw):
-        #: A unique ID for this rule, e.g. "6.4.1"
+        #: A unique ID for this rule, e.g. ``'6.4.1'``. For most rules,
+        #: this is just the rule's position within the Ashtadhyayi.
+        #: But a few rules combine multiple rules and have hyphenated
+        #: names, e.g. ``'1.1.60 - 1.1.63'``.
         self.name = name
 
         #: A list of filter functions to apply to some subsequence in
         #: a state. If the subsequence matches, then we can apply the
-        #: rule to the subsequence.
+        #: rule to the appropriate location in the state..
         self.filters = filters
 
         #: An operator to apply to some part of a state.
@@ -172,6 +176,7 @@ class Rule(object):
         """Return whether the other rule is an apavada to this one.
 
         Rule B is an apavada to rule A if and only if:
+
         1. A != B
         2. If A matches some position, then B matches too.
         3. A and B have the same locus

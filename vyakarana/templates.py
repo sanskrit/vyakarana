@@ -134,8 +134,14 @@ Shesha = object()
 # ~~~~~~~~~~~~~~
 
 def inherit(*args, **kw):
-    """Decorator for a function that returns a list of rule tuples.
+    """Decorator for functions that define rule tuples.
 
+    This decorator is used to mark functions that return a list of rule
+    tuples. The decorator takes three arguments, each of which is a
+    *base filter* that is "and"-ed with the rules contained in the
+    function itself. The decorator also accepts various keyword
+    arguments, which are attached to the rule tuples and used later on
+    when the tuples are expanded into actual rules.
     """
 
     def decorator(fn):

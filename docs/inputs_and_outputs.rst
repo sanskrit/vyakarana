@@ -6,7 +6,7 @@ discuss how inputs are modeled in the system.
 
 States
 ------
-:class:`State`
+:class:`~vyakarana.util.State`
 
 Terms
 -----

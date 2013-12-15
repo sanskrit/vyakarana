@@ -21,6 +21,18 @@ Upadesha
 .. autoclass:: vyakarana.upadesha.Upadesha
     :members:
 
+Rules and Rule Tuples
+---------------------
+
+.. autoclass:: vyakarana.rules.Rule
+    :member-order: bysource
+    :members:
+
+.. automodule:: vyakarana.templates
+    :show-inheritance:
+    :member-order: bysource
+    :members:
+
 Filters
 -------
 
