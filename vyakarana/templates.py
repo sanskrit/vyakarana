@@ -41,10 +41,12 @@ class TupleWrapper(object):
 
 
 class Boost(TupleWrapper):
+
     """A hack that artificially boosts a rule's priority."""
 
 
 class Ca(TupleWrapper):
+
     """Wrapper for a rule that contains the word "ca".
 
     "ca" has a variety of functions, but generally it preserves parts
@@ -53,10 +55,12 @@ class Ca(TupleWrapper):
 
 
 class Na(TupleWrapper):
+
     """Wrapper for a rule that just blocks other rules."""
 
 
 class Nityam(TupleWrapper):
+
     """Wrapper for a rule that cannot be rejected.
 
     This is used to cancel earlier conditions.
@@ -64,6 +68,7 @@ class Nityam(TupleWrapper):
 
 
 class Option(TupleWrapper):
+
     """Wrapper for a rule that can be accepted optionally.
 
     This is a superclass for a variety of optional conditions.
@@ -71,6 +76,7 @@ class Option(TupleWrapper):
 
 
 class Anyatarasyam(Option):
+
     """Wrapper for a rule that is indifferently accepted.
 
     Modern scholarship rejects the traditional definition of anyatarasyām,
@@ -79,6 +85,7 @@ class Anyatarasyam(Option):
 
 
 class Va(Option):
+
     """Wrapper for a rule that is preferably accepted.
 
     Modern scholarship rejects the traditional definiton of vā, but
@@ -87,6 +94,7 @@ class Va(Option):
 
 
 class Vibhasha(Option):
+
     """Wrapper for a rule that is preferably not accepted.
 
     Modern scholarship rejects the traditional definiton of vibhāṣā,
@@ -95,6 +103,7 @@ class Vibhasha(Option):
 
 
 class Artha(Option):
+
     """Wrapper for a rule that applies only in some semantic condition.
 
     Since the semantic condition can be declined, this is essentially
@@ -103,6 +112,7 @@ class Artha(Option):
 
 
 class Opinion(Option):
+
     """Wrapper for a rule that is accepted by prior opinion.
 
     Since the opinion can be declined, this is essentially the same as

@@ -62,9 +62,9 @@ def utsarga_apavada(rules):
 
 
 def make_context(data, base=None, prev=None):
-    """Create and return a filter for a tuple rule.
+    """Create and return a filter list for some tuple rule.
 
-    :param data: one of the following:
+    :param data: a list of items. These items are one of the following:
                  - ``None``, which signals that `base` should be used.
                  - ``True``, which signals that `prev` should be used.
                  - an arbitrary object, which is sent to `filters.auto`.

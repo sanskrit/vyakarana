@@ -130,6 +130,13 @@ class Ashtadhyayi(object):
 
     @classmethod
     def with_rules_in(cls, start, end):
+        """Constructor using only a subset of the rules in the Ashtadhyayi.
+
+        This is provided to make it easier to test certain rule groups.
+
+        :param start: name of the first rule to use, e.g. "1.1.1"
+        :param end: name of the last rule to use, e.g. "1.1.73"
+        """
         key = inference.name_key
         start_key = key(start)
         end_key = key(end)
