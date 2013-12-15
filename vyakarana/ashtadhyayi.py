@@ -8,27 +8,15 @@
     :license: MIT and BSD
 """
 
+import importlib
 import logging
 import os
 from collections import defaultdict
 
-import adhyaya1.pada1
-import adhyaya1.pada2
-import adhyaya1.pada3
-import adhyaya2.pada4
-import adhyaya3.pada1
-import adhyaya3.pada4
-import adhyaya6.pada1
-import adhyaya6.pada4
-import adhyaya7.pada1
-import adhyaya7.pada2
-import adhyaya7.pada3
-import adhyaya7.pada4
 import inference
 import sandhi
 import siddha
 
-from templates import ALL_RULES
 from util import State
 
 log = logging.getLogger(__name__)
@@ -114,11 +102,20 @@ class RuleTree(object):
 
 class Ashtadhyayi(object):
 
-    """The Ashtadhyayi."""
+    """The Ashtadhyayi.
+
+    This class models the most abstract parts of the system, namely:
+
+    - defining rules
+    - applying the next appropriate rule to some state
+    - deriving results from some initial state
+
+    Most of the interesting stuff is abstracted away into other modules.
+    """
 
     def __init__(self, rules=None):
-        #: The rules of the grammar, from first to last.
-        self.rules = inference.create(rules or ALL_RULES)
+        #: The rules of the grammar, sorted from first to last.
+        self.rules = inference.create(rules or self.all_rule_tuples())
 
         #: The rules of the grammar, from highest priority to lowest.
         self.ranked_rules = sorted(self.rules,
@@ -127,10 +124,41 @@ class Ashtadhyayi(object):
         #: a :class:`RuleTree`
         self.rule_tree = RuleTree(self.ranked_rules)
 
+    @staticmethod
+    def all_rule_tuples():
+        """Create a list of all rule tuples defined in the system.
+
+        We find rule tuples by programmatically importing every pada in
+        the Ashtadhyayi. Undefined padas are skipped.
+        """
+
+        # All padas follow this naming convention.
+        mod_string = 'vyakarana.adhyaya{0}.pada{1}'
+        combos = [(a, p) for a in '12345678' for p in '1234']
+        rule_tuples = []
+
+        for adhyaya, pada in combos:
+            # Import the pada
+            try:
+                mod_name = mod_string.format(adhyaya, pada)
+                mod = importlib.import_module(mod_name)
+            except ImportError:
+                continue
+
+            # Get rule tuples from the pada's 'inherit' functions
+            for key in dir(mod):
+                value = getattr(mod, key)
+                # This is really hacky.
+                # TODO: find a better way to identify these functions.
+                if hasattr(value, 'rule_generator'):
+                    rule_tuples.extend(value())
+
+        # Sort from first to last.
+        return sorted(rule_tuples, key=lambda x: inference.name_key(x.name))
 
     @classmethod
     def with_rules_in(cls, start, end):
-        """Constructor using only a subset of the rules in the Ashtadhyayi.
+        """Constructor using only a subset of the Ashtadhyayi's rules.
 
         This is provided to make it easier to test certain rule groups.
 
@@ -141,11 +169,15 @@ class Ashtadhyayi(object):
         start_key = key(start)
         end_key = key(end)
 
-        rules = {k: v for k, v in ALL_RULES.iteritems()
-                 if start_key <= key(k) <= end_key}
+        rules = [r for r in cls.all_rule_tuples()
+                 if start_key <= key(r.name) <= end_key]
         return cls(rules)
 
     def matching_rules(self, state):
+        """Generate all rules that could apply to the state.
+
+        :param state: the current state
+        """
         state_indices = range(len(state))
         candidates = [self.rule_tree.select(state, i) for i in state_indices]
 
@@ -160,9 +192,8 @@ class Ashtadhyayi(object):
         This function applies conflict resolution to a list of candidate
         rules until one rule remains.
 
-        :param state: the current :class:`State`
+        :param state: the current state
         """
-
         for ra, ia in self.matching_rules(state):
             # Ignore redundant applications
             if ra in state[ia].ops:
@@ -203,6 +234,13 @@ class Ashtadhyayi(object):
                     yield x
 
     def sandhi_asiddha(self, state):
+        """Apply rules from the 'sandhi' and 'asiddha' sections.
+
+        TODO: rewrite the rules in the sandhi and asiddha sections until
+        this function is no longer needed.
+
+        :param state: the current state
+        """
         for s in sandhi.apply(state):
             for t in siddha.asiddha(s):
                 yield ''.join(x.asiddha for x in t)

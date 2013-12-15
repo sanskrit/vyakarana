@@ -140,15 +140,13 @@ def process_tuples(rules):
         prev, prev_operator = (filters, operator)
 
 
-def create(rule_dict):
+def create(rule_tuples):
     """
 
     :param rule_dict:
     """
     # Sort tuple rules from first to last.
-    rule_pairs = sorted(rule_dict.items(), key=lambda x: name_key(x[0]))
-    sorted_tuples = [r[1] for r in rule_pairs]
 
-    rules = list(process_tuples(sorted_tuples))
+    rules = list(process_tuples(rule_tuples))
     utsarga_apavada(rules)
     return rules

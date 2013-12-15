@@ -14,9 +14,6 @@ import lists
 import operators as O
 from util import Rank
 
-#:
-ALL_RULES = {}
-
 
 # Rule conditions
 # ~~~~~~~~~~~~~~~
@@ -50,7 +47,10 @@ class RuleTuple(object):
         self.base_kw = None
 
     def __repr__(self):
-        return '<%s(%s)>' % (self.__class__.__name__, repr(self.name))
+        cls_name = self.__class__.__name__
+        if cls_name == 'RuleTuple':
+            cls_name = 'R'
+        return '<%s(%s)>' % (cls_name, repr(self.name))
 
 
 class Boost(RuleTuple):
@@ -420,17 +420,23 @@ def inherit(*args, **kw):
     """
 
     def decorator(fn):
-        unprocessed_rows = fn()
+        def get_processed_rows():
+            processed_rows = []
+            unprocessed_rows = fn()
 
-        for item in unprocessed_rows:
-            if isinstance(item, RuleTuple):
-                row = item
-            else:
-                row = RuleTuple(*item)
+            for item in unprocessed_rows:
+                if isinstance(item, RuleTuple):
+                    row = item
+                else:
+                    row = RuleTuple(*item)
 
-            # Attach args from 'inherit'
-            row.base_args = args
-            row.base_kw = kw
+                # Attach args from 'inherit'
+                row.base_args = args
+                row.base_kw = kw
 
-            ALL_RULES[row.name] = row
+                processed_rows.append(row)
+            return processed_rows
+
+        get_processed_rows.rule_generator = True
+        return get_processed_rows
     return decorator
