@@ -85,6 +85,11 @@ Generally, these are used to describe concepts in the program.
 
 .. glossary::
 
+    base filter
+        A filter defined in an :func:`~vyakarana.rules.inherit` decorator.
+        It is "and"-ed with all of the rule tuples created by the decorated
+        function.
+
     center context
         The term that undergoes substitution. In a *saṃjñā* rule: the term
         that receives the *saṃjñā*.
@@ -115,6 +120,11 @@ Generally, these are used to describe concepts in the program.
         center context is defined: the term(s) before which something is
         inserted.
 
+    rule tuple
+        A special shorthand for specifying rules of the Ashtadhyayi. This must
+        be expanded into a full :class:`~vyakarana.rules.Rule` definition
+        before it can be used.
+
 .. _it-glossary:
 
 *it* tags
@@ -130,14 +140,15 @@ Generally, these are used to describe concepts in the program.
         replaces the last letter of the *sthānī*.
 
     ñit
-        Causes *vṛddhi*.
+        Causes *vṛddhi* for certain vowels.
 
     ṭit
         If a replacement is marked with *ṭ*, it is added to the beginning of
-        the *sthānī*.
+        the *sthānī*. If a *lakāra* is marked with *ṭ*, then it undergoes
+        some basic rules, e.g. replacement of *thās* with *se*.
 
     ṇit
-        Causes *vṛddhi*.
+        Causes *vṛddhi* for certain vowels.
 
     pit
         Causes *anudātta* accent on a :term:`pratyaya`. A :term:`sārvadhātuka`

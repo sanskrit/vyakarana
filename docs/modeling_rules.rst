@@ -26,6 +26,8 @@ With this general form in mind, we can decompose a rule model into two parts:
 - matching a context. To do so, we use :term:`filters <filter>`.
 - applying an operation. To do so, we use :term:`operators <operator>`.
 
+Or in other words: filters *test* and operators *transform*.
+
 Filters
 -------
 
@@ -97,3 +99,25 @@ An :class:`~vyakarana.operators.Operator` is a callable object that accepts a
 state and index, performs some operation, and returns the result. For example,
 the :class:`~vyakarana.operators.guna` operator applies guna to
 ``state[index]`` and returns a new state.
+
+Parameterized operators
+^^^^^^^^^^^^^^^^^^^^^^^
+
+*Parameterized operators* group operators into families and make it easier to
+create a lot of related operators. Specifically, they are classes that can be
+instantiated (parameterized) by passing arguments.
+
+For example, the :class:`~vyakarana.operators.al_tasya` class does arbitrary
+letter substitution::
+
+    # ku h: k, kh, g, gh, ṅ, h
+    # cu: c, ch, j, jh, ñ
+    kuhos_cu = al_tasya('ku h', 'cu')
+
+    # f: ṛ, ṝ
+    # at: a
+    ur_at = al_tasya('f', 'at')
+
+.. note::
+    Parameterized operators have lowercase names for historical reasons.
+    Also, they better match the names for unparameterized operators.
