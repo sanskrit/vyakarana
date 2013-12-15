@@ -96,29 +96,28 @@ def make_context(data, base=None, prev=None):
 def process_tuples(rules):
     """
 
-    :param rules: a list of tuple rules
+    :param rules: a list of :class:`RuleTuple`s
     :param base: a list of :class:`Filter`s.
     """
     prev = ([None], [None], [None])
     prev_operator = None
 
-    for base_args, base_kw, row in rules:
+    for row in rules:
+        base_args = row.base_args
+        base_kw = row.base_kw
+
         kw = {
             'option': False,
             'modifier': None,
         }
 
-        if isinstance(row, TupleWrapper):
-            modifier = row.__class__
-            kw['option'] = isinstance(row, Option)
-            kw['modifier'] = modifier
-            row = row.data
+        modifier = row.__class__
+        kw['option'] = isinstance(row, Option)
+        kw['modifier'] = modifier
 
-        assert len(row) == 5
-
-        name = row[0]
-        window = row[1:4]
-        operator = row[4]
+        name = row.name
+        window = row.window
+        operator = row.operator
 
         filters = []
         for b, w, p in zip(base_args, window, prev):

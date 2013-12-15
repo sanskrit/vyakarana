@@ -21,7 +21,7 @@ ALL_RULES = {}
 # Rule conditions
 # ~~~~~~~~~~~~~~~
 
-class TupleWrapper(object):
+class RuleTuple(object):
 
     """Wrapper for tuple rules.
 
@@ -33,19 +33,32 @@ class TupleWrapper(object):
     class or one of its subclasses.
     """
 
-    def __init__(self, *args):
-        self.data = args
+    def __init__(self, name, left, center, right, op):
+        #: Thte rule name
+        self.name = name
+
+        #: The rule context
+        self.window = [left, center, right]
+
+        #: The rule operator
+        self.operator = op
+
+        #: Inherited args. These define base filters.
+        self.base_args = None
+
+        #: Inherited kwargs. These control how the rule is interpreted.
+        self.base_kw = None
 
     def __repr__(self):
-        return '<%s(%s)>' % (self.__class__.__name__, repr(self.data))
+        return '<%s(%s)>' % (self.__class__.__name__, repr(self.name))
 
 
-class Boost(TupleWrapper):
+class Boost(RuleTuple):
 
     """A hack that artificially boosts a rule's priority."""
 
 
-class Ca(TupleWrapper):
+class Ca(RuleTuple):
 
     """Wrapper for a rule that contains the word "ca".
 
@@ -54,12 +67,12 @@ class Ca(TupleWrapper):
     """
 
 
-class Na(TupleWrapper):
+class Na(RuleTuple):
 
     """Wrapper for a rule that just blocks other rules."""
 
 
-class Nityam(TupleWrapper):
+class Nityam(RuleTuple):
 
     """Wrapper for a rule that cannot be rejected.
 
@@ -67,7 +80,7 @@ class Nityam(TupleWrapper):
     """
 
 
-class Option(TupleWrapper):
+class Option(RuleTuple):
 
     """Wrapper for a rule that can be accepted optionally.
 
@@ -404,17 +417,20 @@ class ParibhashaRule(Rule):
 def inherit(*args, **kw):
     """Decorator for a function that returns a list of rule tuples.
 
-
     """
 
     def decorator(fn):
-        rules = fn()
-        for rule in rules:
-            try:
-                name = rule[0]
-            except TypeError:
-                name = rule.data[0]
+        unprocessed_rows = fn()
 
-            ALL_RULES[name] = (args, kw, rule)
+        for item in unprocessed_rows:
+            if isinstance(item, RuleTuple):
+                row = item
+            else:
+                row = RuleTuple(*item)
 
+            # Attach args from 'inherit'
+            row.base_args = args
+            row.base_kw = kw
+
+            ALL_RULES[row.name] = row
     return decorator

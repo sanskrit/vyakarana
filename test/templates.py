@@ -1,5 +1,5 @@
 import vyakarana.filters as F
-from vyakarana.upadesha import Dhatu, Pratyaya
+from vyakarana.upadesha import Upadesha, Pratyaya
 from vyakarana.templates import tasya
 from vyakarana.util import State
 
@@ -46,6 +46,6 @@ def test_tasya_with_anekal():
 
     def to_state(s):
         x, y = s.split()
-        return State([Dhatu(x), Pratyaya(y)])
+        return State([Upadesha.as_dhatu(x), Pratyaya(y)])
 
     verify(cases, anga_siti, to_state)
