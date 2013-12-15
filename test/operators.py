@@ -49,12 +49,13 @@ def test_unparameterized():
 
 @pytest.fixture
 def eq_ops():
-    o1 = O.Operator(name=1, body=2, category=3, params=4)
-    o2 = O.Operator(name=1, body=2, category=3, params=4)
-    o3 = O.Operator(name=100, body=2, category=3, params=4)
-    o4 = O.Operator(name=1, body=2, category=3, params=100)
-    o5 = O.Operator(name=100, body=2, category=3, params=100)
-    return [o1, o2, o3, o4, o5]
+    return [
+        O.Operator(name=1, body=2, category=3, params=4),
+        O.Operator(name=1, body=2, category=3, params=4),
+        O.Operator(name=100, body=2, category=3, params=4),
+        O.Operator(name=1, body=2, category=3, params=100),
+        O.Operator(name=100, body=2, category=3, params=100)
+    ]
 
 
 def test_eq(eq_ops):

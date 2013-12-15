@@ -214,7 +214,7 @@ class Upadesha(object):
         # 1.3.5 ādir ñituḍavaḥ
         try:
             two_letter = clean[:2]
-            if two_letter in ('Yi', 'wu', 'qu'):
+            if two_letter in ('Yi', 'wu', 'wv', 'qu'):
                 keep[0] = keep[1] = False
                 if two_letter.endswith('u'):
                     samjna.add(clean[0] + 'vit')
