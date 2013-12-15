@@ -340,10 +340,6 @@ class Krt(Pratyaya):
         else:
             self.samjna |= set(['ardhadhatuka'])
 
-        # 1.2.4 sArvadhAtukam apit
-        if 'sarvadhatuka' in self.samjna and 'pit' not in self.samjna:
-            self.samjna |= set(['Nit'])
-
 
 class Vibhakti(Pratyaya):
 
