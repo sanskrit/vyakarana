@@ -19,6 +19,11 @@ def test_init_with_base():
     assert t.base_kw == 'kw'
 
 
+def test_center():
+    t = RuleTuple('name', 'L', 'C', 'R', 'op')
+    assert t.center == 'C'
+
+
 def test_inherit():
     @inherit('a1', 'a2', kw1='kw1', kw2='kw2')
     def rule_fn():

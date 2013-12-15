@@ -71,9 +71,10 @@ class Upadesha(object):
 
         #: The various augments that have been added to this term. Some
         #: examples:
-        #: - 'aw' (verb prefix for past forms)
-        #: - 'iw' ('it' augment on suffixes)
-        #: - 'vu~k' ('v' for 'BU' in certain forms)
+        #:
+        #: - ``'aw'`` (verb prefix for past forms)
+        #: - ``'iw'`` ('it' augment on suffixes)
+        #: - ``'vu~k'`` ('v' for 'BU' in certain forms)
         self.parts = kw.pop('parts', frozenset())
 
         self._filter_cache = {}
@@ -257,30 +258,74 @@ class Upadesha(object):
         return clean, samjna
 
     def add_lakshana(self, *names):
+        """
+
+        :param names: the lakshana to add
+        """
         return self.copy(lakshana=self.lakshana.union(names))
 
     def add_op(self, *names):
+        """
+
+        :param names: the ops to add
+        """
         return self.copy(ops=self.ops.union(names))
 
     def add_part(self, *names):
+        """
+
+        :param names: the parts to add
+        """
         return self.copy(parts=self.parts.union(names))
 
     def add_samjna(self, *names):
+        """
+
+        :param names: the samjna to add
+        """
         return self.copy(samjna=self.samjna.union(names))
 
-    def any_samjna(self, *args):
-        return any(a in self.samjna for a in args)
+    def any_samjna(self, *names):
+        """
+
+        :param names:
+        """
+        return any(a in self.samjna for a in names)
 
     def get_at(self, locus):
+        """
+
+        :param locus:
+        """
         return getattr(self.data, locus)
 
     def remove_samjna(self, *names):
+        """
+
+        :param names: the samjna to remove
+        """
         return self.copy(samjna=self.samjna.difference(names))
 
     def set_asiddha(self, asiddha):
+        """
+
+        :param asiddha: the new asiddha value
+        """
         return self.copy(data=self.data.replace(asiddha=asiddha))
 
+    def set_asiddhavat(self, asiddhavat):
+        """
+
+        :param asiddhavat: the new asiddhavat value
+        """
+        return self.copy(data=self.data.replace(asiddhavat=asiddhavat))
+
     def set_at(self, locus, value):
+        """
+
+        :param locus:
+        :param value:
+        """
         funcs = {
             'raw': self.set_raw,
             'value': self.set_value,
@@ -292,10 +337,11 @@ class Upadesha(object):
         except KeyError:
             raise NotImplementedError
 
-    def set_asiddhavat(self, asiddhavat):
-        return self.copy(data=self.data.replace(asiddhavat=asiddhavat))
-
     def set_raw(self, raw):
+        """
+
+        :param raw: the new raw value
+        """
         clean, it_samjna = self._parse_it(raw)
         samjna = self.samjna | it_samjna
         return self.copy(
@@ -305,6 +351,10 @@ class Upadesha(object):
         )
 
     def set_value(self, value):
+        """
+
+        :param value: the new value
+        """
         return self.copy(data=self.data.replace(value=value))
 
 

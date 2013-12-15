@@ -19,6 +19,7 @@ Upadesha
 --------
 
 .. autoclass:: vyakarana.upadesha.Upadesha
+    :member-order: bysource
     :members:
 
 Rules and Rule Tuples

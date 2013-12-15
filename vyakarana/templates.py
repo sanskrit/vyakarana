@@ -38,11 +38,28 @@ class RuleTuple(object):
         #: Inherited kwargs. These control how the rule is interpreted.
         self.base_kw = kw.pop('base_kw', None)
 
+    @property
+    def center(self):
+        return self.window[1]
+
     def __repr__(self):
         cls_name = self.__class__.__name__
         if cls_name == 'RuleTuple':
             cls_name = 'R'
         return '<%s(%s)>' % (cls_name, repr(self.name))
+
+
+class Adhikara(RuleTuple):
+
+    def __init__(self, name, end, on_tuple=None):
+        RuleTuple.__init__(self, name, None, None, None, None)
+        self.end = end
+        self.on_tuple = on_tuple
+
+    def transform_tuple(self, rule_tuple):
+        if self.on_tuple is None:
+            return rule_tuple
+        return self.on_tuple(rule_tuple)
 
 
 class Boost(RuleTuple):

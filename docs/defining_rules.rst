@@ -87,7 +87,10 @@ the base filter. That is, the rules above will take the following form::
 Rule conditions
 ---------------
 
-The majority of the Ashtadhyayi's rules consists of some context window and an operator. But many rules are modified by some other term, such as *na* (blocking) or *vibhāṣā* (optionality). These terms are defined as subclasses of :class:`~vyakarana.templates.RuleTuple`::
+The majority of the Ashtadhyayi's rules consists of some context window and an
+operator. But many rules are modified by some other term, such as *na*
+(blocking) or *vibhāṣā* (optionality). These terms are defined as subclasses
+of :class:`~vyakarana.templates.RuleTuple`::
 
     # 'iṭ' augment denied
     Na('7.2.8', None, None, f('krt') & F.adi('vaS'), U('iw')),
