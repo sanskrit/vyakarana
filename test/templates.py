@@ -1,51 +1,50 @@
-import vyakarana.filters as F
-from vyakarana.upadesha import Upadesha, Pratyaya
-from vyakarana.templates import tasya
-from vyakarana.util import State
-
-def str2state(s):
-    return State([Term(x) for x in s.split()])
+from vyakarana.templates import *
 
 
-def state2str(state):
-    return ' '.join(x.value if x else '_' for x in state)
+def test_init():
+    t = RuleTuple('name', 'L', 'C', 'R', 'op')
+    assert t.name == 'name'
+    assert t.window == ['L', 'C', 'R']
+    assert t.operator == 'op'
+    assert t.base_args is None
+    assert t.base_kw is None
 
 
-def verify(cases, rule, to_state=str2state):
-    for original, expected in cases:
-        state = to_state(original)
-        assert rule.matches(state, 0)
-
-        result = state2str(list(rule(state, 0))[0])
-        assert result == expected
-
-
-def test_tasya_with_ekal():
-    @tasya(None, al('ik'), al('ac'))
-    def iko_yan_aci(_, cur, right):
-        return Sounds('yaR')
-
-    cases = [
-        ('agni atra', 'agny atra'),
-        ('maDu atra', 'maDv atra'),
-        ('hotf atra', 'hotr atra'),
-        ('nadI atra', 'nady atra'),
-    ]
-    verify(cases, iko_yan_aci)
+def test_init_with_base():
+    t = RuleTuple('name', 'L', 'C', 'R', 'op', base_args='args', base_kw='kw')
+    assert t.name == 'name'
+    assert t.window == ['L', 'C', 'R']
+    assert t.operator == 'op'
+    assert t.base_args == 'args'
+    assert t.base_kw == 'kw'
 
 
-def test_tasya_with_anekal():
-    @tasya(None, raw('jYA\\', 'janI~\\'), lambda x: x.raw[0] == 'S')
-    def anga_siti(_, cur, right):
-        return 'jA'
+def test_inherit():
+    @inherit('a1', 'a2', kw1='kw1', kw2='kw2')
+    def rule_fn():
+        return [
+            ('name1', 'L', 'C', 'R', 'op1'),
+            Va('name2', 'L', 'C', 'R', 'op2'),
+        ]
 
-    cases = [
-        ('jYA\\ SnA', 'jA nA'),
-        ('janI~\\ SnA', 'jA nA'),
-    ]
+    r1, r2 = rule_fn()
+    base_args = ('a1', 'a2')
+    base_kw = dict(kw1='kw1', kw2='kw2')
 
-    def to_state(s):
-        x, y = s.split()
-        return State([Upadesha.as_dhatu(x), Pratyaya(y)])
+    # Non-wrapped
+    assert r1.name == 'name1'
+    assert r1.window == ['L', 'C', 'R']
+    assert r1.operator == 'op1'
+    assert r1.base_args == base_args
+    assert r1.base_kw == base_kw
+    assert isinstance(r1, RuleTuple)
 
-    verify(cases, anga_siti, to_state)
+    # Wrapped
+    assert r2.name == 'name2'
+    assert r2.window == ['L', 'C', 'R']
+    assert r2.operator == 'op2'
+    assert r2.base_args == base_args
+    assert r2.base_kw == base_kw
+    assert isinstance(r2, Option)
+
+    assert hasattr(rule_fn, 'rule_generator')

@@ -13,6 +13,7 @@ from collections import defaultdict
 
 import filters as F
 from templates import *
+from rules import Rule
 
 
 def name_key(name):
@@ -20,7 +21,7 @@ def name_key(name):
     return tuple(int(x) for x in name.split('.'))
 
 
-def utsarga_apavada(rules):
+def do_utsarga_apavada(rules):
     """Annotate rules with their utsargas and apavādas.
 
     :param rules: a list of rules
@@ -93,16 +94,19 @@ def make_context(data, base=None, prev=None):
     return returned
 
 
-def process_tuples(rules):
-    """
+def expand_rule_tuples(rule_tuples):
+    """Expand rule tuples into usable rules.
 
-    :param rules: a list of :class:`RuleTuple`s
-    :param base: a list of :class:`Filter`s.
+    Throughout this program, rules are defined in a special shorthand.
+    This function converts each line of shorthand into a proper rule.
+
+    :param rule_tuples: a list of :class:`RuleTuple`s
     """
     prev = ([None], [None], [None])
     prev_operator = None
+    rules = []
 
-    for row in rules:
+    for row in rule_tuples:
         base_args = row.base_args
         base_kw = row.base_kw
 
@@ -135,18 +139,24 @@ def process_tuples(rules):
         left, center, right = filters
         rule_kw = dict(base_kw, **kw)
         rule = Rule.new(name, left, center, right, operator, **rule_kw)
-        yield rule
+        rules.append(rule)
 
         prev, prev_operator = (filters, operator)
 
+    return rules
 
-def create(rule_tuples):
-    """
 
-    :param rule_dict:
+def create_rules(rule_tuples):
+    """Create the rules of the Ashtadhyayi.
+
+    Expand the given rule tuples into actual rules and run inference
+    on them. The result is a list of usable rules that supports some
+    nice inference patterns.
+
+    :param rule_tuples: a sorted list of rule tuples
     """
     # Sort tuple rules from first to last.
 
-    rules = list(process_tuples(rule_tuples))
-    utsarga_apavada(rules)
+    rules = expand_rule_tuples(rule_tuples)
+    do_utsarga_apavada(rules)
     return rules

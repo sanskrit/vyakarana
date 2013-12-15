@@ -115,14 +115,14 @@ class Ashtadhyayi(object):
 
     def __init__(self, rules=None):
         #: The rules of the grammar, sorted from first to last.
-        self.rules = inference.create(rules or self.all_rule_tuples())
+        self.rules = inference.create_rules(rules or self.all_rule_tuples())
 
         #: The rules of the grammar, from highest priority to lowest.
         self.ranked_rules = sorted(self.rules,
                                    cmp = lambda x, y: cmp(y.rank, x.rank))
 
         #: a :class:`RuleTree`
-        self.rule_tree = RuleTree(self.ranked_rules)
+        self.rule_tree = RuleTree(self.rules)
 
     @staticmethod
     def all_rule_tuples():
