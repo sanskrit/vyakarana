@@ -16,7 +16,7 @@ A rule accepts a list of **terms** as input and returns the same as output.
 A term is an arbitrary piece of sound and usually represents a morphere, but
 that's not always the case.
 
-In the Ashtadhyayi, these terms are usually called :term`upadeśa`, since
+In the Ashtadhyayi, these terms are usually called :term:`upadeśa`, since
 the grammar is taught (*upadiśyate*) by means of these terms, And in the
 program, these terms are usually represented by instances of the
 :class:`~vyakarana.upadesha.Upadesha` class. These classes provide some nice
