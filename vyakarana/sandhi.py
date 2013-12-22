@@ -16,6 +16,7 @@ iko_yan_aci = O.al_tasya('ik', 'yaR').body
 guna = convert(O.guna)
 vrddhi = convert(O.vrddhi)
 
+
 def apply(state):
     editor = SoundEditor(state)
     for cur in editor:

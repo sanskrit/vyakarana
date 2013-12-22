@@ -47,7 +47,8 @@ class Filter(object):
         self.category = kw.get('category') or self._make_category(*args, **kw)
 
         #: A unique name for the filter. This is used as a key to the
-        #: filter cache.
+        #: filter cache. If a filter has no parameters, this is the
+        #: same as `self.category`.
         self.name = kw.get('name') or self._make_name(*args, **kw)
 
         #: The function that corresponds to this filter. The input and
@@ -98,6 +99,7 @@ class Filter(object):
         return self.name == other.name and self.domain == other.domain
 
     def __hash__(self):
+        # Since filters have unique names, we can hash on the name.
         return hash(self.name)
 
     def __invert__(self):
@@ -249,7 +251,7 @@ class Filter(object):
         Consider a universal set that contains every possible element.
         A filter defines a subset of the universal set, i.e. the set of
         items for which the filter returns `True`. Thus every filter
-        defines a subset. For two filters `f1` and `f2`:
+        defines a set. For two filters `f1` and `f2`:
 
         - `f1 & f2` is like an intersection of two sets
         - `f1 | f2` is like a union of two sets
