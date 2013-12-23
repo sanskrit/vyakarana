@@ -24,6 +24,7 @@ conflicts = [
     ('ti', 'tasya'),
 ]
 
+
 class Operator(object):
 
     """A callable class that returns states."""

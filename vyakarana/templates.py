@@ -32,12 +32,6 @@ class RuleTuple(object):
         #: The rule operator
         self.operator = op
 
-        #: Inherited args. These define base filters.
-        self.base_args = kw.pop('base_args', None)
-
-        #: Inherited kwargs. These control how the rule is interpreted.
-        self.base_kw = kw.pop('base_kw', None)
-
     @property
     def center(self):
         return self.window[1]
@@ -142,43 +136,12 @@ class Opinion(Option):
     """
 
 
+class Anuvrtti(object):
+    def __init__(self, left=None, center=None, right=None, **kw):
+        self.base_args = [left, center, right]
+        self.base_kw = kw
+
+
 #: Signals use of the *śeṣa* device, which affects utsarga-apavāda
 #: inference.
 Shesha = object()
-
-
-# Rule decorator
-# ~~~~~~~~~~~~~~
-
-def inherit(*args, **kw):
-    """Decorator for functions that define rule tuples.
-
-    This decorator is used to mark functions that return a list of rule
-    tuples. The decorator takes three arguments, each of which is a
-    *base filter* that is "and"-ed with the rules contained in the
-    function itself. The decorator also accepts various keyword
-    arguments, which are attached to the rule tuples and used later on
-    when the tuples are expanded into actual rules.
-    """
-
-    def decorator(fn):
-        def get_processed_rows():
-            processed_rows = []
-            unprocessed_rows = fn()
-
-            for item in unprocessed_rows:
-                if isinstance(item, RuleTuple):
-                    row = item
-                else:
-                    row = RuleTuple(*item)
-
-                # Attach args from 'inherit'
-                row.base_args = args
-                row.base_kw = kw
-
-                processed_rows.append(row)
-            return processed_rows
-
-        get_processed_rows.rule_generator = True
-        return get_processed_rows
-    return decorator

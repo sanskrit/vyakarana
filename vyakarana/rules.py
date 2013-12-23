@@ -76,6 +76,7 @@ class Rule(object):
         #: A list of rules. These rules are all blocked if the current
         #: rule can apply.
         self.utsarga = []
+        self.apavada = []
 
     def __repr__(self):
         class_name = self.__class__.__name__

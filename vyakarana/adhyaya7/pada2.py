@@ -15,48 +15,38 @@ it_ashtadhyayi = None
 TAS = Pratyaya('tAsi~').add_samjna('ardhadhatuka')
 
 
-@inherit('anga', None, None)
-def it():
+@O.Operator.unparameterized
+def tasvat(state, index, **kw):
+    global it_ashtadhyayi
+    if it_ashtadhyayi is None:
+        from ..ashtadhyayi import Ashtadhyayi
+        it_ashtadhyayi = Ashtadhyayi.with_rules_in('7.2.8', '7.2.78')
 
-    @O.Operator.unparameterized
-    def tasvat(state, index, **kw):
-        global it_ashtadhyayi
-        if it_ashtadhyayi is None:
-            from ..ashtadhyayi import Ashtadhyayi
-            it_ashtadhyayi = Ashtadhyayi.with_rules_in('7.2.8', '7.2.78')
-
-        print state
-        import sys; sys.exit()
+    print state
+    import sys; sys.exit()
 
 
-    titutra = f('ti', 'tu', 'tra', 'ta', 'Ta', 'si', 'su', 'sara', 'ka', 'sa')
-    kr_sr_bhr = F.value('kf', 'sf', 'Bf', 'vf', 'stu', 'dru', 'sru', 'Sru')
-    svarati_suti = f('svf', 'zUG', 'zUN', 'DUY', 'Udit')
-
-    return [
-        Na('7.2.8', None, None, f('krt') & F.adi('vaS'), U('iw')),
-        Ca('7.2.9', None, f('krt') & titutra, None, True),
-        Na('7.2.13', kr_sr_bhr, f('li~w'), None, True),
-        ('7.2.35', None, f('ardhadhatuka') & F.adi('val'), None, True),
-        Va('7.2.44', svarati_suti, True, None, True),
-        # ('7.2.61', 'ac', True, None, True),
-    ]
+titutra = f('ti', 'tu', 'tra', 'ta', 'Ta', 'si', 'su', 'sara', 'ka', 'sa')
+kr_sr_bhr = F.value('kf', 'sf', 'Bf', 'vf', 'stu', 'dru', 'sru', 'Sru')
+svarati_suti = f('svf', 'zUG', 'zUN', 'DUY', 'Udit')
 
 
-@inherit('anga', 'sarvadhatuka', None)
-def angasya_sarvadhatuke_at():
-    return [
-        ('7.2.81', 'at', F.adi('At') & F.samjna('Nit'), None, O.adi('iy'))
-    ]
+RULES = [
+    Anuvrtti('anga', None, None),
+    Na('7.2.8', None, None, f('krt') & F.adi('vaS'), U('iw')),
+    Ca('7.2.9', None, f('krt') & titutra, None, True),
+    Na('7.2.13', kr_sr_bhr, f('li~w'), None, True),
+    ('7.2.35', None, f('ardhadhatuka') & F.adi('val'), None, True),
+    Va('7.2.44', svarati_suti, True, None, True),
+    # ('7.2.61', 'ac', True, None, True),
 
+    Anuvrtti('anga', 'sarvadhatuka', None),
+    ('7.2.81', 'at', F.adi('At') & F.samjna('Nit'), None, O.adi('iy')),
 
-@inherit(None, 'anga', None)
-def angasya_vrddhi():
-    return [
-        ('7.2.114', None, 'mfjU~', None, O.vrddhi),
-        ('7.2.115', None, 'ac', f('Yit', 'Rit'), True),
-
-        # This should really apply `O.vrddhi`, but by 1.1.3 it's tricky.
-        # Since this is a one-off, apply a fuction with the same effect:
-        ('7.2.116', None, F.upadha('at'), True, O.upadha('A')),
-    ]
+    Anuvrtti(None, 'anga', None),
+    ('7.2.114', None, 'mfjU~', None, O.vrddhi),
+    ('7.2.115', None, 'ac', f('Yit', 'Rit'), True),
+    # This should really apply `O.vrddhi`, but by 1.1.3 it's tricky.
+    # Since this is a one-off, apply a fuction with the same effect:
+    ('7.2.116', None, F.upadha('at'), True, O.upadha('A')),
+]

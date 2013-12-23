@@ -12,9 +12,8 @@ from ..templates import *
 f = F.auto
 
 
-@inherit(None, F.raw('Sap'), None)
-def sap_lopa():
-    return [
-        ('2.4.71', F.gana('a\da~'), None, None, 'lu~k'),
-        ('2.4.74', F.gana('hu\\'), None, None, 'Slu~')
-    ]
+RULES = [
+    Anuvrtti(None, F.raw('Sap'), None),
+    ('2.4.71', F.gana('a\da~'), None, None, 'lu~k'),
+    ('2.4.74', F.gana('hu\\'), None, None, 'Slu~'),
+]

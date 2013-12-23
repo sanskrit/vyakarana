@@ -17,6 +17,7 @@ import inference
 import sandhi
 import siddha
 
+from templates import RuleTuple
 from util import State
 
 log = logging.getLogger(__name__)
@@ -138,23 +139,18 @@ class Ashtadhyayi(object):
         rule_tuples = []
 
         for adhyaya, pada in combos:
-            # Import the pada
             try:
                 mod_name = mod_string.format(adhyaya, pada)
                 mod = importlib.import_module(mod_name)
+                rule_tuples.extend(mod.RULES)
             except ImportError:
-                continue
+                pass
 
-            # Get rule tuples from the pada's 'inherit' functions
-            for key in dir(mod):
-                value = getattr(mod, key)
-                # This is really hacky.
-                # TODO: find a better way to identify these functions.
-                if hasattr(value, 'rule_generator'):
-                    rule_tuples.extend(value())
+        for i, r in enumerate(rule_tuples):
+            if isinstance(r, tuple):
+                rule_tuples[i] = RuleTuple(*r)
 
-        # Sort from first to last.
-        return sorted(rule_tuples, key=lambda x: inference.name_key(x.name))
+        return rule_tuples
 
     @classmethod
     def with_rules_in(cls, start, end):
@@ -169,9 +165,19 @@ class Ashtadhyayi(object):
         start_key = key(start)
         end_key = key(end)
 
-        rules = [r for r in cls.all_rule_tuples()
-                 if start_key <= key(r.name) <= end_key]
-        return cls(rules)
+        selection = []
+        for r in cls.all_rule_tuples():
+            # Rule tuple
+            try:
+                if start_key <= key(r.name) <= end_key:
+                    selection.append(r)
+
+            # Anuvrtti. Keep all, since they might be needed for the
+            # rules we select.
+            except AttributeError:
+                selection.append(r)
+
+        return cls(selection)
 
     def matching_rules(self, state):
         """Generate all rules that could apply to the state.
