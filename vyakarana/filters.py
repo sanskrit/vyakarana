@@ -28,9 +28,17 @@ DHATU_SET = set(DP.all_dhatu)
 
 class Filter(object):
 
-    """A callable class that returns true or false.
+    """Represents a "test" on some input.
 
-    The program uses :class:`Filter` objects in order to make use of
+    Most of the grammar's rules have preconditions. For example, the
+    rule that inserts suffix *śnam* applies only if the input contains
+    a root in the *rudh* group. This class makes it easy to define
+    these preconditions and ensure that rules apply in their proper
+    contexts. Since these conditions filter out certain inputs, these
+    objects are called **filters**.
+
+    Originally, filters were defined as ordinary functions. But classes
+    have one big advantage: they let us define custom operators, like
     ``&``, ``|``, and ``~``. These operators give us a terse way to
     create more complex conditions, e.g. ``al('hal') & upadha('a')``.
     """
@@ -44,18 +52,18 @@ class Filter(object):
     def __init__(self, *args, **kw):
         #: The filter type. For example, a filter on the first letter
         #: of a term has the category ``adi``.
-        self.category = kw.get('category') or self._make_category(*args, **kw)
+        self.category = self._make_category(*args, **kw)
 
         #: A unique name for the filter. This is used as a key to the
         #: filter cache. If a filter has no parameters, this is the
         #: same as `self.category`.
-        self.name = kw.get('name') or self._make_name(*args, **kw)
+        self.name = self._make_name(*args, **kw)
 
         #: The function that corresponds to this filter. The input and
         #: output of the function depend on the filter class. For
         #: a general :class:`Filter`, this function accepts a state and
         #: index and returns ``True`` or ``False``.
-        self.body = kw.get('body') or self._make_body(*args, **kw)
+        self.body = self._make_body(*args, **kw)
 
         #: A collection that somehow characterizes the domain of the
         #: filter. Some examples:
@@ -66,6 +74,7 @@ class Filter(object):
         #: - for an and/or/not filter, the original filters
         self.domain = self._make_domain(*args, **kw)
 
+        # TODO: find clean way to remove kw.get('rank')
         #: A :class:`Rank` that characterizes the relative power of
         #: this filter. Rules with more powerful filters tend to have
         #: higher priority over rules with less powerful filters.
@@ -126,11 +135,11 @@ class Filter(object):
     def __repr__(self):
         return '<f(%s)>' % self.name
 
-    def _make_category(self, *args, **kw):
-        return self.__class__.__name__
-
     def _make_body(self, *args, **kw):
-        return self.body
+        return kw.get('body') or self.body
+
+    def _make_category(self, *args, **kw):
+        return kw.get('category') or self.__class__.__name__
 
     def _make_name(self, *args, **kw):
         try:
@@ -245,8 +254,8 @@ class Filter(object):
         return cls(category=category, name=name, body=body, domain=domain)
 
     @property
-    def feature_sets(self):
-        """Return the indivisible filters that compose this one.
+    def supersets(self):
+        """Return some interesting supersets of this filter.
 
         Consider a universal set that contains every possible element.
         A filter defines a subset of the universal set, i.e. the set of
@@ -267,46 +276,28 @@ class Filter(object):
         "Or" and "not" filters are tough to break up, so they're
         treated as indivisible.
         """
-        stack = [self]
-        returned = set()
-        while stack:
-            cur = stack.pop()
-            if cur.category == 'and':
-                stack.extend(cur.domain)
-            else:
-                returned.add(cur)
-        return returned
-
-    @property
-    def supersets(self):
-        """Return some interesting supersets of this filter.
-
-        For what a "set" means in the context of a filter, see the
-        comments on :meth:`Filter.feature_sets`.
-        """
         try:
             return self._supersets
         except AttributeError:
             pass
 
-        returned = set()
+        returned = self._supersets = set()
+        stack = [self]
 
-        # Break up 'and' filters
-        if self.name.startswith('and'):
-            for m in self.domain:
-                returned |= m.supersets
-
-        # All others are treated as indivisible. Ignore `allow_all`,
-        # since it applies for every filter and isn't too interesting.
-        else:
-            name = self.name
-            if name != 'allow_all':
-                returned.add(self)
-
-        self._supersets = returned
+        # Recurse down the tree. If we can't split the filter, add it
+        # to our set. Otherwise, push its parts onto the stack. We can
+        # get away with a stack here because order doesn't matter.
+        while stack:
+            cur = stack.pop()
+            if cur.category == 'and':
+                stack.extend(cur.domain)
+            else:
+                # 'allow_all' is uninteresting.
+                if cur.name != 'allow_all':
+                    returned.add(cur)
         return returned
 
-    def domain_subset_of(self, other):
+    def _domain_subset_of(self, other):
         if self.domain == other.domain:
             return True
         return self.domain.issubset(other.domain)
@@ -343,7 +334,7 @@ class Filter(object):
 
             skip = False
             for s in s_sets:
-                if s.category == o.category and s.domain_subset_of(o):
+                if s.category == o.category and s._domain_subset_of(o):
                     skip = True
                     break
             if skip:
@@ -357,12 +348,12 @@ class TermFilter(Filter):
 
     """A :class:`Filter` whose body takes an :class:`Upadesha` as input.
 
-    Term filters are used for the following reasons.
+    Term filters give us:
 
-    1. Convenience. Most filters apply to just a single term.
-    2. Performance. Since we can guarantee that the output of a term
-       filter will change only if its term changes, we can cache results
-       for an unchanged term and avoid redundant calls.
+    - Convenience. Most filters apply to just a single term.
+    - Performance. Since we can guarantee that the output of a term
+      filter will change only if its term changes, we can cache results
+      for an unchanged term and avoid redundant calls.
     """
 
     def __call__(self, state, index):
@@ -398,6 +389,9 @@ class TermFilter(Filter):
 
 
 class AlFilter(TermFilter):
+
+    """A filter that tests letter properties."""
+
     def _make_domain(self, domain_str=None, *args, **kw):
         if domain_str is None:
             return None
@@ -408,7 +402,7 @@ class AlFilter(TermFilter):
             return Rank()
         return Rank.with_al(domain)
 
-    def domain_subset_of(self, other):
+    def _domain_subset_of(self, other):
         if self.domain == other.domain:
             return True
         ov = other.domain.values
@@ -420,11 +414,17 @@ class AlFilter(TermFilter):
 
 
 class SamjnaFilter(TermFilter):
+
+    """A filter that tests designations."""
+
     def _make_rank(self, domain):
         return Rank.with_samjna(domain)
 
 
 class UpadeshaFilter(TermFilter):
+
+    """A filter that tests raw values"""
+
     def _make_rank(self, domain):
         return Rank.with_upadesha(domain)
 

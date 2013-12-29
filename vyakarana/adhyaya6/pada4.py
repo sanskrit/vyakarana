@@ -26,7 +26,7 @@ from ..upadesha import Upadesha as U
 f = F.auto
 
 
-@O.DataOperator.unparameterized
+@O.DataOperator.no_params
 def shnam_lopa(value):
     ac = Sounds('ac')
     nasal = Sounds('Yam')
@@ -40,12 +40,12 @@ def shnam_lopa(value):
     return ''.join(reversed(letters))
 
 
-@O.DataOperator.unparameterized
+@O.DataOperator.no_params
 def bhrasjo_ram(value, **kw):
     return 'Barj'
 
 
-@O.Operator.unparameterized
+@O.Operator.no_params
 def iyan_uvan(state, index, locus):
     iyan = O.tasya(U('iya~N'))
     uvan = O.tasya(U('uva~N'))
@@ -66,7 +66,7 @@ snu_dhatu_yvor = f('Snu', 'dhatu', 'BrU') & F.al('i u')
 anekac_asamyogapurva = f('dhatu') & ~F.samyogapurva
 
 
-@O.DataOperator.unparameterized
+@O.DataOperator.no_params
 def allopa(value):
     letters = list(reversed(value))
     for i, L in enumerate(letters):
@@ -99,7 +99,7 @@ def at_ekahalmadhya_anadeshadi(state, index):
         return False
 
 
-@O.Operator.unparameterized
+@O.Operator.no_params
 def et_abhyasa_lopa(state, i, locus):
     abhyasa = state[i - 1].set_asiddhavat('')
     ed_adesha = O.replace('a', 'e')

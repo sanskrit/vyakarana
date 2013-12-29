@@ -24,7 +24,7 @@ GRAHI_JYA = f(*['graha~^', 'jyA\\', 'vaya~\\', 'vya\Da~', 'vaSa~',
              'vyaca~', 'o~vraScU~', 'pra\cCa~', 'Bra\sja~^'])
 
 
-@O.Operator.unparameterized
+@O.Operator.no_params
 def do_dvirvacana(state, i, locus=None):
     # 6.1.1 ekAco dve prathamasya
     # 6.1.2 ajAder dvitIyasya
@@ -37,7 +37,7 @@ def do_dvirvacana(state, i, locus=None):
     return state.swap(i, abhyasta).insert(i, abhyasa)
 
 
-@O.DataOperator.unparameterized
+@O.DataOperator.no_params
 def sa_adesha(value):
     if value.startswith('z'):
         converter = {'w': 't', 'W': 'T', 'R': 'n'}
@@ -45,7 +45,7 @@ def sa_adesha(value):
         value = 's' + converter.get(v, v) + value[2:]
     return value
 
-@O.DataOperator.unparameterized
+@O.DataOperator.no_params
 def na_adesha(value):
     if value.startswith('R'):
         value = 'n' + value[1:]

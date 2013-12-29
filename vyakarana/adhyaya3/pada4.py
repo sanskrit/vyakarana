@@ -104,7 +104,7 @@ BASE_TIN = 'tip tas Ji sip Tas Ta mip vas mas'.split()
 LIT_TIN = 'Ral atus us Tal aTus a Ral va ma'.split()
 
 
-@O.Operator.unparameterized
+@O.Operator.no_params
 def tin_adesha(state, index, locus=None):
     """tiṅ ādeśa"""
     la = state[index]

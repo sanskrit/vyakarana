@@ -12,7 +12,7 @@ from ..templates import *
 f = F.auto
 
 
-@O.Operator.unparameterized
+@O.Operator.no_params
 def _47(state, index, locus=None):
     """Apply 'mit' substitution more generally.
 
@@ -31,7 +31,7 @@ def _47(state, index, locus=None):
     return state.remove(index)
 
 
-@O.Operator.unparameterized
+@O.Operator.no_params
 def _60_63(state, index, locus=None):
     """Perform pratyaya-lopa."""
     lopa = state[index]

@@ -15,7 +15,7 @@ it_ashtadhyayi = None
 TAS = Pratyaya('tAsi~').add_samjna('ardhadhatuka')
 
 
-@O.Operator.unparameterized
+@O.Operator.no_params
 def tasvat(state, index, **kw):
     global it_ashtadhyayi
     if it_ashtadhyayi is None:

@@ -145,9 +145,6 @@ def expand_rule_tuples(rule_tuples):
         rule = Rule.new(name, left, center, right, operator, **rule_kw)
         rules.append(rule)
 
-        if rule.name.startswith('3.1'):
-            rule.pprint()
-
         prev, prev_operator = (filters, operator)
 
     return rules

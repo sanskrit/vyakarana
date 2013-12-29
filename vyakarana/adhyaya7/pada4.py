@@ -18,7 +18,7 @@ shar = Sounds('Sar')
 khay = Sounds('Kay')
 
 
-@O.Operator.unparameterized
+@O.Operator.no_params
 def hal_shesha(state, index, locus=None):
     cur = state[index]
     first_hal = first_ac = ''

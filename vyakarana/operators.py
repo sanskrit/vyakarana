@@ -29,24 +29,23 @@ class Operator(object):
 
     """A callable class that returns states."""
 
-    def __init__(self, name, body, category=None, params=None):
+    def __init__(self, *args, **kw):
         #: The operator type. For example, a substitution operator has
         #: category ``tasya``.
-        self.category = category or name
+        self.category = self._make_category(*args, **kw)
 
         #: A unique name for this operator. If the operator is not
         #: parameterized, then this is the same as `self.category`.
-        self.name = name
+        self.name = self._make_name(*args, **kw)
 
         #: The function that corresponds to this operator. The input
         #: and output of the function depend on the operator class. For
         #: a general :class:`Operator`, this function accepts a state
         #: and index and returns a new state.
-        self.body = body
+        self.body = self._make_body(*args, **kw)
 
-        #: If a parameterized operator, the list of parameters used to
-        #: create it. If not, ``None``.
-        self.params = params
+        #: the operator's parameters, if any.
+        self.params = self._make_params(*args, **kw)
 
     def __call__(self, state, index, locus='value'):
         return self.body(state, index, locus)
@@ -60,16 +59,40 @@ class Operator(object):
         """
         if self is other:
             return True
-        elif other is None:
+        if other is None:
             return False
-        else:
-            return self.name == other.name and self.params == other.params
+        return self.name == other.name and self.params == other.params
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
     def __repr__(self):
         return '<op(%s)>' % self.name
+
+    def _make_body(self, *args, **kw):
+        try:
+            # Parameterized: defined in class
+            return self.body
+        except AttributeError:
+            # Unparameterized: passed by kwarg
+            return kw.get('body')
+
+    def _make_category(self, *args, **kw):
+        return kw.get('category') or kw.get('name')
+
+    def _make_name(self, *args, **kw):
+        result = kw.get('name')
+        if result:
+            return result
+        else:
+            category = self._make_category(*args, **kw)
+            try:
+                return '%s(%s)' % (category, ', '.join(args))
+            except TypeError:
+                return '%s(...)' % category
+
+    def _make_params(self, *args, **kw):
+        return kw.get('params') or args or None
 
     @classmethod
     def parameterized(cls, fn):
@@ -85,16 +108,17 @@ class Operator(object):
             except TypeError:
                 name = '%s(...)' % category
             body = fn(*args, **kw)
-            return cls(name, body, category, params=args)
+            return cls(name=name, body=body, category=category, params=args)
         return wrapped
 
     @classmethod
-    def unparameterized(cls, fn):
+    def no_params(cls, fn):
         """Decorator constructor for unparameterized operators.
 
         :param fn: some operator function
         """
-        return cls(fn.__name__, fn)
+        name = fn.__name__
+        return cls(name=name, body=fn, category=name)
 
     def conflicts_with(self, other):
         """
@@ -302,7 +326,7 @@ def yathasamkhya(targets, results):
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 # Each function defines an operator.
 
-@DataOperator.unparameterized
+@DataOperator.no_params
 def dirgha(value):
     converter = dict(zip('aiufx', 'AIUFX'))
     letters = list(value)
@@ -314,7 +338,7 @@ def dirgha(value):
     return ''.join(letters)
 
 
-@Operator.unparameterized
+@Operator.no_params
 def guna(state, index, locus=None):
     cur = state[index]
     try:
@@ -341,7 +365,7 @@ def guna(state, index, locus=None):
     return state.swap(index, cur)
 
 
-@DataOperator.unparameterized
+@DataOperator.no_params
 def hrasva(value):
     converter = dict(zip('AIUFXeEoO', 'aiufxiiuu'))
     letters = list(value)
@@ -353,7 +377,7 @@ def hrasva(value):
     return ''.join(letters)
 
 
-@DataOperator.unparameterized
+@DataOperator.no_params
 def samprasarana(value):
     rev_letters = list(reversed(value))
     found = False
@@ -379,7 +403,7 @@ def samprasarana(value):
     return ''.join(reversed(rev_letters))
 
 
-@Operator.unparameterized
+@Operator.no_params
 def vrddhi(state, index, locus=None):
     cur = state[index]
     try:
@@ -407,7 +431,7 @@ def vrddhi(state, index, locus=None):
     return state.swap(index, cur)
 
 
-@Operator.unparameterized
+@Operator.no_params
 def force_guna(state, index, locus=None):
     cur = state[index]
     converter = dict(zip('iIuUfFxX', 'eeooaaaa'))

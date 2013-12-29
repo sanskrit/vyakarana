@@ -170,7 +170,7 @@ class Rule(object):
     def features(self):
         feature_set = set()
         for i, filt in enumerate(self.filters):
-            feature_set.update((f, i) for f in filt.feature_sets)
+            feature_set.update((f, i) for f in filt.supersets)
         return feature_set
 
     def has_apavada(self, other):

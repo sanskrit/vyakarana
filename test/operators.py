@@ -33,11 +33,11 @@ def test_init_with_kw_no_params():
     assert o.params is None
 
 
-def test_unparameterized():
+def test_no_params():
     def apples(state, index, locus=None):
         return state
 
-    o = O.Operator.unparameterized(apples)
+    o = O.Operator.no_params(apples)
     assert o.name == 'apples'
     assert o.body is apples
     assert o.category == 'apples'
