@@ -115,18 +115,18 @@ class Ashtadhyayi(object):
     """
 
     def __init__(self, rules=None):
-        #: The rules of the grammar, sorted from first to last.
-        self.rules = inference.create_rules(rules or self.all_rule_tuples())
+        #: A list of rules sorted from first (1.1.1) to last (8.4.68).
+        self.rules = inference.create_rules(rules or self.fetch_all_rules())
 
-        #: The rules of the grammar, from highest priority to lowest.
+        #: A list of rules sorted from highest priority to lowest.
         self.ranked_rules = sorted(self.rules,
                                    cmp = lambda x, y: cmp(y.rank, x.rank))
 
-        #: a :class:`RuleTree`
+        #: Indexed arrangement of rules
         self.rule_tree = RuleTree(self.rules)
 
     @staticmethod
-    def all_rule_tuples():
+    def fetch_all_rules():
         """Create a list of all rule tuples defined in the system.
 
         We find rule tuples by programmatically importing every pada in
@@ -146,6 +146,7 @@ class Ashtadhyayi(object):
             except ImportError:
                 pass
 
+        # Convert tuples to RuleTuples
         for i, r in enumerate(rule_tuples):
             if isinstance(r, tuple):
                 rule_tuples[i] = RuleTuple(*r)
@@ -166,7 +167,7 @@ class Ashtadhyayi(object):
         end_key = key(end)
 
         selection = []
-        for r in cls.all_rule_tuples():
+        for r in cls.fetch_all_rules():
             # Rule tuple
             try:
                 if start_key <= key(r.name) <= end_key:
