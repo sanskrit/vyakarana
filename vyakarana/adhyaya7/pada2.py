@@ -33,7 +33,7 @@ svarati_suti = f('svf', 'zUG', 'zUN', 'DUY', 'Udit')
 
 RULES = [
     Anuvrtti('anga', None, None),
-    Na('7.2.8', None, None, f('krt') & F.adi('vaS'), U('iw')),
+    Na('7.2.8', None, None, f('krt') & F.adi('vaS'), O.tasya(U('iw'))),
     Ca('7.2.9', None, f('krt') & titutra, None, True),
     Na('7.2.13', kr_sr_bhr, f('li~w'), None, True),
     ('7.2.35', None, f('ardhadhatuka') & F.adi('val'), None, True),

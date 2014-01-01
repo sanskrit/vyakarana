@@ -12,8 +12,10 @@ import itertools
 from collections import defaultdict
 
 import filters as F
+import lists
+import operators as O
 from templates import *
-from rules import Rule
+from rules import Rule, SamjnaRule
 
 
 def name_key(name):
@@ -93,6 +95,70 @@ def make_context(data, base=None, prev=None):
     return returned
 
 
+def _make_window(row, anuvrtti, prev_rule):
+    returned = []
+    base_args = anuvrtti.base_args
+    prev_window = prev_rule.window if prev_rule else ([None], [None], [None])
+    for base, item, p_item in zip(base_args, row.window, prev_window):
+        if item is Shesha:
+            item = None
+        if not hasattr(item, '__iter__'):
+            item = [item]
+        returned.append(make_context(item, base=[F.auto(base)], prev=p_item))
+
+    return returned
+
+
+def _reduce_window(window, operator):
+    for i in (0, 2):
+        if window[i] == [F.allow_all]:
+            window[i] = []
+    if operator.category == 'insert':
+        window[1] = []
+    return window
+
+
+def _make_operator(row, anuvrtti, prev_rule, window):
+    if row.operator is True:
+        return prev_rule.operator
+    else:
+        left, center, right = window
+        op = row.operator
+        if isinstance(op, O.Operator):
+            return row.operator
+        elif op in lists.SAMJNA:
+            return O.add_samjna(op)
+        elif op in lists.IT:
+            return O.add_samjna(op)
+        elif center[0] is F.allow_all:
+            return O.insert(op)
+        else:
+            return O.tasya(op)
+
+
+def _make_kw(row, anuvrtti, prev_rule, operator):
+    optional = isinstance(row, Option)
+    modifier = row.__class__
+    if any(x is Shesha for x in row.window):
+        modifier = Shesha
+
+    if operator.name.startswith('add_samjna'):
+        category = Rule.SAMJNA
+    elif anuvrtti.base_kw.get('category') == 'paribhasha':
+        category = Rule.PARIBHASHA
+    elif isinstance(row, Boost):
+        category = Rule.PARIBHASHA
+    else:
+        category = Rule.VIDHI
+
+    locus = anuvrtti.base_kw.get('locus', 'value')
+
+    return dict(optional=optional,
+                modifier=modifier,
+                category=category,
+                locus=locus)
+
+
 def expand_rule_tuples(rule_tuples):
     """Expand rule tuples into usable rules.
 
@@ -101,51 +167,28 @@ def expand_rule_tuples(rule_tuples):
 
     :param rule_tuples: a list of :class:`RuleTuple`s
     """
-    prev = ([None], [None], [None])
-    prev_operator = None
     rules = []
-    anuvrtti = None
 
+    anuvrtti = None
+    prev_rule = None
     for row in rule_tuples:
         if isinstance(row, Anuvrtti):
             anuvrtti = row
             continue
 
-        base_args = anuvrtti.base_args
-        base_kw = anuvrtti.base_kw
-
-        kw = {
-            'option': False,
-            'modifier': None,
-        }
-
-        modifier = row.__class__
-        kw['option'] = isinstance(row, Option)
-        kw['modifier'] = modifier
-
         name = row.name
-        window = row.window
-        operator = row.operator
+        window = _make_window(row, anuvrtti, prev_rule)
+        operator = _make_operator(row, anuvrtti, prev_rule, window)
+        window = _reduce_window(window, operator)
+        rule_kw = _make_kw(row, anuvrtti, prev_rule, operator)
 
-        filters = []
-        for b, w, p in zip(base_args, window, prev):
-            if w is Shesha:
-                w = None
-                kw['modifier'] = Shesha
-            if not hasattr(w, '__iter__'):
-                w = [w]
-            filters.append(make_context(w, base=[F.auto(b)], prev=p))
-
-        if operator is True:
-            operator = prev_operator
-
-        # Create and yield a rule
-        left, center, right = filters
-        rule_kw = dict(base_kw, **kw)
-        rule = Rule.new(name, left, center, right, operator, **rule_kw)
+        # HACK for samjna coverage. This is going away soon.
+        if operator.category == 'add_samjna':
+            cls = SamjnaRule
+        else:
+            cls = Rule
+        rule = prev_rule = cls(name, window, operator, **rule_kw)
         rules.append(rule)
-
-        prev, prev_operator = (filters, operator)
 
     return rules
 
@@ -159,7 +202,6 @@ def create_rules(rule_tuples):
 
     :param rule_tuples: a sorted list of rule tuples
     """
-    # Sort tuple rules from first to last.
 
     rules = expand_rule_tuples(rule_tuples)
     do_utsarga_apavada(rules)

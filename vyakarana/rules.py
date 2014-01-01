@@ -17,10 +17,8 @@
     :license: MIT and BSD
 """
 
-import filters as F
-import lists
 import operators as O
-from templates import Boost, Na
+from templates import Na
 from util import Rank
 
 
@@ -41,42 +39,47 @@ class Rule(object):
     #: Rank of a *paribhāṣā* rule
     PARIBHASHA = 1
 
-    #: The current rule type, which is used to create the rule rank.
-    RULE_TYPE = VIDHI
-
     # Rank of an ordinary locus
     NORMAL_LOCUS = 1
     ASIDDHAVAT = 0
 
-    def __init__(self, name, filters, operator, **kw):
+    def __init__(self, name, window, operator, modifier=None, category=None,
+                 locus='value', optional=False):
+
         #: A unique ID for this rule, e.g. ``'6.4.1'``. For most rules,
         #: this is just the rule's position within the Ashtadhyayi.
         #: But a few rules combine multiple rules and have hyphenated
         #: names, e.g. ``'1.1.60 - 1.1.63'``.
         self.name = name
 
+        self.window = window
+        self.offset = len(self.window[0])
+        self.modifier = modifier
+        self.category = category
+
         #: A list of filter functions to apply to some subsequence in
         #: a state. If the subsequence matches, then we can apply the
         #: rule to the appropriate location in the state..
-        self.filters = filters
+        self.filters = [x for items in window for x in items]
 
         #: An operator to apply to some part of a state.
-        self.operator = self._make_operator(operator)
+        self.operator = operator
 
         #:
-        self.locus = kw.pop('locus', 'value')
+        self.locus = locus
 
         #: The relative strength of this rule. The higher the rank, the
         #: more powerful the rule.
-        self.rank = kw.pop('rank', None) or self._make_rank(self.locus, filters)
+        self.rank = self._make_rank(self.locus, self.filters)
 
         #: Indicates whether or not the rule is optional
-        self.option = kw.pop('option', None)
+        self.optional = optional
 
         #: A list of rules. These rules are all blocked if the current
         #: rule can apply.
         self.utsarga = []
         self.apavada = []
+
 
     def __repr__(self):
         class_name = self.__class__.__name__
@@ -85,46 +88,6 @@ class Rule(object):
     def __str__(self):
         return self.name
 
-    @classmethod
-    def new(self, name, left, center, right, op, **kw):
-        """
-
-        :param name:
-        :param left:
-        :param center:
-        :param right:
-        :param op:
-        """
-        if center[0] is F.allow_all and op not in lists.SAMJNA:
-            returned = TasmatRule(name, left + right, op, **kw)
-        else:
-            if kw.get('category') == 'paribhasha' or kw.get('modifier') is Boost:
-                cls = ParibhashaRule
-            elif op in lists.SAMJNA:
-                cls = SamjnaRule
-            elif op in lists.IT:
-                cls = SamjnaRule
-            else:
-                cls = TasyaRule
-
-            if left and left[0] == F.allow_all:
-                left = []
-            if right and right[0] == F.allow_all:
-                right = []
-
-            returned = cls(name, left + center + right, op, **kw)
-
-        returned.offset = len(left)
-        returned.modifier = kw.get('modifier')
-        return returned
-
-    def _make_operator(self, op):
-        """Create and return an :class:`~operators.Operator`.
-
-        :param op: an arbitrary object
-        """
-        return op
-
     def _make_rank(self, locus, filters):
         if locus == 'asiddhavat':
             rank_locus = Rule.ASIDDHAVAT
@@ -132,7 +95,7 @@ class Rule(object):
             rank_locus = Rule.NORMAL_LOCUS
 
         rank = Rank.and_(f.rank for f in filters)
-        rank = rank.replace(category=self.RULE_TYPE, locus=rank_locus)
+        rank = rank.replace(category=self.category, locus=rank_locus)
         return rank
 
     def _apply_option_declined(self, state, index):
@@ -144,7 +107,7 @@ class Rule(object):
         :param state: a state
         :param index: the index where the first filter is applied.
         """
-        if self.option:
+        if self.optional:
             # Option declined. Mark the state but leave the rest alone.
             yield self._apply_option_declined(state, index)
 
@@ -162,7 +125,7 @@ class Rule(object):
         # We yield only if the state is different; otherwise the system
         # will loop.
         new = self.operator(state, index + self.offset, self.locus)
-        if new != state or self.option:
+        if new != state or self.optional:
             new = new.mark_rule(self, index)
             new = new.swap(index, new[index].add_op(*self.utsarga))
             yield new
@@ -241,71 +204,24 @@ class Rule(object):
             append('           %r' % f)
         append('    Operator : %r' % self.operator)
         append('    Rank     : %r' % (self.rank,))
+        append('    Locus    : %r' % (self.locus,))
         append('    Utsarga  : %r' % (self.utsarga,))
         append('    Apavada  : %r' % (self.apavada,))
         append('')
         print '\n'.join(data)
 
 
-class TasyaRule(Rule):
-
-    """A substitution (*vidhi*) rule.
-
-    For some locus ``(state, index)``, the rule applies filters starting
-    from ``state[index - 1]``. `self.operator` is a function that accepts
-    an :class:`Upadesha` and a state with its index and returns a new
-    :class:`Upadesha`, which is saved at ``state[index]``.
-    """
-
-    def _make_operator(self, op):
-        if hasattr(op, '__call__'):
-            return op
-        else:
-            return O.tasya(op)
-
-
-class SamjnaRule(TasyaRule):
+class SamjnaRule(Rule):
 
     """A *saṃjñā* rule.
 
     For some locus ``(state, index)``, the rule applies filters starting
     from ``state[index - 1]``. `self.operator` is a string that defines
     the saṃjñā to add to the term.
-
-    Programmatically, this rule is a :class:`TasyaRule`.
     """
 
     RULE_TYPE = Rule.SAMJNA
 
     def _apply_option_declined(self, state, index):
-        new_cur = state[index].remove_samjna(self.domain)
+        new_cur = state[index].remove_samjna(*self.operator.params)
         return state.swap(index, new_cur).mark_rule(self, index)
-
-    def _make_operator(self, op):
-        self.domain = op
-        return O.add_samjna(op)
-
-
-class AtideshaRule(SamjnaRule):
-
-    RULE_TYPE = Rule.ATIDESHA
-
-
-class TasmatRule(Rule):
-
-    """An insertion (*vidhi*) rule.
-
-    For some locus ``(state, index)``, the rule applies filters starting
-    from ``state[index]``. `self.operator` is an :class:`Upadesha` that
-    is inserted at ``state[index]``.
-    """
-
-    __slots__ = ()
-
-    def _make_operator(self, op):
-        return O.insert(op)
-
-
-class ParibhashaRule(Rule):
-
-    RULE_TYPE = Rule.PARIBHASHA
