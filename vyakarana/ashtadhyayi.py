@@ -17,7 +17,7 @@ import inference
 import sandhi
 import siddha
 
-from templates import RuleTuple
+from templates import Anuvrtti, RuleTuple
 from util import State
 
 log = logging.getLogger(__name__)
@@ -154,29 +154,29 @@ class Ashtadhyayi(object):
         return rule_tuples
 
     @classmethod
-    def with_rules_in(cls, start, end):
+    def with_rules_in(cls, start_name, end_name):
         """Constructor using only a subset of the Ashtadhyayi's rules.
 
         This is provided to make it easier to test certain rule groups.
 
-        :param start: name of the first rule to use, e.g. "1.1.1"
-        :param end: name of the last rule to use, e.g. "1.1.73"
+        :param start_name: name of the first rule to use, e.g. "1.1.1"
+        :param end_name: name of the last rule to use, e.g. "1.1.73"
         """
-        key = inference.name_key
-        start_key = key(start)
-        end_key = key(end)
-
         selection = []
+        active = False
         for r in cls.fetch_all_rules():
-            # Rule tuple
-            try:
-                if start_key <= key(r.name) <= end_key:
-                    selection.append(r)
-
-            # Anuvrtti. Keep all, since they might be needed for the
-            # rules we select.
-            except AttributeError:
+            if isinstance(r, Anuvrtti):
                 selection.append(r)
+                continue
+
+            if r.name == start_name:
+                active = True
+
+            if active:
+                selection.append(r)
+
+            if r.name == end_name:
+                active = False
 
         return cls(selection)
 

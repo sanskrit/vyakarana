@@ -81,8 +81,7 @@ class Rule(object):
 
 
     def __repr__(self):
-        class_name = self.__class__.__name__
-        return '<%s(%s)>' % (class_name, self.name)
+        return '<Rule(%s)>' % repr(self.name)
 
     def __str__(self):
         return self.name
@@ -172,33 +171,6 @@ class Rule(object):
 
         # Condition 4
         return self.operator.conflicts_with(other.operator)
-
-    def has_utsarga(self, other):
-        """Return whether the other rule is an utsarga to this one.
-
-        :param other: a rule
-        """
-        # A is an utsarga to B iff B is an apavada to A.
-        return other.has_apavada(self)
-
-    def matches(self, state, index):
-        """
-
-        This applies filters sequentially from ``state[index]``.
-
-        :param state: the current :class:`State`
-        :param index: an index into the state
-        """
-        for i, filt in enumerate(self.filters):
-            if not filt(state, index + i):
-                return False
-        return True
-
-    def yields(self, state, index):
-        if self.matches(state, index) and self.name not in state[index].ops:
-            for result in self.apply(state, index):
-                return True
-        return False
 
     def pprint(self):
         data = []

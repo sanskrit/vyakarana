@@ -13,10 +13,6 @@ import pytest
 import vyakarana.inference as I
 import vyakarana.ashtadhyayi as A
 
-def test_name_key():
-    names = ['1.1.1', '1.1.2', '1.1.13', '1.2.5', '1.2.70']
-    assert sorted(names, key=I.name_key) == names
-
 
 def relationships():
     _126 = ['126']

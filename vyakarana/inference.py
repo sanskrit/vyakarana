@@ -18,10 +18,6 @@ from templates import *
 from rules import Rule
 
 
-def name_key(name):
-    return tuple(int(x) for x in name.split('.'))
-
-
 def do_utsarga_apavada(rules):
     """Annotate rules with their utsargas and apavādas.
 
