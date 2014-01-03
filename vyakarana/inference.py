@@ -15,7 +15,7 @@ import filters as F
 import lists
 import operators as O
 from templates import *
-from rules import Rule, SamjnaRule
+from rules import Rule
 
 
 def name_key(name):
@@ -182,12 +182,7 @@ def expand_rule_tuples(rule_tuples):
         window = _reduce_window(window, operator)
         rule_kw = _make_kw(row, anuvrtti, prev_rule, operator)
 
-        # HACK for samjna coverage. This is going away soon.
-        if operator.category == 'add_samjna':
-            cls = SamjnaRule
-        else:
-            cls = Rule
-        rule = prev_rule = cls(name, window, operator, **rule_kw)
+        rule = prev_rule = Rule(name, window, operator, **rule_kw)
         rules.append(rule)
 
     return rules

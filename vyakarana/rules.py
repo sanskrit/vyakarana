@@ -17,7 +17,6 @@
     :license: MIT and BSD
 """
 
-import operators as O
 from templates import Na
 from util import Rank
 
@@ -99,7 +98,13 @@ class Rule(object):
         return rank
 
     def _apply_option_declined(self, state, index):
-        return state.mark_rule(self, index)
+        if self.operator.category == 'add_samjna':
+            new_cur = state[index].remove_samjna(*self.operator.params)
+            result = state.swap(index, new_cur)
+        else:
+            result = state
+
+        return result.mark_rule(self, index)
 
     def apply(self, state, index):
         """Apply this rule and yield the results.
@@ -209,19 +214,3 @@ class Rule(object):
         append('    Apavada  : %r' % (self.apavada,))
         append('')
         print '\n'.join(data)
-
-
-class SamjnaRule(Rule):
-
-    """A *saṃjñā* rule.
-
-    For some locus ``(state, index)``, the rule applies filters starting
-    from ``state[index - 1]``. `self.operator` is a string that defines
-    the saṃjñā to add to the term.
-    """
-
-    RULE_TYPE = Rule.SAMJNA
-
-    def _apply_option_declined(self, state, index):
-        new_cur = state[index].remove_samjna(*self.operator.params)
-        return state.swap(index, new_cur).mark_rule(self, index)
