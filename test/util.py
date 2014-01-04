@@ -10,6 +10,7 @@
 
 import pytest
 
+from vyakarana.derivations import State
 from vyakarana.util import *
 from vyakarana.terms import *
 

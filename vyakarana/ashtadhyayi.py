@@ -10,15 +10,14 @@
 
 import importlib
 import logging
-import os
 from collections import defaultdict
 
 import inference
 import sandhi
 import siddha
 
+from derivations import State
 from templates import Anuvrtti, RuleTuple
-from util import State
 
 log = logging.getLogger(__name__)
 

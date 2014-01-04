@@ -1,8 +1,8 @@
 import pytest
 
+from vyakarana.derivations import State
 import vyakarana.operators as O
 from vyakarana.terms import Upadesha
-from vyakarana.util import State
 
 
 # Constructors

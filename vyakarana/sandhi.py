@@ -1,7 +1,8 @@
 import operators as O
+from derivations import State
 from sounds import Sound, Sounds
 from terms import Upadesha
-from util import SoundEditor, State
+from util import SoundEditor
 
 
 def convert(op):
