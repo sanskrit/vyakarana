@@ -52,9 +52,9 @@ def iyan_uvan(state, index, locus):
 
     cur = state[index]
     if cur.antya in 'iI':
-        return iyan(state, index, locus)
+        return iyan.apply(state, index, locus)
     else:
-        return uvan(state, index, locus)
+        return uvan.apply(state, index, locus)
 
 iyan_uvan.category = 'tasya'
 

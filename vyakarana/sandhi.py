@@ -7,7 +7,7 @@ from util import SoundEditor, State
 def convert(op):
     """A temporary fix to a deeper problem."""
     def func(s):
-        return op(State([Upadesha(s + 'a~')]), 0)[0].value
+        return op.apply(State([Upadesha(s + 'a~')]), 0)[0].value
     return func
 
 dirgha = O.dirgha.body

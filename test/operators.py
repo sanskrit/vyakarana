@@ -81,7 +81,7 @@ def verify(cases, operator):
     for original, expected in cases:
         term = Upadesha('a~').set_value(original)
         state = State([term])
-        assert operator(state, 0)[0].value == expected
+        assert operator.apply(state, 0)[0].value == expected
 
 
 def test_dirgha():

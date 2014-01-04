@@ -47,7 +47,7 @@ class Operator(object):
         #: the operator's parameters, if any.
         self.params = self._make_params(*args, **kw)
 
-    def __call__(self, state, index, locus='value'):
+    def apply(self, state, index, locus='value'):
         return self.body(state, index, locus)
 
     def __eq__(self, other):
@@ -151,7 +151,7 @@ class DataOperator(Operator):
     `body` accepts and returns a single string.
     """
 
-    def __call__(self, state, index, locus='value'):
+    def apply(self, state, index, locus='value'):
         cur = state[index]
         _input = cur.value
         if not _input:

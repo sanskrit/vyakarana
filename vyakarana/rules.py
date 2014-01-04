@@ -128,7 +128,7 @@ class Rule(object):
         #
         # We yield only if the state is different; otherwise the system
         # will loop.
-        new = self.operator(state, index + self.offset, self.locus)
+        new = self.operator.apply(state, index + self.offset, self.locus)
         if new != state or self.optional:
             new = new.mark_rule(self, index)
             new = new.swap(index, new[index].add_op(*self.utsarga))

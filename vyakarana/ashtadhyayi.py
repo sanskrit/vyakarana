@@ -95,7 +95,7 @@ class RuleTree(object):
         for feature, tree in self.features.iteritems():
             filt, i = feature
             j = index + i
-            if j >= 0 and filt(state, j):
+            if j >= 0 and filt.allows(state, j):
                 selection.update(tree.select(state, index))
 
         return selection

@@ -80,7 +80,7 @@ class Filter(object):
         #: higher priority over rules with less powerful filters.
         self.rank = kw.get('rank') or self._make_rank(self.domain)
 
-    def __call__(self, state, index):
+    def allows(self, state, index):
         return self.body(state, index)
 
     def __and__(self, other):
@@ -356,7 +356,7 @@ class TermFilter(Filter):
       for an unchanged term and avoid redundant calls.
     """
 
-    def __call__(self, state, index):
+    def allows(self, state, index):
         try:
             term = state[index]
             name = self.name
@@ -657,9 +657,9 @@ def auto(*data):
                 key = 'raw'
             parsed[key].append(datum)
 
-        # Function
-        elif hasattr(datum, '__call__'):
-            parsed['functions'].append(datum)
+        # Filter
+        elif isinstance(datum, Filter):
+            parsed['filters'].append(datum)
 
         # Unknown
         else:
@@ -686,10 +686,10 @@ def auto(*data):
 
     # Combine filter with `functions` filters
     if base_filter:
-        if parsed['functions']:
-            base_filter = Filter._or(base_filter, *parsed['functions'])
+        if parsed['filters']:
+            base_filter = Filter._or(base_filter, *parsed['filters'])
     else:
-        base_filter = parsed['functions'][0]
+        base_filter = parsed['filters'][0]
     return base_filter
 
 

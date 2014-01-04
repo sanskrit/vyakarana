@@ -27,7 +27,7 @@ def _47(state, index, locus=None):
     """
     mit = state[index]
     op = O.tasya(mit)
-    state = op(state, index - 1, locus)
+    state = op.apply(state, index - 1, locus)
     return state.remove(index)
 
 
