@@ -8,7 +8,7 @@
     :license: MIT and BSD
 """
 from sounds import Sounds, Sound, Pratyahara
-from upadesha import Upadesha
+from terms import Upadesha
 from util import SoundEditor, SoundIndex
 
 

@@ -1,5 +1,6 @@
 from vyakarana.ashtadhyayi import Ashtadhyayi
 
+
 def test_init():
     a = Ashtadhyayi()
     assert a.rules

@@ -11,7 +11,7 @@
 import pytest
 
 from vyakarana.util import *
-from vyakarana.upadesha import *
+from vyakarana.terms import *
 
 
 def test_iter_group():

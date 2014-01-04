@@ -8,7 +8,7 @@
 
 from .. import filters as F, operators as O
 from ..templates import *
-from ..upadesha import Upadesha as U, Pratyaya
+from ..terms import Upadesha as U, Pratyaya
 
 f = F.auto
 it_ashtadhyayi = None

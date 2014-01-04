@@ -9,7 +9,7 @@
 from .. import filters as F, operators as O
 from ..sounds import Sounds
 from ..templates import *
-from ..upadesha import Upadesha as U
+from ..terms import Upadesha as U
 
 f = F.auto
 

@@ -143,7 +143,8 @@ class Ashtadhyayi(object):
                 mod_name = mod_string.format(adhyaya, pada)
                 mod = importlib.import_module(mod_name)
                 rule_tuples.extend(mod.RULES)
-            except ImportError:
+            except ImportError as e:
+                print e
                 pass
 
         # Convert tuples to RuleTuples

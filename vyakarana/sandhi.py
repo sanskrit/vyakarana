@@ -1,7 +1,6 @@
 import operators as O
-from upadesha import Upadesha
-
 from sounds import Sound, Sounds
+from terms import Upadesha
 from util import SoundEditor, State
 
 

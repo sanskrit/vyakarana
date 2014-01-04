@@ -12,7 +12,7 @@
 import os
 from collections import OrderedDict
 from vyakarana import ashtadhyayi as A
-from vyakarana.upadesha import Upadesha, Vibhakti
+from vyakarana.terms import Upadesha, Vibhakti
 
 def data_path(name):
     """Return a relative path to test file `name`."""

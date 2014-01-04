@@ -19,9 +19,9 @@ there's no harm in matching on an aṅga generally.
 """
 
 from .. import filters as F, operators as O
-from ..templates import *
 from ..sounds import Sounds
-from ..upadesha import Upadesha as U
+from ..templates import *
+from ..terms import Upadesha as U
 
 f = F.auto
 

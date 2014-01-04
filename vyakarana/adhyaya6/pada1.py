@@ -12,7 +12,7 @@ from .. import filters as F, operators as O
 from ..dhatupatha import DHATUPATHA as DP
 from ..sounds import Sounds
 from ..templates import *
-from ..upadesha import Upadesha
+from ..terms import Upadesha
 
 f = F.auto
 

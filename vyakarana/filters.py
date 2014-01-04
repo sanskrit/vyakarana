@@ -19,7 +19,7 @@ from collections import defaultdict
 import lists
 from dhatupatha import DHATUPATHA as DP
 from sounds import Sounds
-from upadesha import Upadesha as U
+from terms import Upadesha
 from util import Rank
 
 
@@ -435,7 +435,7 @@ class DhatuFilter(UpadeshaFilter):
         try:
             return self._supersets
         except AttributeError:
-            antya = ' '.join(U(x).antya for x in self.domain)
+            antya = ' '.join(Upadesha(x).antya for x in self.domain)
             _al = al(antya)
             _samjna = samjna('dhatu')
             self._supersets = set([self, _samjna, _al])

@@ -1,6 +1,6 @@
 import vyakarana.filters as F
 import vyakarana.lists as L
-from vyakarana.upadesha import *
+from vyakarana.terms import Upadesha, Pratyaya
 from vyakarana.dhatupatha import DHATUPATHA as DP
 
 

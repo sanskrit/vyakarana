@@ -1,7 +1,7 @@
 import pytest
 
-from vyakarana.upadesha import *
 import vyakarana.operators as O
+from vyakarana.terms import Upadesha
 from vyakarana.util import State
 
 

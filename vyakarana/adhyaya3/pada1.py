@@ -8,7 +8,7 @@
 
 from .. import filters as F, operators as O
 from ..templates import *
-from ..upadesha import Krt
+from ..terms import Krt
 
 f = F.auto
 

@@ -10,7 +10,7 @@
 
 import pytest
 
-from vyakarana.upadesha import *
+from vyakarana.terms import *
 
 
 class TestDataSpace(object):
