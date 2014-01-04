@@ -10,7 +10,7 @@
 
 import pytest
 
-import vyakarana.inference as I
+import vyakarana.trees as I
 import vyakarana.ashtadhyayi as A
 
 

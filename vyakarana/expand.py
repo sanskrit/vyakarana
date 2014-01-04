@@ -1,15 +1,23 @@
 # -*- coding: utf-8 -*-
 """
-    vyakarana.inference
-    ~~~~~~~~~~~~~~~~~~~
+    vyakarana.expand
+    ~~~~~~~~~~~~~~~~
 
-    Functions for reading and interpreting the rules of the Ashtadhayayi.
+    Code to convert a list of :class:`~vyakarana.template.RuleTuple`
+    objects into a list of :class:`~vyakarana.rules.Rule` objects.
+
+    This code does only the most basic sort of inference. It takes a
+    stub and uses the previous rule (and the current Anuvrtti) to fill
+    in any gaps.
+
+    For more complex inference, see :mod:`vyakarana.trees`.
+
+    TODO: think of better name for this module
 
     :license: MIT and BSD
 """
 
-import itertools
-from collections import defaultdict
+import importlib
 
 import filters as F
 import lists
@@ -18,45 +26,32 @@ from templates import *
 from rules import Rule
 
 
-def do_utsarga_apavada(rules):
-    """Annotate rules with their utsargas and apavādas.
+def fetch_all_stubs():
+    """Create a list of all rule tuples defined in the system.
 
-    :param rules: a list of rules
+    We find rule tuples by programmatically importing every pada in
+    the Ashtadhyayi. Undefined padas are skipped.
     """
-    # Rules are sorted from earliest appearance to latest.
-    rules = sorted(rules, key=lambda rule: rule.name)
-    utsargas = defaultdict(list)
-    apavadas = defaultdict(list)
 
-    for i, rule in enumerate(rules):
+    # All padas follow this naming convention.
+    mod_string = 'vyakarana.adhyaya{0}.pada{1}'
+    combos = [(a, p) for a in '12345678' for p in '1234']
+    rule_tuples = []
 
-        # 'na' negates an operator, so we can just match on operators.
-        if rule.modifier == Na:
-            for other in rules:
-                if (rule.operator == other.operator
-                    and rule != other):
-                    utsargas[rule].append(other)
-                    apavadas[other].append(rule)
+    for adhyaya, pada in combos:
+        try:
+            mod_name = mod_string.format(adhyaya, pada)
+            mod = importlib.import_module(mod_name)
+            rule_tuples.extend(mod.RULES)
+        except ImportError:
+            pass
 
-        else:
-            # śeṣa covers all of the contexts not already mentioned.
-            # That is, a śeṣa rule is an utsarga to all conflicting
-            # rules that come before it.
-            if rule.modifier == Shesha:
-                rule_slice = itertools.islice(rules, 0, i)
+    # Convert tuples to RuleTuples
+    for i, r in enumerate(rule_tuples):
+        if isinstance(r, tuple):
+            rule_tuples[i] = RuleTuple(*r)
 
-            # Generally, an apavāda follows an utsarga.
-            else:
-                rule_slice = itertools.islice(rules, i, None)
-
-            for other in rule_slice:
-                if rule.has_apavada(other):
-                    apavadas[rule].append(other)
-                    utsargas[other].append(rule)
-
-    for rule in rules:
-        rule.utsarga = utsargas[rule]
-        rule.apavada = apavadas[rule]
+    return rule_tuples
 
 
 def make_context(data, base=None, prev=None):
@@ -153,7 +148,7 @@ def _make_kw(row, anuvrtti, prev_rule, operator):
                 locus=locus)
 
 
-def expand_rule_tuples(rule_tuples):
+def build_from_stubs(rule_tuples=None):
     """Expand rule tuples into usable rules.
 
     Throughout this program, rules are defined in a special shorthand.
@@ -161,6 +156,8 @@ def expand_rule_tuples(rule_tuples):
 
     :param rule_tuples: a list of :class:`RuleTuple`s
     """
+    rule_tuples = rule_tuples or fetch_all_stubs()
+
     rules = []
 
     anuvrtti = None
@@ -179,19 +176,4 @@ def expand_rule_tuples(rule_tuples):
         rule = prev_rule = Rule(name, window, operator, **rule_kw)
         rules.append(rule)
 
-    return rules
-
-
-def create_rules(rule_tuples):
-    """Create the rules of the Ashtadhyayi.
-
-    Expand the given rule tuples into actual rules and run inference
-    on them. The result is a list of usable rules that supports some
-    nice inference patterns.
-
-    :param rule_tuples: a sorted list of rule tuples
-    """
-
-    rules = expand_rule_tuples(rule_tuples)
-    do_utsarga_apavada(rules)
     return rules
