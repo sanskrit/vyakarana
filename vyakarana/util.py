@@ -9,7 +9,6 @@
 """
 
 import itertools
-from collections import namedtuple
 
 
 def iter_group(items, n):

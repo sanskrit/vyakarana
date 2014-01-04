@@ -22,7 +22,6 @@ def tasvat(state, index, **kw):
         from ..ashtadhyayi import Ashtadhyayi
         it_ashtadhyayi = Ashtadhyayi.with_rules_in('7.2.8', '7.2.78')
 
-    print state
     import sys; sys.exit()
 
 

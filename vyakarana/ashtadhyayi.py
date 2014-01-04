@@ -123,9 +123,6 @@ class Ashtadhyayi(object):
         #: A list of rules sorted from highest priority to lowest.
         self.ranked_rules = sorted(self.rules, key=ranker, reverse=True)
 
-        for r in self.ranked_rules:
-            print r.name, ranker(r)
-
         #: Indexed arrangement of rules
         self.rule_tree = RuleTree(self.rules)
 
@@ -147,8 +144,7 @@ class Ashtadhyayi(object):
                 mod_name = mod_string.format(adhyaya, pada)
                 mod = importlib.import_module(mod_name)
                 rule_tuples.extend(mod.RULES)
-            except ImportError as e:
-                print e
+            except ImportError:
                 pass
 
         # Convert tuples to RuleTuples

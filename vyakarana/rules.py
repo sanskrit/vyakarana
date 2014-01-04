@@ -72,7 +72,6 @@ class Rule(object):
         self.utsarga = []
         self.apavada = []
 
-
     def __repr__(self):
         return '<Rule(%s)>' % repr(self.name)
 

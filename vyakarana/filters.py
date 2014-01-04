@@ -391,9 +391,6 @@ class AlFilter(TermFilter):
         sv = self.domain.values
         return sv.issubset(ov)
 
-    def body(self, term):
-        return self.op(term)
-
 
 class SamjnaFilter(TermFilter):
     pass
