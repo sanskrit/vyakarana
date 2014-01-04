@@ -3,7 +3,7 @@
     vyakarana.expand
     ~~~~~~~~~~~~~~~~
 
-    Code to convert a list of :class:`~vyakarana.template.RuleTuple`
+    Code to convert a list of :class:`~vyakarana.template.RuleStub`
     objects into a list of :class:`~vyakarana.rules.Rule` objects.
 
     This code does only the most basic sort of inference. It takes a
@@ -27,31 +27,31 @@ from rules import Rule
 
 
 def fetch_all_stubs():
-    """Create a list of all rule tuples defined in the system.
+    """Create a list of all rule stubs defined in the system.
 
-    We find rule tuples by programmatically importing every pada in
+    We find rule stubs by programmatically importing every pada in
     the Ashtadhyayi. Undefined padas are skipped.
     """
 
     # All padas follow this naming convention.
     mod_string = 'vyakarana.adhyaya{0}.pada{1}'
     combos = [(a, p) for a in '12345678' for p in '1234']
-    rule_tuples = []
+    rule_stubs = []
 
     for adhyaya, pada in combos:
         try:
             mod_name = mod_string.format(adhyaya, pada)
             mod = importlib.import_module(mod_name)
-            rule_tuples.extend(mod.RULES)
+            rule_stubs.extend(mod.RULES)
         except ImportError:
             pass
 
-    # Convert tuples to RuleTuples
-    for i, r in enumerate(rule_tuples):
+    # Convert tuples to RuleStubs
+    for i, r in enumerate(rule_stubs):
         if isinstance(r, tuple):
-            rule_tuples[i] = RuleTuple(*r)
+            rule_stubs[i] = RuleStub(*r)
 
-    return rule_tuples
+    return rule_stubs
 
 
 def make_context(data, base=None, prev=None):
@@ -148,21 +148,21 @@ def _make_kw(row, anuvrtti, prev_rule, operator):
                 locus=locus)
 
 
-def build_from_stubs(rule_tuples=None):
-    """Expand rule tuples into usable rules.
+def build_from_stubs(rule_stubs=None):
+    """Expand rule stubs into usable rules.
 
     Throughout this program, rules are defined in a special shorthand.
     This function converts each line of shorthand into a proper rule.
 
-    :param rule_tuples: a list of :class:`RuleTuple`s
+    :param rule_stubs: a list of :class:`RuleStub`s
     """
-    rule_tuples = rule_tuples or fetch_all_stubs()
+    rule_stubs = rule_stubs or fetch_all_stubs()
 
     rules = []
 
     anuvrtti = None
     prev_rule = None
-    for row in rule_tuples:
+    for row in rule_stubs:
         if isinstance(row, Anuvrtti):
             anuvrtti = row
             continue

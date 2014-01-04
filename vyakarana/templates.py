@@ -10,7 +10,7 @@
 """
 
 
-class RuleTuple(object):
+class RuleStub(object):
 
     """Wrapper for tuple rules.
 
@@ -38,15 +38,15 @@ class RuleTuple(object):
 
     def __repr__(self):
         cls_name = self.__class__.__name__
-        if cls_name == 'RuleTuple':
+        if cls_name == 'RuleStub':
             cls_name = 'R'
         return '<%s(%s)>' % (cls_name, repr(self.name))
 
 
-class Adhikara(RuleTuple):
+class Adhikara(RuleStub):
 
     def __init__(self, name, end, on_tuple=None):
-        RuleTuple.__init__(self, name, None, None, None, None)
+        RuleStub.__init__(self, name, None, None, None, None)
         self.end = end
         self.on_tuple = on_tuple
 
@@ -56,7 +56,7 @@ class Adhikara(RuleTuple):
         return self.on_tuple(rule_tuple)
 
 
-class Ca(RuleTuple):
+class Ca(RuleStub):
 
     """Wrapper for a rule that contains the word "ca".
 
@@ -65,12 +65,12 @@ class Ca(RuleTuple):
     """
 
 
-class Na(RuleTuple):
+class Na(RuleStub):
 
     """Wrapper for a rule that just blocks other rules."""
 
 
-class Nityam(RuleTuple):
+class Nityam(RuleStub):
 
     """Wrapper for a rule that cannot be rejected.
 
@@ -78,7 +78,7 @@ class Nityam(RuleTuple):
     """
 
 
-class Option(RuleTuple):
+class Option(RuleStub):
 
     """Wrapper for a rule that can be accepted optionally.
 
