@@ -24,61 +24,6 @@ def iter_pairwise(items):
     return itertools.izip(x, y)
 
 
-RankBase = namedtuple('RankBase', 'category locus upadesha samjna al')
-class Rank(RankBase):
-
-    """Among the conflict-solving mechanisms in the Ashtadhyayi is the
-    notion of utsarga-apavāda. The idea is that when two rules have
-    space to apply, the more general rule (utsarga) is dominated by
-    the specific rule (apavāda).
-
-    The "specificity" of a rule can be determined by the conditions
-    that allow the rule to act. For example, some rules apply only
-    to certain roots, which makes them very specific. Others might
-    apply only to certain letters, which makes them relatively weak.
-    """
-
-    def __new__(cls, category=0, locus=0, upadesha=0, samjna=0, al=0):
-        return tuple.__new__(cls, (category, locus, upadesha, samjna, al))
-
-    def __add__(self, other):
-        values = [x + y for x, y in zip(self, other)]
-        return Rank(*values)
-
-    def __and__(self, other):
-        return Rank.and_((self, other))
-
-    def __or__(self, other):
-        return Rank.or_((self, other))
-
-    def __repr__(self):
-        return 'Rank%s' % (tuple(self),)
-
-    @classmethod
-    def with_upadesha(cls, items):
-        return cls(upadesha=1.0/len(items))
-
-    @classmethod
-    def with_samjna(cls, items):
-        return cls(samjna=1.0/len(items))
-
-    @classmethod
-    def with_al(cls, items):
-        return cls(al=1.0/len(items))
-
-    @classmethod
-    def and_(cls, ranks):
-        ranks = list(ranks)
-        return sum(ranks, cls())
-
-    @classmethod
-    def or_(cls, ranks):
-        return min(ranks)
-
-    def replace(self, **kw):
-        return self._replace(**kw)
-
-
 class SoundEditor(object):
 
     def __init__(self, state, locus='asiddha'):

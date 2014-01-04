@@ -9,13 +9,12 @@ from vyakarana.dhatupatha import DHATUPATHA as DP
 
 def test_init_with_kw():
     f = F.Filter(category='category', name='name', body='body',
-                 domain='domain', rank='rank')
+                 domain='domain')
 
     assert f.category == 'category'
     assert f.name == 'name'
     assert f.body == 'body'
     assert f.domain == 'domain'
-    assert f.rank == 'rank'
 
 
 def test_no_params():
@@ -28,7 +27,6 @@ def test_no_params():
     assert f.name == 'apples'
     assert f.body is apples
     assert f.domain is None
-    # TODO: rank
 
 
 def verify(cases, filter_creator, tester):

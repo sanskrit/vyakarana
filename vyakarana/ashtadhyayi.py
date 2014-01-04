@@ -13,6 +13,7 @@ import logging
 from collections import defaultdict
 
 import inference
+import reranking
 import sandhi
 import siddha
 
@@ -114,12 +115,16 @@ class Ashtadhyayi(object):
     """
 
     def __init__(self, rules=None):
+        ranker = reranking.CompositeRanker()
+
         #: A list of rules sorted from first (1.1.1) to last (8.4.68).
         self.rules = inference.create_rules(rules or self.fetch_all_rules())
 
         #: A list of rules sorted from highest priority to lowest.
-        self.ranked_rules = sorted(self.rules,
-                                   cmp = lambda x, y: cmp(y.rank, x.rank))
+        self.ranked_rules = sorted(self.rules, key=ranker, reverse=True)
+
+        for r in self.ranked_rules:
+            print r.name, ranker(r)
 
         #: Indexed arrangement of rules
         self.rule_tree = RuleTree(self.rules)
@@ -154,7 +159,7 @@ class Ashtadhyayi(object):
         return rule_tuples
 
     @classmethod
-    def with_rules_in(cls, start_name, end_name):
+    def with_rules_in(cls, start_name, end_name, **kw):
         """Constructor using only a subset of the Ashtadhyayi's rules.
 
         This is provided to make it easier to test certain rule groups.
@@ -178,7 +183,7 @@ class Ashtadhyayi(object):
             if r.name == end_name:
                 active = False
 
-        return cls(selection)
+        return cls(rules=selection, **kw)
 
     def matching_rules(self, state):
         """Generate all rules that could apply to the state.

@@ -9,7 +9,6 @@
 
     - filters that test some state
     - an operator that transform the state
-    - a rank that defines the rule's relative power
 
     In addition, these objects handle other matters like optionality,
     inference, and so on.
@@ -18,7 +17,6 @@
 """
 
 from templates import Na
-from util import Rank
 
 
 class Rule(object):
@@ -29,18 +27,17 @@ class Rule(object):
     transformational rules ("vidhi") explicitly.
     """
 
-    #: Rank of an ordinary rule
-    VIDHI = 0
-    #: Rank of a *saṃjñā* rule
-    SAMJNA = 1
-    #: Rank of an *atideśa* rule
-    ATIDESHA = 1
-    #: Rank of a *paribhāṣā* rule
-    PARIBHASHA = 1
+    #: Denotes an ordinary rule
+    VIDHI = 'vidhi'
+    #: Denotes a *saṃjñā* rule
+    SAMJNA = 'samjna'
+    #: Denotes an *atideśa* rule
+    ATIDESHA = 'atidesha'
+    #: Denotes a *paribhāṣā* rule
+    PARIBHASHA = 'paribhasha'
 
-    # Rank of an ordinary locus
-    NORMAL_LOCUS = 1
-    ASIDDHAVAT = 0
+    SIDDHA = 'value'
+    ASIDDHAVAT = 'asiddhavat'
 
     def __init__(self, name, window, operator, modifier=None, category=None,
                  locus='value', optional=False):
@@ -67,10 +64,6 @@ class Rule(object):
         #:
         self.locus = locus
 
-        #: The relative strength of this rule. The higher the rank, the
-        #: more powerful the rule.
-        self.rank = self._make_rank(self.locus, self.filters)
-
         #: Indicates whether or not the rule is optional
         self.optional = optional
 
@@ -85,16 +78,6 @@ class Rule(object):
 
     def __str__(self):
         return self.name
-
-    def _make_rank(self, locus, filters):
-        if locus == 'asiddhavat':
-            rank_locus = Rule.ASIDDHAVAT
-        else:
-            rank_locus = Rule.NORMAL_LOCUS
-
-        rank = Rank.and_(f.rank for f in filters)
-        rank = rank.replace(category=self.category, locus=rank_locus)
-        return rank
 
     def _apply_option_declined(self, state, index):
         if self.operator.category == 'add_samjna':
@@ -180,7 +163,6 @@ class Rule(object):
         for f in self.filters:
             append('           %r' % f)
         append('    Operator : %r' % self.operator)
-        append('    Rank     : %r' % (self.rank,))
         append('    Locus    : %r' % (self.locus,))
         append('    Utsarga  : %r' % (self.utsarga,))
         append('    Apavada  : %r' % (self.apavada,))

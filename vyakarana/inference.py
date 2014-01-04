@@ -34,7 +34,7 @@ def do_utsarga_apavada(rules):
         if rule.modifier == Na:
             for other in rules:
                 if (rule.operator == other.operator
-                    and rule != other and rule.rank > other.rank):
+                    and rule != other):
                     utsargas[rule].append(other)
                     apavadas[other].append(rule)
 
@@ -147,7 +147,7 @@ def _make_kw(row, anuvrtti, prev_rule, operator):
     else:
         category = Rule.VIDHI
 
-    locus = anuvrtti.base_kw.get('locus', 'value')
+    locus = anuvrtti.base_kw.get('locus', Rule.SIDDHA)
 
     return dict(optional=optional,
                 modifier=modifier,

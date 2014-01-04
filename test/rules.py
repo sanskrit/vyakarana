@@ -2,12 +2,11 @@ from vyakarana.rules import *
 
 
 def test_init():
-    r = Rule('name', 'filters', 'operator', rank='rank')
+    r = Rule('name', list('filters'), 'operator')
     assert r.name == 'name'
-    assert r.filters == 'filters'
+    assert r.filters == list('filters')
     assert r.operator == 'operator'
-    assert r.rank == 'rank'
-    assert not r.option
+    assert not r.optional
     assert not r.utsarga
 
 

@@ -20,7 +20,6 @@ import lists
 from dhatupatha import DHATUPATHA as DP
 from sounds import Sounds
 from terms import Upadesha
-from util import Rank
 
 
 DHATU_SET = set(DP.all_dhatu)
@@ -73,12 +72,6 @@ class Filter(object):
         #: - for a `raw` filter, the set of matching raw values
         #: - for an and/or/not filter, the original filters
         self.domain = self._make_domain(*args, **kw)
-
-        # TODO: find clean way to remove kw.get('rank')
-        #: A :class:`Rank` that characterizes the relative power of
-        #: this filter. Rules with more powerful filters tend to have
-        #: higher priority over rules with less powerful filters.
-        self.rank = kw.get('rank') or self._make_rank(self.domain)
 
     def allows(self, state, index):
         return self.body(state, index)
@@ -157,9 +150,6 @@ class Filter(object):
                 return frozenset(args)
             return None
 
-    def _make_rank(self, domain):
-        return Rank()
-
     @staticmethod
     def _and(*filters):
         """Return the logical "AND" over all filters."""
@@ -167,8 +157,7 @@ class Filter(object):
         name = 'and(%s)' % ', '.join(f.name for f in filters)
         body = cls._make_and_body(filters)
         domain = set(filters)
-        rank = Rank.and_(f.rank for f in filters)
-        return cls(category='and', name=name, body=body, domain=domain, rank=rank)
+        return cls(category='and', name=name, body=body, domain=domain)
 
     @staticmethod
     def _or(*filters):
@@ -177,8 +166,7 @@ class Filter(object):
         name = 'or(%s)' % ', '.join(f.name for f in filters)
         body = cls._make_or_body(filters)
         domain = set(filters)
-        rank = Rank.or_(f.rank for f in filters)
-        return cls(category='or', name=name, body=body, domain=domain, rank=rank)
+        return cls(category='or', name=name, body=body, domain=domain)
 
     @staticmethod
     def _not(filt):
@@ -190,8 +178,7 @@ class Filter(object):
         name = 'not(%s)' % filt.name
         body = cls._make_not_body(filt)
         domain = set([filt])
-        rank = filt.rank
-        return cls(category='not', name=name, body=body, domain=domain, rank=rank)
+        return cls(category='not', name=name, body=body, domain=domain)
 
     @staticmethod
     def _select_class(filters):
@@ -397,11 +384,6 @@ class AlFilter(TermFilter):
             return None
         return Sounds(domain_str)
 
-    def _make_rank(self, domain):
-        if domain is None:
-            return Rank()
-        return Rank.with_al(domain)
-
     def _domain_subset_of(self, other):
         if self.domain == other.domain:
             return True
@@ -414,19 +396,11 @@ class AlFilter(TermFilter):
 
 
 class SamjnaFilter(TermFilter):
-
-    """A filter that tests designations."""
-
-    def _make_rank(self, domain):
-        return Rank.with_samjna(domain)
+    pass
 
 
 class UpadeshaFilter(TermFilter):
-
-    """A filter that tests raw values"""
-
-    def _make_rank(self, domain):
-        return Rank.with_upadesha(domain)
+    pass
 
 
 class DhatuFilter(UpadeshaFilter):
@@ -444,7 +418,7 @@ class DhatuFilter(UpadeshaFilter):
 
 # Parameterized filters
 # ~~~~~~~~~~~~~~~~~~~~~
-# Each function accepts arbitrary arguments and returns a body and rank.
+# Each function accepts arbitrary arguments and returns a body.
 
 
 class adi(AlFilter):
