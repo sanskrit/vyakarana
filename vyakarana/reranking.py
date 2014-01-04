@@ -21,6 +21,22 @@
 import filters as F
 from rules import Rule
 
+#: Artificially boosted rules.
+BOOST = ['6.1.45', '6.1.64', '6.1.65']
+
+
+class NameRanker(object):
+
+    """Ranker for specific rule names."""
+
+    def __init__(self, *args):
+        self.names = args
+
+    def __call__(self, rule):
+        if rule.name in self.names:
+            return 1
+        return 0
+
 
 class FilterRanker(object):
 
@@ -50,6 +66,8 @@ class CompositeRanker(object):
         self.rankers = rankers
         if rankers is None:
             self.rankers = [
+                # Artificially boosted rules
+                NameRanker(*BOOST),
                 by_category,
                 by_locus,
                 FilterRanker(F.UpadeshaFilter),

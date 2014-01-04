@@ -72,7 +72,7 @@ RULES = [
     ('6.1.17', None, 'abhyasa', VACI_SVAPI | GRAHI_JYA, True),
 
     Anuvrtti(None, None, None),
-    Boost('6.1.45', None, f('dhatu') & ec_upadesha, f('tin') & ~F.Sit_adi, O.tasya('A')),
-    Boost('6.1.64', None, f('dhatu') & F.adi('z'), None, sa_adesha),
-    Boost('6.1.65', None, f('dhatu') & F.adi('R'), None, na_adesha),
+    ('6.1.45', None, f('dhatu') & ec_upadesha, f('tin') & ~F.Sit_adi, O.tasya('A')),
+    ('6.1.64', None, f('dhatu') & F.adi('z'), None, sa_adesha),
+    ('6.1.65', None, f('dhatu') & F.adi('R'), None, na_adesha),
 ]

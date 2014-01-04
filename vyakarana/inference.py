@@ -142,8 +142,6 @@ def _make_kw(row, anuvrtti, prev_rule, operator):
         category = Rule.SAMJNA
     elif anuvrtti.base_kw.get('category') == 'paribhasha':
         category = Rule.PARIBHASHA
-    elif isinstance(row, Boost):
-        category = Rule.PARIBHASHA
     else:
         category = Rule.VIDHI
 

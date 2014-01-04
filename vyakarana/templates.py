@@ -56,11 +56,6 @@ class Adhikara(RuleTuple):
         return self.on_tuple(rule_tuple)
 
 
-class Boost(RuleTuple):
-
-    """A hack that artificially boosts a rule's priority."""
-
-
 class Ca(RuleTuple):
 
     """Wrapper for a rule that contains the word "ca".
