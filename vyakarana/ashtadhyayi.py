@@ -8,18 +8,15 @@
     :license: MIT and BSD
 """
 
-import logging
-
 import expand
 import reranking
 import sandhi
 import siddha
 import trees
 
+from . import logger
 from derivations import State
 from templates import Anuvrtti
-
-log = logging.getLogger(__name__)
 
 
 class Ashtadhyayi(object):
@@ -111,7 +108,7 @@ class Ashtadhyayi(object):
             # TODO
 
             for s in ra_states:
-                log.debug('  %s : %s --> %s' % (ra.name, state, s))
+                logger.debug('  %s : %s --> %s' % (ra.name, state, s))
             return ra_states
 
     def derive(self, sequence):
@@ -122,8 +119,8 @@ class Ashtadhyayi(object):
         start = State(sequence)
         stack = [start]
 
-        log.debug('---')
-        log.debug('start: %s' % start)
+        logger.debug('---')
+        logger.debug('start: %s' % start)
         while stack:
             state = stack.pop()
             new_states = self.apply_next_rule(state)
@@ -132,7 +129,7 @@ class Ashtadhyayi(object):
 
             # No applicable rules; state is in its final form.
             else:
-                log.debug('yield: %s' % state)
+                logger.debug('yield: %s' % state)
                 for x in self.sandhi_asiddha(state):
                     yield x
 
