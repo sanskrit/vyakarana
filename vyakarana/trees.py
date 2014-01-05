@@ -27,7 +27,6 @@ def find_apavada_rules(rules):
             for other in rules:
                 if (rule.operator == other.operator and rule != other):
                     apavadas[other].add(rule)
-
         else:
             # For a śeṣa rule, an apavāda comes before the rule:
             if rule.modifier == Shesha:
@@ -57,7 +56,16 @@ class RuleTree(object):
     comparisons we have to make. Rule selection becomes roughly log(RT).
     """
 
-    def __init__(self, rules, used_features=None):
+    def __init__(self, rules, ranker=None, used_features=None):
+        # HACK
+        if ranker is not None:
+            self.ranked_rules = sorted(rules, key=ranker, reverse=True)
+            apavadas = find_apavada_rules(rules)
+            for rule, values in apavadas.iteritems():
+                rule.apavada = values
+                for a in values:
+                    a.utsarga.append(rule)
+
         #: A list of rules that could not be subdivided any further.
         #: This is usually because the rule is unspecified in some way.
         self.rules = []
@@ -86,13 +94,28 @@ class RuleTree(object):
             unseen = [r for r in rule_list if r not in seen]
             if not unseen:
                 continue
-            self.features[feat] = RuleTree(unseen, used_features | set([feat]))
+            subtree = RuleTree(rules=unseen,
+                               used_features=used_features | set([feat]))
+            self.features[feat] = subtree
             seen.update(rule_list)
 
     def __len__(self):
         """The number of rules in the tree."""
         self_len = len(self.rules)
         return self_len + sum(len(v) for k, v in self.features.iteritems())
+
+    def candidates(self, state):
+        """Generate all rule-index pairs that could apply to the state.
+
+        :param state: the current state
+        """
+        state_indices = range(len(state))
+        candidates = [self.select(state, i) for i in state_indices]
+
+        for i, ra in enumerate(self.ranked_rules):
+            for ia in state_indices:
+                if ra in candidates[ia]:
+                    yield ra, ia
 
     def pprint(self, depth=0):
         """Pretty-print the tree."""

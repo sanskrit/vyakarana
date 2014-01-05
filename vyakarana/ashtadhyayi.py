@@ -32,23 +32,11 @@ class Ashtadhyayi(object):
     """
 
     def __init__(self, stubs=None):
+        rules = expand.build_from_stubs(stubs)
         ranker = reranking.CompositeRanker()
 
-        #: A list of rules sorted from first (1.1.1) to last (8.4.68).
-        self.rules = expand.build_from_stubs(stubs)
-
-        #: A list of rules sorted from highest priority to lowest.
-        self.ranked_rules = sorted(self.rules, key=ranker, reverse=True)
-
-        # HACK
-        apavadas = trees.find_apavada_rules(self.rules)
-        for rule, values in apavadas.iteritems():
-            rule.apavada = values
-            for a in values:
-                a.utsarga.append(rule)
-
         #: Indexed arrangement of rules
-        self.rule_tree = trees.RuleTree(self.rules)
+        self.rule_tree = trees.RuleTree(rules, ranker=ranker)
 
     @classmethod
     def with_rules_in(cls, start, end, **kw):
@@ -63,19 +51,6 @@ class Ashtadhyayi(object):
         stubs = expand.fetch_stubs_in_range(start, end)
         return cls(stubs=stubs, **kw)
 
-    def matching_rules(self, state):
-        """Generate all rules that could apply to the state.
-
-        :param state: the current state
-        """
-        state_indices = range(len(state))
-        candidates = [self.rule_tree.select(state, i) for i in state_indices]
-
-        for i, ra in enumerate(self.ranked_rules):
-            for ia in state_indices:
-                if ra in candidates[ia]:
-                    yield ra, ia
-
     def apply_next_rule(self, state):
         """Apply one rule and return a list of new states.
 
@@ -84,7 +59,7 @@ class Ashtadhyayi(object):
 
         :param state: the current state
         """
-        for ra, ia in self.matching_rules(state):
+        for ra, ia in self.rule_tree.candidates(state):
             # Ignore redundant applications
             if ra in state[ia].ops:
                 continue
@@ -93,9 +68,6 @@ class Ashtadhyayi(object):
             ra_states = list(ra.apply(state, ia))
             if not ra_states:
                 continue
-
-            # Verify this isn't dominated by any other rules
-            # TODO
 
             for s in ra_states:
                 logger.debug('  %s : %s --> %s' % (ra.name, state, s))
