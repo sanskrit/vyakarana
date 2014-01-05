@@ -21,7 +21,7 @@ from dhatupatha import DHATUPATHA as DP
 from sounds import Sounds
 from terms import Upadesha
 
-
+FILTER_NAME_MAX_ARGS = 4
 DHATU_SET = set(DP.all_dhatu)
 
 
@@ -138,9 +138,14 @@ class Filter(object):
         try:
             return kw['name']
         except KeyError:
-            class_name = self.__class__.__name__
+            pass
+
+        class_name = self.__class__.__name__
+        if len(args) > FILTER_NAME_MAX_ARGS:
+            str_args = list(args[:5]) + ['... %s' % len(args)]
+        else:
             str_args = [str(a) for a in args]
-            return '{}({})'.format(class_name, ', '.join(str_args))
+        return '{}({})'.format(class_name, ', '.join(str_args))
 
     def _make_domain(self, *args, **kw):
         try:
