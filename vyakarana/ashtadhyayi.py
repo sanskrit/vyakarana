@@ -16,7 +16,6 @@ import trees
 
 from . import logger
 from derivations import State
-from templates import Anuvrtti
 
 
 class Ashtadhyayi(object):
@@ -32,46 +31,37 @@ class Ashtadhyayi(object):
     Most of the interesting stuff is abstracted away into other modules.
     """
 
-    def __init__(self, rules=None):
+    def __init__(self, stubs=None):
         ranker = reranking.CompositeRanker()
 
         #: A list of rules sorted from first (1.1.1) to last (8.4.68).
-        self.rules = expand.build_from_stubs(rules)
-
-        trees.do_utsarga_apavada(self.rules) # HACK
+        self.rules = expand.build_from_stubs(stubs)
 
         #: A list of rules sorted from highest priority to lowest.
         self.ranked_rules = sorted(self.rules, key=ranker, reverse=True)
+
+        # HACK
+        apavadas = trees.find_apavada_rules(self.rules)
+        for rule, values in apavadas.iteritems():
+            rule.apavada = values
+            for a in values:
+                a.utsarga.append(rule)
 
         #: Indexed arrangement of rules
         self.rule_tree = trees.RuleTree(self.rules)
 
     @classmethod
-    def with_rules_in(cls, start_name, end_name, **kw):
+    def with_rules_in(cls, start, end, **kw):
         """Constructor using only a subset of the Ashtadhyayi's rules.
 
         This is provided to make it easier to test certain rule groups.
 
-        :param start_name: name of the first rule to use, e.g. "1.1.1"
-        :param end_name: name of the last rule to use, e.g. "1.1.73"
+        :param start: name of the first rule to use, e.g. "1.1.1"
+        :param end: name of the last rule to use, e.g. "1.1.73"
         """
-        selection = []
-        active = False
-        for stub in expand.fetch_all_stubs():
-            if isinstance(stub, Anuvrtti):
-                selection.append(stub)
-                continue
 
-            if stub.name == start_name:
-                active = True
-
-            if active:
-                selection.append(stub)
-
-            if stub.name == end_name:
-                active = False
-
-        return cls(rules=selection, **kw)
+        stubs = expand.fetch_stubs_in_range(start, end)
+        return cls(stubs=stubs, **kw)
 
     def matching_rules(self, state):
         """Generate all rules that could apply to the state.

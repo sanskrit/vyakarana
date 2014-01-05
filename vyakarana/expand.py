@@ -22,7 +22,7 @@ import importlib
 import filters as F
 import lists
 import operators as O
-from templates import *
+from templates import Anuvrtti, RuleStub, Option, Shesha
 from rules import Rule
 
 
@@ -52,6 +52,26 @@ def fetch_all_stubs():
             rule_stubs[i] = RuleStub(*r)
 
     return rule_stubs
+
+
+def fetch_stubs_in_range(start, end):
+    selection = []
+    active = False
+    for stub in fetch_all_stubs():
+        if isinstance(stub, Anuvrtti):
+            selection.append(stub)
+            continue
+
+        if stub.name == start:
+            active = True
+
+        if active:
+            selection.append(stub)
+
+        if stub.name == end:
+            active = False
+    assert selection
+    return selection
 
 
 def make_context(data, base=None, prev=None):

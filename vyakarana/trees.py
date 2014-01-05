@@ -14,45 +14,32 @@ from collections import defaultdict
 from templates import *
 
 
-def do_utsarga_apavada(rules):
-    """Annotate rules with their utsargas and apavādas.
+def find_apavada_rules(rules):
+    """Find all utsarga-apavāda relationships in the given rules.
 
     :param rules: a list of rules
+    :returns: a `dict` that maps a rule to its apavāda rules.
     """
-    # Rules are sorted from earliest appearance to latest.
-    rules = sorted(rules, key=lambda rule: rule.name)
-    utsargas = defaultdict(list)
-    apavadas = defaultdict(list)
-
+    apavadas = defaultdict(set)
     for i, rule in enumerate(rules):
-
         # 'na' negates an operator, so we can just match on operators.
         if rule.modifier == Na:
             for other in rules:
-                if (rule.operator == other.operator
-                    and rule != other):
-                    utsargas[rule].append(other)
-                    apavadas[other].append(rule)
+                if (rule.operator == other.operator and rule != other):
+                    apavadas[other].add(rule)
 
         else:
-            # śeṣa covers all of the contexts not already mentioned.
-            # That is, a śeṣa rule is an utsarga to all conflicting
-            # rules that come before it.
+            # For a śeṣa rule, an apavāda comes before the rule:
             if rule.modifier == Shesha:
                 rule_slice = itertools.islice(rules, 0, i)
-
-            # Generally, an apavāda follows an utsarga.
+            # But generally, an apavāda comes after the rule:
             else:
                 rule_slice = itertools.islice(rules, i, None)
 
-            for other in rule_slice:
-                if rule.has_apavada(other):
-                    apavadas[rule].append(other)
-                    utsargas[other].append(rule)
+            new_apavadas = (r for r in rule_slice if rule.has_apavada(r))
+            apavadas[rule].update(new_apavadas)
 
-    for rule in rules:
-        rule.utsarga = utsargas[rule]
-        rule.apavada = apavadas[rule]
+    return apavadas
 
 
 class RuleTree(object):
