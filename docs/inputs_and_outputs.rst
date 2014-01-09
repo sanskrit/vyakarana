@@ -40,6 +40,6 @@ TODO
 States
 ------
 
-A :class:`~vyakarana.util.State` is a list of terms. Like the other inputs
-used by the grammar, states are modified functionally. For details, see the
-documentation on the :class:`~vyakarana.util.State` class.
+A :class:`~vyakarana.derivations.State` is a list of terms. Like the other
+inputs used by the grammar, states are modified functionally. For details, see
+the documentation on the :class:`~vyakarana.derivations.State` class.

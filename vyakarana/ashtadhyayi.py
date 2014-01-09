@@ -20,15 +20,15 @@ from derivations import State
 
 class Ashtadhyayi(object):
 
-    """The Ashtadhyayi.
+    """Given some input terms, yields a list of Sanskrit words.
 
-    This class models the most abstract parts of the system, namely:
+    This is the most abstract part of the system and doesn't expect any
+    internal knowledge about how the system works. This is almost always
+    the only class that client libraries should use.
 
-    - defining rules
-    - applying the next appropriate rule to some state
-    - deriving results from some initial state
-
-    Most of the interesting stuff is abstracted away into other modules.
+    The heart of the class is :meth:`derive`, which accepts a list of
+    terms and yields :class:`~vyakarana.derivations.State` objects that
+    represent finished words.
     """
 
     def __init__(self, stubs=None):
@@ -51,7 +51,7 @@ class Ashtadhyayi(object):
         stubs = expand.fetch_stubs_in_range(start, end)
         return cls(stubs=stubs, **kw)
 
-    def apply_next_rule(self, state):
+    def _apply_next_rule(self, state):
         """Apply one rule and return a list of new states.
 
         This function applies conflict resolution to a list of candidate
@@ -73,6 +73,18 @@ class Ashtadhyayi(object):
                 logger.debug('  %s : %s --> %s' % (ra.name, state, s))
             return ra_states
 
+    def _sandhi_asiddha(self, state):
+        """Apply rules from the 'sandhi' and 'asiddha' sections.
+
+        TODO: rewrite the rules in the sandhi and asiddha sections until
+        this function is no longer needed.
+
+        :param state: the current state
+        """
+        for s in sandhi.apply(state):
+            for t in siddha.asiddha(s):
+                yield ''.join(x.asiddha for x in t)
+
     def derive(self, sequence):
         """Yield all possible results.
 
@@ -85,24 +97,12 @@ class Ashtadhyayi(object):
         logger.debug('start: %s' % start)
         while stack:
             state = stack.pop()
-            new_states = self.apply_next_rule(state)
+            new_states = self._apply_next_rule(state)
             if new_states:
                 stack.extend(new_states)
 
             # No applicable rules; state is in its final form.
             else:
-                logger.debug('yield: %s' % state)
-                for x in self.sandhi_asiddha(state):
-                    yield x
-
-    def sandhi_asiddha(self, state):
-        """Apply rules from the 'sandhi' and 'asiddha' sections.
-
-        TODO: rewrite the rules in the sandhi and asiddha sections until
-        this function is no longer needed.
-
-        :param state: the current state
-        """
-        for s in sandhi.apply(state):
-            for t in siddha.asiddha(s):
-                yield ''.join(x.asiddha for x in t)
+                for result in self._sandhi_asiddha(state):
+                    logger.debug('yield: %s' % result)
+                    yield result

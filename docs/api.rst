@@ -9,28 +9,14 @@ Lists
 .. automodule:: vyakarana.lists
     :members:
 
-Dhatupatha
-----------
+Inputs and Outputs
+------------------
 
-.. automodule:: vyakarana.dhatupatha
-    :members:
-
-Upadesha
---------
-
-.. autoclass:: vyakarana.upadesha.Upadesha
+.. autoclass:: vyakarana.terms.Upadesha
     :member-order: bysource
     :members:
 
-Rules and Rule Tuples
----------------------
-
-.. autoclass:: vyakarana.rules.Rule
-    :member-order: bysource
-    :members:
-
-.. automodule:: vyakarana.templates
-    :show-inheritance:
+.. autoclass:: vyakarana.derivations.State
     :member-order: bysource
     :members:
 
@@ -46,4 +32,25 @@ Operators
 
 .. automodule:: vyakarana.operators
     :member-order: bysource
+    :members:
+
+Rules and Rule Stubs
+--------------------
+
+.. autoclass:: vyakarana.rules.Rule
+    :member-order: bysource
+    :members:
+
+.. automodule:: vyakarana.templates
+    :show-inheritance:
+    :member-order: bysource
+    :members:
+
+Texts
+-----
+
+.. autoclass:: vyakarana.ashtadhyayi.Ashtadhyayi
+    :members:
+
+.. autoclass:: vyakarana.dhatupatha.Dhatupatha
     :members:
