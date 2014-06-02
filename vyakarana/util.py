@@ -14,7 +14,7 @@ import itertools
 def iter_group(items, n):
     """Iterate over `items` by taking `n` items at a time."""
     for i in range(0, len(items), n):
-        yield items[i:i+n]
+        yield items[i:i + n]
 
 
 def iter_pairwise(items):
@@ -35,7 +35,7 @@ class SoundEditor(object):
         for i, term in enumerate(state):
             for j, sound in enumerate(term.asiddha):
                 sound_index = SoundIndex(value=sound, term=term, state_index=i,
-                    term_index=j, absolute_index=abs_index, editor=self)
+                                         term_index=j, absolute_index=abs_index, editor=self)
                 self.indices.append(sound_index)
                 abs_index += 1
 

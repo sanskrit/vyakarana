@@ -21,7 +21,7 @@ VACI_SVAPI = f(*['va\ca~', 'Yizva\pa~'] + DP.dhatu_list('ya\\ja~^'))
 
 #: 6.1.16
 GRAHI_JYA = f(*['graha~^', 'jyA\\', 'vaya~\\', 'vya\Da~', 'vaSa~',
-             'vyaca~', 'o~vraScU~', 'pra\cCa~', 'Bra\sja~^'])
+                'vyaca~', 'o~vraScU~', 'pra\cCa~', 'Bra\sja~^'])
 
 
 @O.Operator.no_params
@@ -44,6 +44,7 @@ def sa_adesha(value):
         v = value[1]
         value = 's' + converter.get(v, v) + value[2:]
     return value
+
 
 @O.DataOperator.no_params
 def na_adesha(value):
@@ -72,7 +73,8 @@ RULES = [
     ('6.1.17', None, 'abhyasa', VACI_SVAPI | GRAHI_JYA, True),
 
     Anuvrtti(None, None, None),
-    ('6.1.45', None, f('dhatu') & ec_upadesha, f('tin') & ~F.Sit_adi, O.tasya('A')),
+    ('6.1.45', None, f('dhatu') & ec_upadesha,
+     f('tin') & ~F.Sit_adi, O.tasya('A')),
     ('6.1.64', None, f('dhatu') & F.adi('z'), None, sa_adesha),
     ('6.1.65', None, f('dhatu') & F.adi('R'), None, na_adesha),
 ]

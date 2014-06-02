@@ -119,7 +119,8 @@ RULES = [
     Anuvrtti(None, 'anga', None, locus='asiddhavat'),
     ('6.4.23', None, F.part('Snam'), None, shnam_lopa),
     ('6.4.24',
-        None, ~F.samjna('idit') & F.al('hal') & F.upadha('Yam'), f('kit', 'Nit'),
+        None, ~F.samjna('idit') & F.al(
+            'hal') & F.upadha('Yam'), f('kit', 'Nit'),
         O.upadha('')),
 
     Anuvrtti(None, 'anga', 'ardhadhatuka', locus='asiddhavat'),
@@ -151,7 +152,8 @@ RULES = [
     Anuvrtti('abhyasa', 'anga', 'li~w', locus='asiddhavat'),
     ('6.4.120', None, at_ekahalmadhya_anadeshadi, 'kit', et_abhyasa_lopa),
     Ca('6.4.121', None, True, F.value('iTa'), True),
-    Ca('6.4.122', None, f('tF', 'YiPalA~', 'Ba\ja~^', 'trapU~\z'), f('kit') | F.value('iTa'), True),
+    Ca('6.4.122', None, f('tF', 'YiPalA~', 'Ba\ja~^', 'trapU~\z'),
+       f('kit') | F.value('iTa'), True),
     Artha('6.4.123', None, F.value('rAD'), True, True),
     Va('6.4.124', None, f('jF', 'Bramu~', 'trasI~'), True, True),
     Ca('6.4.125', None, F.gana('PaRa~', 'svana~'), True, True),

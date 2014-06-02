@@ -17,6 +17,7 @@ from sounds import Sounds
 _DataSpace = namedtuple('_DataSpace',
                         ['raw', 'clean', 'value', 'asiddhavat', 'asiddha'])
 
+
 class DataSpace(_DataSpace):
 
     def replace(self, **kw):
@@ -251,7 +252,6 @@ class Upadesha(object):
                     it.add(adi)
                     keep[0] = False
 
-
         # 1.3.9 tasya lopaḥ
         clean = ''.join(L for i, L in enumerate(clean) if keep[i])
         samjna = samjna.union([x + 'it' for x in it])
@@ -356,7 +356,6 @@ class Upadesha(object):
         :param value: the new value
         """
         return self.copy(data=self.data.replace(value=value))
-
 
 
 class Pratyaya(Upadesha):

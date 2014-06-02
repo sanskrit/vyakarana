@@ -63,7 +63,7 @@ def label_by_group(terms, labels):
     :param terms: a list of sets
     :param labels: a list of strings
     """
-    num_groups = len(terms) /  len(labels)
+    num_groups = len(terms) / len(labels)
     for i, group in enumerate(util.iter_group(terms, num_groups)):
         for term in group:
             term.add(labels[i])

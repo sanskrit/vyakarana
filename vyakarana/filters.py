@@ -362,6 +362,7 @@ class TermFilter(Filter):
     @classmethod
     def _make_and_body(cls, filters):
         bodies = [f.body for f in filters]
+
         def func(term):
             return all(b(term) for b in bodies)
         return func
@@ -369,6 +370,7 @@ class TermFilter(Filter):
     @classmethod
     def _make_or_body(cls, filters):
         bodies = [f.body for f in filters]
+
         def func(term):
             return any(b(term) for b in bodies)
         return func
@@ -406,6 +408,7 @@ class UpadeshaFilter(TermFilter):
 
 
 class DhatuFilter(UpadeshaFilter):
+
     @property
     def supersets(self):
         try:
@@ -514,7 +517,6 @@ class value(UpadeshaFilter):
 
     def body(self, term):
         return term.value in self.domain
-
 
 
 # Unparameterized filters

@@ -183,6 +183,7 @@ def adi(result):
 def al_tasya(target, result):
     target = Sounds(target)
     result = Sounds(result)
+
     def func(value):
         letters = list(value)
         for i, L in enumerate(letters):
@@ -285,11 +286,12 @@ def ti(result):
     :param result: the replacement
     """
     ac = Sounds('ac')
+
     def func(value):
         for i, L in enumerate(reversed(value)):
             if L in ac:
                 break
-        return value[:-(i+1)] + result
+        return value[:-(i + 1)] + result
 
     return func
 
@@ -315,6 +317,7 @@ def upadha(result):
 @Operator.parameterized
 def yathasamkhya(targets, results):
     converter = dict(zip(targets, results))
+
     def func(state, index, locus):
         cur = state[index]
         cur = cur.set_raw(converter[cur.raw])

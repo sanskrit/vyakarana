@@ -25,11 +25,11 @@ GUPU_DHU = f('gupU~', 'DUpa~', 'vicCa~', 'paRa~\\', 'pana~\\')
 
 
 BHRASHA_BHLASHA = f('wuBrASf~\\', 'wuBlASf~\\', 'Bramu~', 'kramu~',
-                 'klamu~', 'trasI~', 'truwa~', 'laza~^')
+                    'klamu~', 'trasI~', 'truwa~', 'laza~^')
 
 
 STAMBHU_STUMBHU = f('sta\mBu~', 'stu\mBu~', 'ska\mBu~', 'sku\mBu~',
-                   'sku\Y')
+                    'sku\Y')
 
 
 RULES = [

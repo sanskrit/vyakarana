@@ -8,9 +8,11 @@
     :license: MIT and BSD
 """
 
+
 def memoize(c):
     cache = {}
     get_key = lambda a, kw: tuple(a) + (frozenset(kw.items()),)
+
     def memoized(*a, **kw):
         key = get_key(a, kw)
         if key not in cache:

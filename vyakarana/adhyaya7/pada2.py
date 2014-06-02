@@ -22,7 +22,8 @@ def tasvat(state, index, **kw):
         from ..ashtadhyayi import Ashtadhyayi
         it_ashtadhyayi = Ashtadhyayi.with_rules_in('7.2.8', '7.2.78')
 
-    import sys; sys.exit()
+    import sys
+    sys.exit()
 
 
 titutra = f('ti', 'tu', 'tra', 'ta', 'Ta', 'si', 'su', 'sara', 'ka', 'sa')

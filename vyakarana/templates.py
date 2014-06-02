@@ -132,6 +132,7 @@ class Opinion(Option):
 
 
 class Anuvrtti(object):
+
     def __init__(self, left=None, center=None, right=None, **kw):
         self.base_args = [left, center, right]
         self.base_kw = kw

@@ -67,7 +67,7 @@ def asiddha_helper(state):
 
          # 8.2.41 SaDhoH kaH si
         elif x in 'zQ' and y == 's':
-             x = 'k'
+            x = 'k'
 
         # 8.2.41 SaDhoH kaH si
         if x in 'zQ' and y == 's':
@@ -84,7 +84,7 @@ def asiddha_helper(state):
         # 8.3.59 AdezapratyayayoH
         if w in Sounds('iN ku'):
             if not c.last and x == 's' and (c.term.raw[0] == 'z'
-                                         or 'pratyaya' in c.term.samjna):
+                                            or 'pratyaya' in c.term.samjna):
                 x = 'z'
 
         # 8.3.78 iNaH SIdhvaMluGliTAM dho 'GgAt
@@ -118,7 +118,6 @@ def asiddha_helper(state):
                 pass
             elif w in scu or y in scu:
                 x = Sound(x).closest(scu)
-
 
             # 8.4.41 STunA STuH
             zwu = Sounds('z wu')

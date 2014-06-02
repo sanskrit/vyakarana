@@ -8,6 +8,7 @@
 
 
 class State(object):
+
     """A sequence of terms.
 
     This represents a single step in some derivation."""
